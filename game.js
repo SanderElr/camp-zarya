@@ -50,7 +50,21 @@ const Game = (() => {
     floppy_disk: { id: 'floppy_disk', name: 'Архив проекта «Каскад»', type: 'lore', icon: 'assets/images/emba_disk.png', weight: 0.1, desc: 'Магнитная дискета с научными данными, чертежами генераторов и карт залежей НИИ «Сфера».' },
     stabilizer_nectar: { id: 'stabilizer_nectar', name: 'Капсула «Нектар-7»', type: 'lore', icon: 'assets/images/injector_purple.png', weight: 0.8, desc: 'Цилиндр с активным биоферментом, нейтрализующим радиохимическое заражение рек и почв.' },
     note_order: { id: 'note_order', name: 'Приказ об эвакуации', type: 'lore', icon: 'assets/images/letter.png', weight: 0.0, desc: 'Пожелтевший бланк 1989 г. Упоминается секретный бункер НИИ «Сфера» в 8 км к северу.' },
-    note_geologist: { id: 'note_geologist', name: 'Дневник геолога', type: 'lore', icon: 'assets/images/stash_map.png', weight: 0.0, desc: 'Записи о странных спорах и аномальном поведении речной рыбы после взрыва на дамбе.' }
+    note_geologist: { id: 'note_geologist', name: 'Дневник геолога', type: 'lore', icon: 'assets/images/stash_map.png', weight: 0.0, desc: 'Записи о странных спорах и аномальном поведении речной рыбы после взрыва на дамбе.' },
+// Новые предметы расширения: Алхимия, Электроника, Артефакты
+    amanita: { id: 'amanita', name: 'Красный мухомор', type: 'resource', icon: 'assets/images/amanita.png', weight: 0.1, desc: 'Ядовитый таёжный мухомор в белую крапинку. Основа для древних снадобий староверов.' },
+    alcohol: { id: 'alcohol', name: 'Медицинский спирт', type: 'resource', icon: 'assets/images/alcohol.png', weight: 0.3, desc: 'Флакон чистого 96% спирта из полевой армейской аптечки. Незаменим в алхимии.' },
+    spiridon_vodka: { id: 'spiridon_vodka', name: '«Спиридоновка»', type: 'food', icon: 'assets/images/hw_potion.png', weight: 0.4, desc: 'Ядрёная настойка деда Спиридона на мухоморах. Даёт мощный прилив сил (+40 энергии, -15 усталости).', energy: 40 },
+    tar_salve: { id: 'tar_salve', name: 'Дегтярный бальзам', type: 'med', icon: 'assets/images/hw_potion.png', weight: 0.2, desc: 'Густая мазь из берёзового дегтя и сфагнума. Заживляет раны (+40 HP) и даёт бафф защиты от зверей.', hp: 40 },
+    lynx_eye: { id: 'lynx_eye', name: 'Эликсир «Око рыси»', type: 'med', icon: 'assets/images/hw_potion.png', weight: 0.2, desc: 'Особый сбор Спиридона. Обостряет зрение во тьме: ночные вылазки проходят без штрафов к энергии!' },
+    batteryaaa: { id: 'batteryaaa', name: 'Батарейки 1.5В', type: 'resource', icon: 'assets/images/batteryaaa.png', weight: 0.1, desc: 'Сухие элементы питания советского стандарта. Нужны для дозиметра и полевого электрофонаря.' },
+    geiger_counter: { id: 'geiger_counter', name: 'Счётчик Гейгера ДП-5', type: 'tool', icon: 'assets/images/geiger_counter.png', weight: 1.0, desc: 'Надёжный армейский дозиметр. Пассивно снижает накопление радиации на 30% во всех вылазках!' },
+    electric_torch: { id: 'electric_torch', name: 'Полевой электрофонарь', type: 'tool', icon: 'assets/images/torch.png', weight: 0.5, desc: 'Электрический фонарь с вечным диодом. Освещает ночной путь без расхода дров и спичек.' },
+    geo_compass: { id: 'geo_compass', name: 'Компас «Енисей»', type: 'tool', icon: 'assets/images/stash_map.png', weight: 0.3, desc: 'Точный геодезический инструмент экспедиции «Енисей-3». Снижает расход энергии в вылазках на 5.' },
+    toz_scope: { id: 'toz_scope', name: 'Охотничий прицел ТОЗ', type: 'tool', icon: 'assets/images/handmade_tools.png', weight: 0.3, desc: 'Трофейный коллиматорный прицел мародёров (+30% к шансу критического выстрела на охоте).' },
+    wolf_fang: { id: 'wolf_fang', name: 'Амулет «Волчий клык»', type: 'tool', icon: 'assets/images/wolf_tooth.png', weight: 0.1, desc: 'Клык вожака лесной стаи на сыромятном ремешке (+5 к урону в ближнем бою).' },
+    glowing_moss: { id: 'glowing_moss', name: 'Светящийся сфагнум', type: 'resource', icon: 'assets/images/moss.png', weight: 0.2, desc: 'Редкий болотный мох, излучающий в темноте призрачное изумрудное сияние.' },
+    stimulator_m: { id: 'stimulator_m', name: '«Стимулятор-М»', type: 'med', icon: 'assets/images/antirad.png', weight: 0.2, desc: 'Секретная разработка «Био-4». Навсегда увеличивает максимальный запас энергии на 25 единиц!', hp: 50, energy: 50 },
   };
 
   // --- РЕЦЕПТЫ КРАФТА ---
@@ -119,6 +133,31 @@ const Game = (() => {
       id: 'craft_respirator', station: 'bench', name: 'Собрать респиратор Р-2', icon: 'assets/images/respirator.png',
       cost: { swamp_moss: 2, herbs: 1, wire: 1 }, result: { respirator: 1 }, energy: 15, timeMin: 30,
       desc: 'Защищает лёгкие от радиоактивного тумана и ядовитых газов Бункера.'
+    },
+    {
+      id: 'brew_spiridon_vodka', station: 'fire', name: 'Сварить настойку «Спиридоновка»', icon: 'assets/images/hw_potion.png',
+      cost: { amanita: 1, alcohol: 1, clean_water: 1 }, result: { spiridon_vodka: 1 }, energy: 5, timeMin: 20,
+      desc: 'Ядрёное снадобье староверов. Мгновенно даёт +40% энергии и прогоняет сонливость.'
+    },
+    {
+      id: 'brew_tar_salve', station: 'fire', name: 'Сварить дегтярный бальзам', icon: 'assets/images/hw_potion.png',
+      cost: { swamp_moss: 1, firewood: 1, herbs: 1 }, result: { tar_salve: 1 }, energy: 5, timeMin: 20,
+      desc: 'Смолистая мазь от рваных ран (+40 HP). Защищает от укусов хищников и снижает урон на 3 вылазки.'
+    },
+    {
+      id: 'brew_lynx_eye', station: 'fire', name: 'Сварить эликсир «Око рыси»', icon: 'assets/images/hw_potion.png',
+      cost: { berries: 2, herbs: 1, clean_water: 1 }, result: { lynx_eye: 1 }, energy: 5, timeMin: 15,
+      desc: 'Таёжный отвар обостряет зрение во тьме: ночные вылазки проходят без штрафов к энергии!'
+    },
+    {
+      id: 'craft_geiger', station: 'bench', name: 'Собрать Счётчик Гейгера ДП-5', icon: 'assets/images/geiger_counter.png',
+      cost: { scrap: 2, wire: 2, batteryaaa: 1 }, result: { geiger_counter: 1 }, energy: 10, timeMin: 30,
+      desc: 'Армейский дозиметр. Пассивно снижает накопление радиации на 30% во всех вылазках!'
+    },
+    {
+      id: 'craft_electric_torch', station: 'bench', name: 'Собрать полевой электрофонарь', icon: 'assets/images/torch.png',
+      cost: { wire: 1, batteryaaa: 1, scrap: 1 }, result: { electric_torch: 1 }, energy: 5, timeMin: 15,
+      desc: 'Электрический фонарь с вечным светодиодом. Освещает ночной путь без расхода дров.'
     }
   ];
 
@@ -191,6 +230,14 @@ const Game = (() => {
     egor: {
       id: 'egor', name: 'Егор Лесник', role: 'Охотник и следопыт', avatar: 'assets/images/npc_def_male.png?v=2.1',
       desc: 'Знает каждый овраг в тайге. Учит ловить рыбу и ставить силки.'
+    },
+spiridon: {
+      id: 'spiridon', name: 'Дед Спиридон', role: 'Знахарь-старовер', avatar: 'assets/images/npc_spiridon.png?v=2.2',
+      desc: 'Отшельник из глубины Гнилой гати. Хранит секреты таёжной алхимии и древних снадобий.'
+    },
+    sasha: {
+      id: 'sasha', name: 'Саша «Связист»', role: 'Радиотехник НИИ', avatar: 'assets/images/npc_sasha.png?v=2.2',
+      desc: 'Спасённый лаборант «Сферы». Сканирует радиоэфир и собирает сложную электронику.'
     }
   };
 
@@ -240,8 +287,45 @@ const Game = (() => {
       turrets_neutralized: false,
       reactor_reached: false,
       reactor_shutdown: false,
-      bunker_completed: false
+      bunker_completed: false,
+met_spiridon: false,
+      met_sasha: false,
+      pup_rescued: false,
+      dog_house_built: false,
+      dog_trained: false,
+      brdm_searched: false,
+      brdm_reported: false,
+      drain_cleared: false,
+      safe_cracked: false,
+      safe_reported: false,
+      stove_searched: false,
+      logger_extracted: false,
+      wolves_defeated: false,
+      wolves_reported: false,
+      boar_defeated: false,
+      boar_reported: false,
+      bio4_cleared: false,
+      geo1_done: false,
+      geo2_done: false,
+      geo3_done: false,
+      caravan1_done: false,
+      caravan2_done: false,
+      caravan3_done: false,
+      river_container_looted: false
     },
+    maxEnergy: 100,
+    hasDog: false,
+    dogName: 'Буран',
+    hasGeoCompass: false,
+    hasGeiger: false,
+    hasElectricTorch: false,
+    hasTozScope: false,
+    spiridonBuff: 0,
+    lynxEyeBuff: 0,
+    pumpWaterActive: false,
+    activeStashLocation: null,
+    sashaRadioUsedToday: false,
+    sideQuests: {},
     dailyQuests: [],
     loreNotes: ['note_order'],
     unlockedLocations: ['river', 'forest'],
@@ -322,6 +406,22 @@ const Game = (() => {
         filter.connect(gain);
         gain.connect(this.ctx.destination);
         noise.start();
+      } catch(e) {}
+    }
+    playDanger() {
+      if (!sfxEnabled || !this.ctx) return;
+      try {
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(120, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(40, this.ctx.currentTime + 0.3);
+        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.3);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start();
+        osc.stop(this.ctx.currentTime + 0.3);
       } catch(e) {}
     }
   }
@@ -513,6 +613,20 @@ const Game = (() => {
       addItem('leather', Math.floor(caughtMeat / 2));
       toast(`🏹 В установленные капканы попалась дичь (+${caughtMeat} мяса)!`);
     }
+    // Водозабор с насосной станции
+    if (state.pumpWaterActive) {
+      addItem('clean_water', 1);
+      toast('🚰 Лагерная колонка накачала +1 флягу чистой воды из восстановленной системы станции.');
+    }
+    // Сброс ежедневного сканирования радиоэфира
+    state.sashaRadioUsedToday = false;
+    // Подарок от Бурана
+    if (state.hasDog && Math.random() < 0.35) {
+      const dogGifts = ['raw_meat', 'leather', 'scrap', 'herbs'];
+      const gift = dogGifts[Math.floor(Math.random() * dogGifts.length)];
+      addItem(gift, 1);
+      toast(`🐕 Буран прибежал на рассвете и положил к ногам добычу: ${ITEMS[gift]?.name || gift}!`);
+    }
   }
 
   function showDeathModal() {
@@ -562,15 +676,31 @@ const Game = (() => {
     const item = ITEMS[itemId];
     if (!item) return;
 
-    if (item.type === 'food') {
+    if (item.type === 'food' || item.type === 'med') {
+      const maxEng = state.maxEnergy || 100;
       if (item.hunger) state.hunger = Math.min(100, state.hunger + item.hunger);
       if (item.thirst) state.thirst = Math.min(100, state.thirst + item.thirst);
       if (item.hp) state.hp = Math.min(100, state.hp + item.hp);
       if (item.rad) state.rad = Math.max(0, state.rad + item.rad);
-      if (item.energy) state.energy = Math.min(100, state.energy + item.energy);
+      if (item.energy) state.energy = Math.min(maxEng, state.energy + item.energy);
+
+      if (itemId === 'spiridon_vodka') {
+        toast('🧪 Огненная «Спиридоновка» обжигает горло! Усталость снята как рукой (+40% энергии)!');
+      } else if (itemId === 'tar_salve') {
+        state.spiridonBuff = 3;
+        toast('🍯 Дегтярный бальзам заживляет раны (+40 HP) и даёт защиту от зверей на 3 вылазки!');
+      } else if (itemId === 'lynx_eye') {
+        state.lynxEyeBuff = 4;
+        toast('👁️ Эликсир «Око рыси»: зрачки расширяются во тьме! Ночные вылазки проходят без штрафов к энергии.');
+      } else if (itemId === 'stimulator_m') {
+        state.maxEnergy = (state.maxEnergy || 100) + 25;
+        state.energy = state.maxEnergy;
+        toast('🧬 «Стимулятор-М» введён! Максимальный запас энергии повышен до ' + state.maxEnergy + '%!');
+      } else {
+        toast(`Использовано: ${item.name}`);
+      }
 
       removeItem(itemId, 1);
-      toast(`Использовано: ${item.name}`);
       updateHUD();
       closeModal();
     } else if (item.type === 'lore') {
@@ -681,6 +811,11 @@ const Game = (() => {
     list.innerHTML = '';
 
     Object.values(NPCS).forEach(npc => {
+      // Спиридон виден после обнаружения его заимки на болоте
+      if (npc.id === 'spiridon' && !state.questFlags?.met_spiridon) return;
+      // Саша виден после спасения у Радиовышки
+      if (npc.id === 'sasha' && !state.questFlags?.met_sasha) return;
+
       const card = document.createElement('div');
       card.className = 'npc-card';
       card.innerHTML = `
@@ -696,6 +831,26 @@ const Game = (() => {
       card.onclick = () => talkToNPC(npc.id);
       list.appendChild(card);
     });
+
+    // Карточка верного пса Бурана
+    if (state.hasDog) {
+      const dogCard = document.createElement('div');
+      dogCard.className = 'npc-card';
+      dogCard.style.border = '1px solid var(--accent-gold)';
+      dogCard.style.background = 'linear-gradient(135deg, rgba(218,165,32,0.12), rgba(0,0,0,0.4))';
+      dogCard.innerHTML = `
+        <img src="assets/images/dog.png?v=2.2" class="npc-avatar pixel-art" alt="">
+        <div class="npc-info">
+          <div class="npc-header-row">
+            <span class="npc-name">🐕 Буран (Верный пёс)</span>
+            <span class="npc-role" style="color:var(--accent-gold);">Боевой спутник</span>
+          </div>
+          <p class="npc-desc">Белоснежная таёжная лайка. Охраняет лагерь, даёт +25% к урону в боях и вынюхивает дичь.</p>
+        </div>
+      `;
+      dogCard.onclick = interactWithDog;
+      list.appendChild(dogCard);
+    }
   }
 
   function talkToNPC(npcId) {
@@ -726,6 +881,10 @@ const Game = (() => {
       talkProkhor();
     } else if (npcId === 'egor') {
       talkEgor();
+    } else if (npcId === 'spiridon') {
+      talkSpiridon();
+    } else if (npcId === 'sasha') {
+      talkSasha();
     }
   }
 
@@ -1348,6 +1507,122 @@ const Game = (() => {
       body += `<p><i>«Здравствуй, легенда! О твоих подвигах у каждого костра слагают песни. Лагерь процветает благодаря тебе. Все тропы тайги открыты для тебя!»</i></p>`;
     }
 
+    
+    // --- ДОПОЛНИТЕЛЬНЫЕ ЗАДАНИЯ БАТИ ---
+    // «Чистый глоток» (вода в резерв штаба)
+    if (!state.sideQuests?.sq_water_batya?.status && state.mainQuestStep >= 2) {
+      actions.push({
+        text: '💧 «Батя, нужно пополнить штабной резерв воды? Я помогу»',
+        action: () => {
+          if (!state.sideQuests) state.sideQuests = {};
+          state.sideQuests.sq_water_batya = { status: 'active' };
+          toast('📜 Взято поручение: «Чистый глоток» (Вскипятить и сдать 3 фляги воды Бате)');
+          sfx.playClick();
+          saveState();
+          renderQuests();
+          talkBatya();
+        }
+      });
+    } else if (state.sideQuests?.sq_water_batya?.status === 'active') {
+      const hasWater = getItemCount('clean_water') >= 3;
+      body += `<p style="color:var(--accent-gold);"><b>[ШТАБНОЙ РЕЗЕРВ]:</b> <i>«Ты вскипятил три фляги чистой воды? Если мутанты отсекут нас от реки, лагерь без воды не протянет.»</i></p>`;
+      if (hasWater) {
+        actions.push({
+          text: '💧 «Так точно, Батя! Вот 3 фляги чистой кипячёной воды»',
+          action: () => {
+            removeItem('clean_water', 3);
+            state.sideQuests.sq_water_batya.status = 'completed';
+            addItem('ammo', 4);
+            state.reputation += 15;
+            toast('⭐ Поручение выполнено: «Чистый глоток» (+15 репутации, +4 патрона)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            talkBatya();
+          },
+          primary: true
+        });
+      }
+    }
+
+    // «Ночной дозор»
+    if (!state.sideQuests?.sq_watch_batya?.status && state.mainQuestStep >= 3) {
+      actions.push({
+        text: '🏮 «Батя, могу заступить в ночной караул на смотровой вышке»',
+        action: () => {
+          if (!state.sideQuests) state.sideQuests = {};
+          state.sideQuests.sq_watch_batya = { status: 'active' };
+          toast('📜 Взято поручение: «Ночной дозор» (Заступить на вышку в фазу Ночи с факелом)');
+          sfx.playClick();
+          saveState();
+          renderQuests();
+          talkBatya();
+        }
+      });
+    } else if (state.sideQuests?.sq_watch_batya?.status === 'active') {
+      const isNight = state.timeOfDay === 3;
+      const hasTorch = getItemCount('torch') > 0 || getItemCount('electric_torch') > 0;
+      body += `<p style="color:var(--accent-gold);"><b>[НОЧНОЙ ДОЗОР]:</b> <i>«В темноте твари жмутся к частоколу. Бери факел и заступай на вышку у ворот, покуда луна стоит.»</i></p>`;
+      if (isNight && hasTorch) {
+        actions.push({
+          text: '🏮 «Отстоять ночную смену на смотровой вышке до рассвета»',
+          action: () => {
+            state.sideQuests.sq_watch_batya.status = 'completed';
+            passTime(1);
+            addItem('ammo', 5);
+            addItem('canned_food', 1);
+            state.reputation += 20;
+            toast('⭐ Ночной караул сдан! Батя пожал вам руку (+20 репутации, 5 патронов, тушенка)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            talkBatya();
+          },
+          primary: true
+        });
+      }
+    }
+
+    // Жетоны разведгруппы «Север» (сержанта Гурова)
+    if (state.questFlags.brdm_searched && !state.questFlags.brdm_reported) {
+      actions.push({
+        text: '🎖️ «Батя... я нашёл в трясине БРДМ-2. Вот жетоны сержанта Гурова...»',
+        action: () => {
+          state.questFlags.brdm_reported = true;
+          addItem('ammo', 8);
+          state.reputation += 40;
+          toast('⭐ Жетоны сержанта Гурова переданы Бате (+40 репутации, командирский бинокль, 8 патронов)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          renderQuests();
+          talkBatya();
+        },
+        primary: true
+      });
+    }
+
+    // Финал «Эхо чёрного каравана»
+    if (state.questFlags.caravan_cache_found && !state.questFlags.caravan_completed) {
+      actions.push({
+        text: '🏴‍☠️ «Батя, схрон банды «Хлыща» уничтожен! Вот украденные медикаменты»',
+        action: () => {
+          state.questFlags.caravan_completed = true;
+          addItem('ammo', 15);
+          state.reputation += 50;
+          toast('🏆 Дело «Чёрного каравана» закрыто! Справедливость свершилась (+50 репутации, 15 патронов)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          renderQuests();
+          talkBatya();
+        },
+        primary: true
+      });
+    }
+
     body += `<p style="font-size:11px; color:var(--text-dim); margin-top:10px;">Репутация в лагере: ${getReputationTitle(state.reputation)} (${state.reputation} очков)</p>`;
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }
@@ -1522,6 +1797,140 @@ const Game = (() => {
       }
     );
 
+    
+    // --- ДОПОЛНИТЕЛЬНЫЕ ЗАДАНИЯ АННЫ ---
+    // «Дрова для лазарета»
+    if (!state.sideQuests?.sq_wood_anna?.status && state.mainQuestStep >= 1) {
+      actions.push({
+        text: '🪵 «Анна Павловна, не холодно в лазарете? Могу натаскать березовых дров»',
+        action: () => {
+          if (!state.sideQuests) state.sideQuests = {};
+          state.sideQuests.sq_wood_anna = { status: 'active' };
+          toast('📜 Взято поручение: «Дрова для лазарета» (Собрать 4 охапки дров в лесу)');
+          sfx.playClick();
+          saveState();
+          renderQuests();
+          talkAnna();
+        }
+      });
+    } else if (state.sideQuests?.sq_wood_anna?.status === 'active') {
+      const hasWood = getItemCount('firewood') >= 4;
+      body += `<p style="color:var(--accent-gold);"><b>[ДРОВА ДЛЯ РАНЕНЫХ]:</b> <i>«Печка почти остыла, соколик. Нашел в лесу четыре охапки сушняка?»</i></p>`;
+      if (hasWood) {
+        actions.push({
+          text: '🪵 «Вот 4 охапки сухих берёзовых дров, Анна Павловна»',
+          action: () => {
+            removeItem('firewood', 4);
+            state.sideQuests.sq_wood_anna.status = 'completed';
+            addItem('bandage', 2);
+            state.reputation += 10;
+            toast('⭐ Поручение выполнено: «Дрова для лазарета» (+10 репутации, +2 бинта)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            talkAnna();
+          },
+          primary: true
+        });
+      }
+    }
+
+    // «Таёжные витамины» (брусника)
+    if (!state.sideQuests?.sq_berries_anna?.status && state.mainQuestStep >= 2) {
+      actions.push({
+        text: '🫐 «Анна Павловна, нужны лесные ягоды для противоцинготного взвара?»',
+        action: () => {
+          if (!state.sideQuests) state.sideQuests = {};
+          state.sideQuests.sq_berries_anna = { status: 'active' };
+          toast('📜 Взято поручение: «Таёжные витамины» (Собрать 3 порции брусники в лесу)');
+          sfx.playClick();
+          saveState();
+          renderQuests();
+          talkAnna();
+        }
+      });
+    } else if (state.sideQuests?.sq_berries_anna?.status === 'active') {
+      const hasBerries = getItemCount('berries') >= 3;
+      body += `<p style="color:var(--accent-gold);"><b>[ПРОТИВОЦИНГОТНЫЙ СБОР]:</b> <i>«У ребят на карауле силы тают. Набрал спелой брусники в распадках?»</i></p>`;
+      if (hasBerries) {
+        actions.push({
+          text: '🫐 «Принёс 3 порции спелой лесной брусники из сосняка»',
+          action: () => {
+            removeItem('berries', 3);
+            state.sideQuests.sq_berries_anna.status = 'completed';
+            addItem('antirad', 1);
+            state.reputation += 10;
+            toast('⭐ Поручение выполнено: «Таёжные витамины» (+10 репутации, +1 цистамин)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            talkAnna();
+          },
+          primary: true
+        });
+      }
+    }
+
+    // «Полевая перевязка»
+    if (!state.sideQuests?.sq_medkit_anna?.status && state.mainQuestStep >= 2) {
+      actions.push({
+        text: '🩹 «Анна Павловна, помочь с подготовкой перевязочных пакетов?»',
+        action: () => {
+          if (!state.sideQuests) state.sideQuests = {};
+          state.sideQuests.sq_medkit_anna = { status: 'active' };
+          toast('📜 Взято поручение: «Полевая перевязка» (Принести 2 бинта и 1 пучок трав)');
+          sfx.playClick();
+          saveState();
+          renderQuests();
+          talkAnna();
+        }
+      });
+    } else if (state.sideQuests?.sq_medkit_anna?.status === 'active') {
+      const hasKits = getItemCount('bandage') >= 2 && getItemCount('herbs') >= 1;
+      body += `<p style="color:var(--accent-gold);"><b>[ПЕРЕВЯЗОЧНЫЙ ЗАПАС]:</b> <i>«Бойцы из дозоров все исполосованные ветками возвращаются. Собрал два бинта и чабрец?»</i></p>`;
+      if (hasKits) {
+        actions.push({
+          text: '🩹 «Вот 2 стерильных бинта и пучок душистого чабреца, Анна Павловна»',
+          action: () => {
+            removeItem('bandage', 2);
+            removeItem('herbs', 1);
+            state.sideQuests.sq_medkit_anna.status = 'completed';
+            state.hp = 100;
+            state.reputation += 15;
+            toast('⭐ Поручение выполнено: «Полевая перевязка» (+15 репутации, HP полностью восстановлено)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            talkAnna();
+          },
+          primary: true
+        });
+      }
+    }
+
+    // «Светящийся реликтовый сфагнум»
+    if (getItemCount('glowing_moss') > 0 && !state.questFlags.glowing_moss_reported) {
+      actions.push({
+        text: '✨ «Анна Павловна, я нашёл на болотах светящийся сфагнум!»',
+        action: () => {
+          state.questFlags.glowing_moss_reported = true;
+          removeItem('glowing_moss', 1);
+          addItem('stabilizer_nectar', 1);
+          state.reputation += 30;
+          toast('⭐ Анна сварила экстракт «Живая вода» (+30 репутации, редкий биостабилизатор)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          renderQuests();
+          talkAnna();
+        },
+        primary: true
+      });
+    }
+
     checkStarterQuestProgress();
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }
@@ -1646,6 +2055,107 @@ const Game = (() => {
         }
       }
     );
+
+    
+    // --- ДОПОЛНИТЕЛЬНЫЕ ЗАДАНИЯ ПРОХОРА ---
+    // «Уголь для горна»
+    if (!state.sideQuests?.sq_coal_prokhor?.status && state.mainQuestStep >= 3) {
+      actions.push({
+        text: '🔨 «Кузьмич, подсобить металлом или углем для горна?»',
+        action: () => {
+          if (!state.sideQuests) state.sideQuests = {};
+          state.sideQuests.sq_coal_prokhor = { status: 'active' };
+          toast('📜 Взято поручение: «Уголь для горна» (Принести 2 лома Прохору)');
+          sfx.playClick();
+          saveState();
+          renderQuests();
+          talkProkhor();
+        }
+      });
+    } else if (state.sideQuests?.sq_coal_prokhor?.status === 'active') {
+      const hasScrap = getItemCount('scrap') >= 2;
+      body += `<p style="color:var(--accent-gold);"><b>[УГОЛЬ И МЕТАЛЛ]:</b> <i>«Притащил пару кусков металлолома для горна? Жар стынет!»</i></p>`;
+      if (hasScrap) {
+        actions.push({
+          text: '🔨 «Кузьмич, держи 2 куска металлолома для наковальни!»',
+          action: () => {
+            removeItem('scrap', 2);
+            state.sideQuests.sq_coal_prokhor.status = 'completed';
+            addItem('wire', 3);
+            addItem('ammo', 2);
+            state.reputation += 15;
+            toast('⭐ Поручение выполнено: «Уголь для горна» (+15 репутации, 3 проволоки, 2 патрона)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            talkProkhor();
+          },
+          primary: true
+        });
+      }
+    }
+
+    // «Кованые скобы»
+    if (!state.sideQuests?.sq_nails_prokhor?.status && state.mainQuestStep >= 3) {
+      actions.push({
+        text: '⛓️ «Кузьмич, давай кувалду! Нарубим скоб для частокола (-25% энергии)»',
+        action: () => {
+          if (state.energy < 25) {
+            toast('Нужно 25% энергии для тяжелой работы у наковальни!');
+            return;
+          }
+          if (!state.sideQuests) state.sideQuests = {};
+          state.sideQuests.sq_nails_prokhor = { status: 'completed' };
+          state.energy -= 25;
+          addItem('trap', 1);
+          state.reputation += 15;
+          toast('⭐ Скобы выкованы! Прохор вручил новенький стальной капкан (+15 репутации)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          renderQuests();
+          talkProkhor();
+        }
+      });
+    }
+
+    // Сейф инженера Кузьмина
+    if (state.questFlags.safe_cracked && !state.questFlags.safe_reported) {
+      actions.push({
+        text: '📐 «Кузьмич, в сейфе на станции были чертежи инженера Кузьмина!»',
+        action: () => {
+          state.questFlags.safe_reported = true;
+          state.reputation += 35;
+          toast('⭐ Прохор модернизировал ваш рюкзак по чертежам Кузьмина (+35 репутации)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          renderQuests();
+          talkProkhor();
+        },
+        primary: true
+      });
+    }
+
+    // Геологоразведка «Енисей-3»: минерал
+    if (state.questFlags.geo2_done && !state.hasGeoCompass) {
+      actions.push({
+        text: '🧭 «Прохор, я достал аномальный минерал из скважины №7!»',
+        action: () => {
+          state.hasGeoCompass = true;
+          addItem('geo_compass', 1);
+          state.reputation += 40;
+          toast('🏆 Прохор собрал Компас «Енисей» (-5 энергии на все вылазки, +40 репутации)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          renderQuests();
+          talkProkhor();
+        },
+        primary: true
+      });
+    }
 
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }
@@ -1801,11 +2311,748 @@ const Game = (() => {
       }
     );
 
+    
+    // --- ДОПОЛНИТЕЛЬНЫЕ ЗАДАНИЯ ЕГОРА ---
+    // «Копчёная щука»
+    if (!state.sideQuests?.sq_fish_egor?.status && state.mainQuestStep >= 3) {
+      actions.push({
+        text: '🎣 «Егор, помочь заготовить рыбу для лагерной коптильни?»',
+        action: () => {
+          if (!state.sideQuests) state.sideQuests = {};
+          state.sideQuests.sq_fish_egor = { status: 'active' };
+          toast('📜 Взято поручение: «Копчёная щука» (Поймать 3 рыбы и принести 2 дров)');
+          sfx.playClick();
+          saveState();
+          renderQuests();
+          talkEgor();
+        }
+      });
+    } else if (state.sideQuests?.sq_fish_egor?.status === 'active') {
+      const hasFishMeal = getItemCount('raw_fish') >= 3 && getItemCount('firewood') >= 2;
+      body += `<p style="color:var(--accent-gold);"><b>[ЛАГЕРНАЯ КОПТИЛЬНЯ]:</b> <i>«Быстрянка сегодня щедрая. Наловил три щуки да пару сухих поленьев принёс?»</i></p>`;
+      if (hasFishMeal) {
+        actions.push({
+          text: '🎣 «Вот 3 свежих рыбы и сухие ольховые дрова для коптильни»',
+          action: () => {
+            removeItem('raw_fish', 3);
+            removeItem('firewood', 2);
+            state.sideQuests.sq_fish_egor.status = 'completed';
+            addItem('fish_soup', 2);
+            addItem('ammo', 2);
+            state.reputation += 15;
+            toast('⭐ Поручение выполнено: «Копчёная щука» (+15 репутации, 2 ухи, 2 патрона)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            talkEgor();
+          },
+          primary: true
+        });
+      }
+    }
+
+    // «Силки на глухаря»
+    if (!state.sideQuests?.sq_snare_egor?.status && state.mainQuestStep >= 4) {
+      actions.push({
+        text: '🦃 «Егор, покажи, как ставить силки на глухаря в подлеске?»',
+        action: () => {
+          if (!state.sideQuests) state.sideQuests = {};
+          state.sideQuests.sq_snare_egor = { status: 'active' };
+          toast('📜 Взято поручение: «Силки на глухаря» (Добыть мясо птицы)');
+          sfx.playClick();
+          saveState();
+          renderQuests();
+          talkEgor();
+        }
+      });
+    } else if (state.sideQuests?.sq_snare_egor?.status === 'active') {
+      const hasMeat = getItemCount('raw_meat') >= 1;
+      body += `<p style="color:var(--accent-gold);"><b>[ОХОТА НА ГЛУХАРЯ]:</b> <i>«Попалась боровая птица в проволочную петлю?»</i></p>`;
+      if (hasMeat) {
+        actions.push({
+          text: '🦃 «Добыл дичь в силок, как ты учил! Вот свежее мясо»',
+          action: () => {
+            removeItem('raw_meat', 1);
+            state.sideQuests.sq_snare_egor.status = 'completed';
+            addItem('cooked_meat', 2);
+            state.reputation += 15;
+            toast('⭐ Поручение выполнено: «Силки на глухаря» (+15 репутации, 2 вяленых мяса)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            talkEgor();
+          },
+          primary: true
+        });
+      }
+    }
+
+    // «Расчистка мостков»
+    if (!state.sideQuests?.sq_pier_egor?.status && state.mainQuestStep >= 2) {
+      actions.push({
+        text: '🪵 «Помогу багром и топором отжать топляк от мостков (-15% энергии)»',
+        action: () => {
+          if (state.energy < 15) {
+            toast('Слишком устали для тяжелой работы у реки!');
+            return;
+          }
+          if (!state.sideQuests) state.sideQuests = {};
+          state.sideQuests.sq_pier_egor = { status: 'completed' };
+          state.energy -= 15;
+          addItem('worms', 6);
+          state.reputation += 15;
+          toast('⭐ Мостки у причала расчищены! Егор отсыпал отборных червей (+15 репутации, 6 червей)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          renderQuests();
+          talkEgor();
+        }
+      });
+    }
+
+    // Буран: сколотить конуру
+    if (state.questFlags.pup_rescued && !state.hasDog) {
+      const canBuild = getItemCount('firewood') >= 3 && getItemCount('wire') >= 1 && getItemCount('leather') >= 1 && (getItemCount('cooked_meat') > 0 || getItemCount('cooked_fish') > 0);
+      body += `<p style="color:var(--accent-gold);"><b>[ЩЕНОК БУРАН]:</b> Егор гладит щенка за ухом: <i>«Лайка чистейших кровей! Сколоти ему тёплую конуру у костра (3 дров, 1 проволока, 1 кожа) и накорми жареным мясом — лучшего друга в тайге не найдёшь!»</i></p>`;
+      if (canBuild) {
+        actions.push({
+          text: '🐕 Сколотить тёплую конуру для Бурана (3 дров, 1 проволока, 1 кожа, мясо)',
+          action: () => {
+            removeItem('firewood', 3);
+            removeItem('wire', 1);
+            removeItem('leather', 1);
+            if (getItemCount('cooked_meat') > 0) removeItem('cooked_meat', 1);
+            else removeItem('cooked_fish', 1);
+            state.hasDog = true;
+            state.reputation += 35;
+            toast('🐶 БУРАН ВЫРОС И СТАЛ ВАШИМ ВЕРНЫМ СПУТНИКОМ! (+25% урона в боях, +35 репутации)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderNPCs();
+            renderQuests();
+            interactWithDog();
+          },
+          primary: true
+        });
+      }
+    }
+
     checkStarterQuestProgress();
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }
 
   // --- ДЕЙСТВИЯ В ЛАГЕРЕ ---
+  
+  // --- ПИТОМЕЦ БУРАН (ВЕРНАЯ ЛАЙКА) ---
+  function interactWithDog() {
+    sfx.init();
+    sfx.playSuccess();
+    let body = `<p>Буран радостно взвизгивает, заметив вас! Пёс упирается передними лапами вам в колени, энергично виляет пушистым хвостом и тычется мокрым холодным носом в ладонь.</p>`;
+    body += `<p><i>«Густой подшёрсток лайки пахнет таёжным снегом, сосновой хвоей и костровым дымом. В умных янтарных глазах читается абсолютная, беззаветная преданность. С таким другом никакие волки и шатуны не страшны!»</i></p>`;
+    body += `<div style="background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:6px; margin:8px 0; border:1px solid rgba(255,255,255,0.12);">
+      <b style="color:var(--accent-gold); font-size:12px;">🐾 Бонусы верного компаньона:</b><br>
+      • <b>+25% к урону</b> в любых таёжных схватках (волчьи стаи, вепрь, медведь-шатун)<br>
+      • <b>Таёжное чутьё:</b> 35% шанс каждое утро получить ценную дичь или патроны, найденные Бураном
+    </div>`;
+
+    const actions = [
+      {
+        text: '🦴 Потрепать Бурана за ухом (+10 энергии)',
+        action: () => {
+          state.energy = Math.min(state.maxEnergy || 100, state.energy + 10);
+          toast('🐶 Буран довольно жмурится и виляет хвостом (+10% энергии).');
+          sfx.playClick();
+          updateHUD();
+          closeModal();
+        },
+        primary: true
+      }
+    ];
+
+    if (getItemCount('cooked_meat') > 0 || getItemCount('cooked_fish') > 0) {
+      actions.push({
+        text: '🥩 Угостить Бурана куском жареной рыбы или мяса',
+        action: () => {
+          if (getItemCount('cooked_meat') > 0) removeItem('cooked_meat', 1);
+          else removeItem('cooked_fish', 1);
+          state.reputation += 5;
+          toast('🐕 Буран с урчанием проглатывает угощение и благодарно лижет вам пальцы (+5 репутации)!');
+          sfx.playSuccess();
+          updateHUD();
+          interactWithDog();
+        }
+      });
+    }
+
+    openModal('Буран (Западносибирская лайка)', 'Верный четвероногий друг', 'assets/images/dog.png?v=2.2', body, actions);
+  }
+
+  // --- ДЕД СПИРИДОН (СТАРОВЕР-ЗНАХАРЬ) ---
+  function talkSpiridon() {
+    const npc = NPCS.spiridon;
+    if (!state.questFlags) state.questFlags = {};
+    state.questFlags.met_spiridon = true;
+
+    let body = `<p>Дед Спиридон сидит на лавке у бревенчатой стены своей заимки, чистит деревянной ложкой сушеные травы и неспешно подкладывает лучину в чугунную плошку. В избе пахнет сухим чабрецом, воском и ладаном.</p>`;
+    body += `<p><i>«Мир избе твоей, чадо. Слышу по дыханию — тяжёл твой путь был сквозь трясину. В тайге суета — первый враг. Сядь, отдышись у огня. Земля наша хоть и покалечена железной бедой, а силу живую в травах хранит. Коли с уважением к лесу придёшь — всё отдаст.»</i></p>`;
+
+    const actions = [];
+
+    // Квест 2 Спиридона: Ведьмин гриб
+    if (state.sideQuests?.spiridon_mushrooms?.status === 'active') {
+      const hasMushrooms = getItemCount('amanita') >= 3;
+      body += `<p style="color:var(--accent-gold);"><b>[ЗНАХАРСКИЙ СБОР]:</b> <i>«Набрал мухоморов с красной шляпкой в белую крапинку? Они в чаще под старыми березами прячутся.»</i></p>`;
+      if (hasMushrooms) {
+        actions.push({
+          text: '🍄 «Вот три ядрёных мухомора, дедушка (Сдать Спиридону)»',
+          action: () => {
+            removeItem('amanita', 3);
+            state.sideQuests.spiridon_mushrooms.status = 'completed';
+            addItem('spiridon_vodka', 2);
+            state.reputation += 30;
+            toast('⭐ Дед Спиридон сварил первую партию «Спиридоновки» (+2 настойки, +30 репутации)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            talkSpiridon();
+          },
+          primary: true
+        });
+      }
+    } else if (!state.sideQuests?.spiridon_mushrooms?.status) {
+      actions.push({
+        text: '🍄 «Дед Спиридон, научи меня варить таёжную настойку от усталости!»',
+        action: () => {
+          if (!state.sideQuests) state.sideQuests = {};
+          state.sideQuests.spiridon_mushrooms = { status: 'active' };
+          toast('📜 Взято задание: «Ведьмин гриб» (Собрать 3 мухомора в лесу)');
+          sfx.playClick();
+          saveState();
+          renderQuests();
+          talkSpiridon();
+        },
+        primary: true
+      });
+    }
+
+    // Рецепты алхимии Спиридона
+    actions.push(
+      {
+        text: '🧪 Сварить «Спиридоновку» (1 мухомор, 1 спирт, 1 чистая вода)',
+        action: () => {
+          if (getItemCount('amanita') >= 1 && getItemCount('alcohol') >= 1 && getItemCount('clean_water') >= 1) {
+            removeItem('amanita', 1);
+            removeItem('alcohol', 1);
+            removeItem('clean_water', 1);
+            addItem('spiridon_vodka', 1);
+            toast('🧪 Сварен флакон крепкой «Спиридоновки» (+40 энергии при приеме)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkSpiridon();
+          } else {
+            toast('Нужно: 1 мухомор, 1 спирт и 1 чистая вода.');
+          }
+        }
+      },
+      {
+        text: '🍯 Сварить «Дегтярный бальзам» (1 сфагнум, 1 дрова, 1 травы)',
+        action: () => {
+          if (getItemCount('swamp_moss') >= 1 && getItemCount('firewood') >= 1 && getItemCount('herbs') >= 1) {
+            removeItem('swamp_moss', 1);
+            removeItem('firewood', 1);
+            removeItem('herbs', 1);
+            addItem('tar_salve', 1);
+            toast('🍯 Приготовлен «Дегтярный бальзам» (+40 HP, защита от урона на 3 вылазки)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkSpiridon();
+          } else {
+            toast('Нужно: 1 сфагнум, 1 дрова и 1 травы.');
+          }
+        }
+      },
+      {
+        text: '👁️ Сварить эликсир «Око рыси» (2 брусники, 1 травы, 1 чистая вода)',
+        action: () => {
+          if (getItemCount('berries') >= 2 && getItemCount('herbs') >= 1 && getItemCount('clean_water') >= 1) {
+            removeItem('berries', 2);
+            removeItem('herbs', 1);
+            removeItem('clean_water', 1);
+            addItem('lynx_eye', 1);
+            toast('👁️ Приготовлен эликсир «Око рыси» (ночные вылазки без штрафов к энергии)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkSpiridon();
+          } else {
+            toast('Нужно: 2 брусники, 1 травы и 1 чистая вода.');
+          }
+        }
+      },
+      {
+        text: '🌿 Купить спирт за 2 патрона',
+        action: () => {
+          if (getItemCount('ammo') >= 2) {
+            removeItem('ammo', 2);
+            addItem('alcohol', 1);
+            toast('Куплен флакон чистого медицинского спирта.');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkSpiridon();
+          } else {
+            toast('Недостаточно патронов.');
+          }
+        }
+      }
+    );
+
+    openModal(npc.name, npc.role, npc.avatar, body, actions);
+  }
+
+  // --- САША «СВЯЗИСТ» (РАДИОТЕХНИК НИИ) ---
+  function talkSasha() {
+    const npc = NPCS.sasha;
+    if (!state.questFlags) state.questFlags = {};
+    state.questFlags.met_sasha = true;
+
+    let body = `<p>Александр сидит за верстаком в радиорубке, поправив перемотанные синей изолентой очки. Из динамика лампового приёмника Р-326 доносится тихое атмосферное шипение и далёкие щелчки морзянки.</p>`;
+    body += `<p><i>«Привет! Знаешь, после того ада в реакторном зале я думал, что радиоэфир навсегда мёртв. Но нет! Если правильно согласовать антенну и отфильтровать помехи от ионизированных облаков — в эфире можно поймать радиомаяки старых аварийных сбросов. Раз в сутки я могу проводить пеленгацию для тебя!»</i></p>`;
+
+    const actions = [];
+
+    // Ежедневное сканирование радиоэфира
+    if (!state.sashaRadioUsedToday) {
+      actions.push({
+        text: '📡 «Саша, включи радиосканер: найди аварийный контейнер на сегодня»',
+        action: () => {
+          state.sashaRadioUsedToday = true;
+          const locs = ['river', 'forest', 'swamp', 'pump_station'];
+          state.activeStashLocation = locs[Math.floor(Math.random() * locs.length)];
+          const locNames = { river: 'Реке Быстрянке', forest: 'Ближнем лесу', swamp: 'Гнилой гати', pump_station: 'Насосной станции' };
+          toast(`📡 СИГНАЛ ЗАПЕЛЕНГОВАН! Саша поймал радиомаяк аварийного контейнера на ${locNames[state.activeStashLocation]}!`);
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          talkSasha();
+        },
+        primary: true
+      });
+    } else {
+      const locNames = { river: 'Реке Быстрянке', forest: 'Ближнем лесу', swamp: 'Гнилой гати', pump_station: 'Насосной станции' };
+      body += `<p style="color:var(--accent-green);">📡 <b>Пеленг активен:</b> Радиомаяк сброса ждет вас на <u>${locNames[state.activeStashLocation] || 'локации'}</u>! Заберите контейнер во вкладке «Вылазка».</p>`;
+    }
+
+    // Сборка Дозиметра ДП-5
+    if (getItemCount('geiger_counter') === 0 && !state.hasGeiger) {
+      actions.push({
+        text: '☢️ Собрать армейский Счётчик Гейгера ДП-5 (2 лома, 2 проволоки, 1 батарейка)',
+        action: () => {
+          if (getItemCount('scrap') >= 2 && getItemCount('wire') >= 2 && getItemCount('batteryaaa') >= 1) {
+            removeItem('scrap', 2);
+            removeItem('wire', 2);
+            removeItem('batteryaaa', 1);
+            addItem('geiger_counter', 1);
+            state.hasGeiger = true;
+            toast('☢️ Счётчик Гейгера ДП-5 собран! Пассивно снижает накопление радиации во всех вылазках на 30%!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkSasha();
+          } else {
+            toast('Нужно: 2 металлолома, 2 проволоки и 1 батарейка.');
+          }
+        }
+      });
+    }
+
+    // Сборка Электрофонаря
+    if (getItemCount('electric_torch') === 0 && !state.hasElectricTorch) {
+      actions.push({
+        text: '🔦 Собрать полевой электрофонарь (1 проволока, 1 батарейка, 1 лом)',
+        action: () => {
+          if (getItemCount('wire') >= 1 && getItemCount('batteryaaa') >= 1 && getItemCount('scrap') >= 1) {
+            removeItem('wire', 1);
+            removeItem('batteryaaa', 1);
+            removeItem('scrap', 1);
+            addItem('electric_torch', 1);
+            state.hasElectricTorch = true;
+            toast('🔦 Полевой электрофонарь готов! Вечный источник света для ночных вылазок.');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkSasha();
+          } else {
+            toast('Нужно: 1 проволока, 1 батарейка и 1 металлолом.');
+          }
+        }
+      });
+    }
+
+    // Покупка батареек
+    actions.push({
+      text: '🔋 Купить батарейки 1.5В (за 2 патрона)',
+      action: () => {
+        if (getItemCount('ammo') >= 2) {
+          removeItem('ammo', 2);
+          addItem('batteryaaa', 1);
+          toast('Куплен комплект сухих батареек стандарта ААА.');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          talkSasha();
+        } else {
+          toast('Недостаточно патронов.');
+        }
+      }
+    });
+
+    openModal(npc.name, npc.role, npc.avatar, body, actions);
+  }
+
+  // --- ЛОКАЦИОННЫЕ И ДОПОЛНИТЕЛЬНЫЕ АКТИВНОСТИ ---
+  function doDiveContainer(loc) {
+    if (state.energy < 20) {
+      toast('Недостаточно сил для глубокого погружения! Нужно 20% энергии.');
+      return;
+    }
+    sfx.init();
+    sfx.playSplash();
+    state.energy -= 20;
+    state.rad += 5;
+    passTime(1);
+    state.questFlags.river_container_looted = true;
+    addItem('canned_food', 3);
+    addItem('ammo', 10);
+    state.reputation += 25;
+    toast('📦 ТЕРМОБОКС ПОДНЯТ СО ДНА! Найдено 3 банки армейской тушенки и 10 патронов (+25 репутации)!');
+    sfx.playSuccess();
+    updateHUD();
+    saveState();
+    closeModal();
+  }
+
+  function doFightWolves(loc) {
+    if (getItemCount('spear') < 1 && getItemCount('toz') < 1) {
+      toast('Лезть в волчье логово без оружия — самоубийство! Вооружитесь копьём или ружьём.');
+      return;
+    }
+    if (state.hp < 35) {
+      toast('Вы слишком ранены для боя со стаей!');
+      return;
+    }
+    sfx.init();
+    sfx.playDanger();
+    const damage = state.hasDog ? 10 : 20;
+    state.hp = Math.max(10, state.hp - damage);
+    state.energy = Math.max(0, state.energy - 25);
+    state.questFlags.wolves_defeated = true;
+    passTime(1.5);
+    addItem('leather', 2);
+    addItem('wolf_fang', 1);
+    state.reputation += 30;
+    toast(`🐺 ВОЛЧЬЕ ЛОГОВО РАЗГРОМЛЕНО! Вожак повержен! Получен амулет «Волчий клык» (+5 к урону), 2 шкуры (${damage} урона)!`);
+    sfx.playSuccess();
+    updateHUD();
+    saveState();
+    closeModal();
+  }
+
+  function doRescuePup(loc) {
+    sfx.init();
+    sfx.playClick();
+    if (getItemCount('bandage') < 1) {
+      toast('Щенок тяжело ранен зубьями капкана! Нужен хотя бы 1 стерильный бинт, чтобы перевязать лапку.');
+      return;
+    }
+    removeItem('bandage', 1);
+    state.questFlags.pup_rescued = true;
+    passTime(1);
+    state.reputation += 20;
+    toast('🐾 ЩЕНОК СПАСЕН! Вы аккуратно разжали дуги ржавого капкана, промыли рану и перевязали щенка. Отнесите его Егору в лагерь!');
+    sfx.playSuccess();
+    updateHUD();
+    saveState();
+    closeModal();
+  }
+
+  function doVisitSpiridon(loc) {
+    sfx.init();
+    sfx.playClick();
+    state.questFlags.met_spiridon = true;
+    toast('🛖 Вы пробрались по замшелым кочкам к затерянной Заимке деда Спиридона!');
+    closeModal();
+    talkSpiridon();
+  }
+
+  function doSearchBrdm(loc) {
+    if (state.energy < 20) {
+      toast('Нужно минимум 20% энергии для исследования затопленного броневика!');
+      return;
+    }
+    sfx.init();
+    sfx.playClick();
+    state.energy -= 20;
+    state.rad += 15;
+    passTime(1.5);
+    state.questFlags.brdm_searched = true;
+    addItem('ammo', 8);
+    state.reputation += 35;
+    toast('🚜 БРДМ-2 ОБСЛЕДОВАН! Найдены жетоны сержанта Гурова, патроны и офицерский планшет! Отнесите Бате.');
+    sfx.playSuccess();
+    updateHUD();
+    saveState();
+    closeModal();
+  }
+
+  function doGatherGlowingMoss(loc) {
+    sfx.init();
+    sfx.playClick();
+    state.energy -= 15;
+    state.rad += 20;
+    passTime(1);
+    state.questFlags.glowing_moss_found = true;
+    addItem('glowing_moss', 1);
+    addItem('stabilizer_nectar', 1);
+    state.reputation += 30;
+    toast('✨ СВЕТЯЩИЙСЯ СФАГНУМ СОБРАН! Чистый экстракт спасет от любых ран и радиации! Отнесите Анне.');
+    sfx.playSuccess();
+    updateHUD();
+    saveState();
+    closeModal();
+  }
+
+  function doClearDrainValve(loc) {
+    if (state.energy < 25) {
+      toast('Нужно 25% энергии, чтобы провернуть многопудовый чугунный вентиль!');
+      return;
+    }
+    if (getItemCount('scrap') < 1) {
+      toast('Нужен кусок металлолома или монтировка в качестве рычага.');
+      return;
+    }
+    sfx.init();
+    sfx.playSuccess();
+    state.energy -= 25;
+    state.pumpWaterActive = true;
+    state.reputation += 35;
+    passTime(1);
+    toast('🚰 ДОННЫЙ ВЕНТИЛЬ ПОВЕРНУТ! Шлам сброшен! Теперь каждое утро лагерная колонка выдает +1 флягу чистой воды!');
+    updateHUD();
+    saveState();
+    closeModal();
+  }
+
+  function doCrackEngineerSafe(loc) {
+    if (state.energy < 15) {
+      toast('Недостаточно сил.');
+      return;
+    }
+    sfx.init();
+    sfx.playSuccess();
+    state.energy -= 15;
+    state.questFlags.safe_cracked = true;
+    state.maxWeight += 2.5;
+    addItem('ammo', 12);
+    addItem('wire', 2);
+    state.reputation += 35;
+    passTime(1);
+    toast('🔐 СЕЙФ ВЗЛОМАН! Найдены чертежи разгрузки Кузьмина (+2.5 кг к вместимости), 12 патронов и проволока!');
+    updateHUD();
+    saveState();
+    closeModal();
+  }
+
+  function doSearchStove(loc) {
+    if (state.energy < 15) {
+      toast('Недостаточно сил для разбора кирпичной кладки.');
+      return;
+    }
+    sfx.init();
+    sfx.playClick();
+    state.energy -= 15;
+    state.questFlags.stove_searched = true;
+    state.maxWeight += 2.5;
+    addItem('ammo', 6);
+    state.reputation += 30;
+    passTime(1);
+    toast('🏚️ ТАЙНИК В ПЕЧИ ОБНАРУЖЕН! Найден кожаный патронташ лесничего (+2.5 кг к весу) и 6 патронов ТОЗ!');
+    sfx.playSuccess();
+    updateHUD();
+    saveState();
+    closeModal();
+  }
+
+  function doRescueSasha(loc) {
+    sfx.init();
+    sfx.playClick();
+    if (getItemCount('bandage') < 2 || getItemCount('clean_water') < 1) {
+      toast('Саша истекает кровью в расщелине! Нужно: 2 стерильных бинта и 1 фляга чистой воды.');
+      return;
+    }
+    removeItem('bandage', 2);
+    removeItem('clean_water', 1);
+    state.questFlags.met_sasha = true;
+    state.reputation += 40;
+    passTime(2);
+    toast('🆘 САША СПАСЕН! Вы перевязали раненого радиста и помогли ему дойти до лагеря! Теперь Саша наладит связь в «Заре»!');
+    sfx.playSuccess();
+    updateHUD();
+    saveState();
+    closeModal();
+    talkSasha();
+  }
+
+  function doExtractLogger(loc) {
+    if (state.energy < 30) {
+      toast('Подъем на шпиль мачты требует 30% энергии!');
+      return;
+    }
+    sfx.init();
+    sfx.playSuccess();
+    state.energy -= 30;
+    state.rad += 20;
+    state.questFlags.logger_extracted = true;
+    addItem('scrap', 3);
+    addItem('wire', 2);
+    state.reputation += 50;
+    passTime(2);
+    toast('📊 САМОПИСЕЦ ИЗВЛЕЧЕН! Архивные данные аварии и ценные радиодетали сняты со шпиля вышки (+50 репутации)!');
+    updateHUD();
+    saveState();
+    closeModal();
+  }
+
+  function doHuntBoar(loc) {
+    if (getItemCount('toz') < 1 || getItemCount('ammo') < 2) {
+      toast('Идти на закостеневшего вепря без ружья и патронов — гибель! Нужно: ТОЗ-34 и 2 патрона.');
+      return;
+    }
+    if (state.hp < 40) {
+      toast('Вы слишком ранены для охоты на вепря!');
+      return;
+    }
+    sfx.init();
+    sfx.playDanger();
+    removeItem('ammo', 2);
+    const damage = state.hasDog ? 10 : 20;
+    state.hp = Math.max(15, state.hp - damage);
+    state.energy = Math.max(0, state.energy - 30);
+    state.questFlags.boar_defeated = true;
+    addItem('raw_meat', 4);
+    addItem('leather', 2);
+    state.reputation += 45;
+    passTime(2);
+    toast(`🐗 ВЕПРЬ-СЕКАЧ ПОВЕРЖЕН! Двустволка свалила гиганта (+4 мяса, +2 толстые шкуры, получено ${damage} урона)!`);
+    sfx.playSuccess();
+    updateHUD();
+    saveState();
+    closeModal();
+  }
+
+  function doCrackBio4(loc) {
+    if (getItemCount('respirator') < 1 && !state.questFlags.respirator_crafted) {
+      toast('В отсеке «Био-4» ядовитый консервант! Наденьте респиратор Р-2 перед взломом.');
+      return;
+    }
+    sfx.init();
+    sfx.playSuccess();
+    state.energy = Math.max(0, state.energy - 20);
+    state.rad += 15;
+    state.questFlags.bio4_cleared = true;
+    addItem('stimulator_m', 1);
+    state.reputation += 60;
+    passTime(2);
+    toast('🧬 СПЕЦХРАН «БИО-4» ВСКРЫТ! Извлечен армейский биостимулятор «Стимулятор-М» (+25 постоянной максимальной энергии)!');
+    updateHUD();
+    saveState();
+    closeModal();
+  }
+
+  function doSearchTriangulator(loc) {
+    sfx.init();
+    sfx.playClick();
+    state.energy -= 10;
+    state.questFlags.geo1_done = true;
+    state.reputation += 15;
+    toast('📍 ТРИАНГУЛЯТОР ОБСЛЕДОВАН! В металлическом тубусе найдена карта геологоразведки «Енисей-3» с координатами скважины №7 на Быстрянке!');
+    sfx.playSuccess();
+    updateHUD();
+    saveState();
+    closeModal();
+  }
+
+  function doSearchBorehole(loc) {
+    if (state.energy < 20) {
+      toast('Откачка ила из шурфа требует 20% энергии!');
+      return;
+    }
+    sfx.init();
+    sfx.playSuccess();
+    state.energy -= 20;
+    state.questFlags.geo2_done = true;
+    state.reputation += 25;
+    toast('⛏️ СКВАЖИНА №7 РАСЧИЩЕНА! Со дна шурфа поднят запечатанный геологический керн с черным аномальным минералом! Покажите Прохору.');
+    updateHUD();
+    saveState();
+    closeModal();
+  }
+
+  function doSearchCaravanFord(loc) {
+    sfx.init();
+    sfx.playClick();
+    state.energy -= 10;
+    state.questFlags.caravan1_done = true;
+    state.reputation += 20;
+    toast('👣 СЛЕДЫ БАНДЫ «ХЛЫЩА» ОБНАРУЖЕНЫ! Найдены гильзы и нацарапанная на камне стрелка в сторону штольни на Скалистом утёсе!');
+    sfx.playSuccess();
+    updateHUD();
+    saveState();
+    closeModal();
+  }
+
+  function doSearchCaravanMine(loc) {
+    if (getItemCount('knife') < 1 && getItemCount('wire') < 1) {
+      toast('Вход в штольню заминирован растяжкой! Нужен охотничий нож, чтобы аккуратно перерезать леску.');
+      return;
+    }
+    sfx.init();
+    sfx.playSuccess();
+    state.energy -= 20;
+    state.questFlags.caravan2_done = true;
+    state.questFlags.caravan_cache_found = true;
+    addItem('toz_scope', 1);
+    addItem('ammo', 25);
+    state.hasTozScope = true;
+    state.reputation += 50;
+    toast('🏴‍☠️ СХРОН МАРОДЕРОВ ВЗЯТ! Растяжка обезврежена! Найден коллиматорный прицел ТОЗ (+30% крит) и 25 патронов! Доложите Бате.');
+    updateHUD();
+    saveState();
+    closeModal();
+  }
+
+  function doCollectRadioStash(loc) {
+    sfx.init();
+    sfx.playSuccess();
+    state.energy = Math.max(0, state.energy - 10);
+    state.activeStashLocation = null;
+    addItem('canned_food', 2);
+    addItem('ammo', 8);
+    addItem('batteryaaa', 1);
+    state.reputation += 20;
+    toast('📦 ПАРАШЮТНЫЙ КОНТЕЙНЕР НАЙДЕН! Забрано: 2 банки тушёнки, 8 патронов и комплект батареек ААА (+20 репутации)!');
+    updateHUD();
+    saveState();
+    closeModal();
+  }
+
   function restAtCamp() {
     sfx.init();
     sfx.playClick();
@@ -1874,6 +3121,15 @@ const Game = (() => {
 
     const actions = [];
 
+    // Сброшенный на парашюте контейнер (по наводке радиосканера Саши)
+    if (state.activeStashLocation === loc.id) {
+      actions.unshift({
+        text: '📡 Забрать обнаруженный Сашей парашютный контейнер снабжения!',
+        action: () => doCollectRadioStash(loc),
+        primary: true
+      });
+    }
+
     // Действия на реке
     if (loc.id === 'river') {
       if (state.mainQuestStep === 5 && !state.questFlags.water_sample_given && getItemCount('water_sample') === 0) {
@@ -1881,6 +3137,25 @@ const Game = (() => {
           text: '🧪 Набрать пробу токсичной воды для Анны (Квест 6)',
           action: () => doGatherToxicWater(loc),
           primary: true
+        });
+      }
+      if (!state.questFlags.river_container_looted) {
+        actions.push({
+          text: '📦 Нырнуть на стремнине у баржи (Армейский термобокс)',
+          action: () => doDiveContainer(loc)
+        });
+      }
+      if (state.questFlags.geo1_done && !state.questFlags.geo2_done) {
+        actions.push({
+          text: '⛏️ Отыскать скважину №7 в пойме Быстрянки (Квест геологов)',
+          action: () => doSearchBorehole(loc),
+          primary: true
+        });
+      }
+      if (state.reputation >= 50 && !state.questFlags.caravan1_done) {
+        actions.push({
+          text: '👣 Осмотреть кострище у брода (Стреляные гильзы «Хлыща»)',
+          action: () => doSearchCaravanFord(loc)
         });
       }
       actions.push({
@@ -1907,27 +3182,59 @@ const Game = (() => {
           primary: true
         });
       }
+      if (!state.questFlags.wolves_defeated && state.mainQuestStep >= 4) {
+        actions.push({
+          text: '🐺 Выследить волчье логово в буреломе (Квест вожака)',
+          action: () => doFightWolves(loc)
+        });
+      }
+      if (!state.questFlags.pup_rescued) {
+        actions.push({
+          text: '🐾 Пойти на жалобный скулёж в малиннике (Спасти щенка)',
+          action: () => doRescuePup(loc),
+          primary: true
+        });
+      }
+      if (!state.questFlags.geo1_done) {
+        actions.push({
+          text: '📍 Осмотреть геодезический триангулятор на скале (Квест геологов)',
+          action: () => doSearchTriangulator(loc)
+        });
+      }
       actions.push({
         text: '🌲 Заготовить сухие дрова',
         action: () => doGatherWood(loc),
         primary: state.mainQuestStep !== 4
       });
       actions.push({
-        text: '🌿 Собрать травы и бруснику',
+        text: '🌿 Собрать травы, бруснику и мухоморы',
         action: () => doGatherHerbs(loc)
-      });
-      actions.push({
-        text: '🏹 Поставить силок на куропаток',
-        action: () => doPlaceSnare(loc)
       });
     }
 
     // Болота: Гнилая гать
     if (loc.id === 'swamp') {
       actions.push({
+        text: '🛖 Пробраться по гати к Заимке старовера (Дед Спиридон)',
+        action: () => doVisitSpiridon(loc),
+        primary: !state.questFlags.met_spiridon
+      });
+      if (!state.questFlags.brdm_searched) {
+        actions.push({
+          text: '🚜 Обследовать затопленный БРДМ разведгруппы «Север»',
+          action: () => doSearchBrdm(loc)
+        });
+      }
+      if (state.timeOfDay === 3 && !state.questFlags.glowing_moss_found) {
+        actions.push({
+          text: '✨ Собрать светящийся сфагнум (Ночное свечение топи)',
+          action: () => doGatherGlowingMoss(loc),
+          primary: true
+        });
+      }
+      actions.push({
         text: '🌿 Собрать болотный сфагнум (нужен для квестов и мази)',
-        action: () => doGatherMoss(loc),
-        primary: true
+        action: () => doGatherMoss(loc)
       });
       actions.push({
         text: '🔍 Исследовать топь (поиск полезного хлама)',
@@ -1944,10 +3251,22 @@ const Game = (() => {
           primary: true
         });
       } else {
+        if (state.questFlags.pump_repaired && !state.pumpWaterActive) {
+          actions.push({
+            text: '🚰 Спуститься в коллектор и открыть донный дренажный клапан',
+            action: () => doClearDrainValve(loc),
+            primary: true
+          });
+        }
+        if (state.questFlags.pump_repaired && !state.questFlags.safe_cracked) {
+          actions.push({
+            text: '🔐 Вскрыть несгораемый сейф главного инженера',
+            action: () => doCrackEngineerSafe(loc)
+          });
+        }
         actions.push({
           text: '🔍 Обыскать цех фильтрации (поиск мембраны)',
-          action: () => doScavengeStation(loc),
-          primary: true
+          action: () => doScavengeStation(loc)
         });
       }
     }
@@ -1959,6 +3278,12 @@ const Game = (() => {
           text: '🐻 Выследить и победить Хозяина тайги (Квест 15)',
           action: () => doHuntBear(loc),
           primary: true
+        });
+      }
+      if (!state.questFlags.boar_defeated && getItemCount('toz') > 0) {
+        actions.push({
+          text: '🐗 Выследить бронированного вепря-секача',
+          action: () => doHuntBoar(loc)
         });
       }
       actions.push({
@@ -1974,6 +3299,12 @@ const Game = (() => {
 
     // Заброшенный кордон
     if (loc.id === 'old_cordon') {
+      if (!state.questFlags.stove_searched) {
+        actions.push({
+          text: '🏚️ Разобрать кирпичную кладку печи (Тайник лесничего)',
+          action: () => doSearchStove(loc)
+        });
+      }
       actions.push({
         text: '🔍 Обыскать дом и тайник в погребе (Квест 14 / Припасы)',
         action: () => doSearchCordon(loc),
@@ -1987,29 +3318,32 @@ const Game = (() => {
 
     // Радиовышка
     if (loc.id === 'radio_tower') {
+      if (state.mainQuestStep >= 11 && !state.questFlags.met_sasha) {
+        actions.push({
+          text: '🆘 Осмотреть расщелину под утесом (Стоны о помощи)',
+          action: () => doRescueSasha(loc),
+          primary: true
+        });
+      }
+      if (state.questFlags.radio_repaired && !state.questFlags.logger_extracted) {
+        actions.push({
+          text: '📊 Снять блок аварийного самописца со шпиля мачты',
+          action: () => doExtractLogger(loc)
+        });
+      }
+      if (state.questFlags.caravan1_done && !state.questFlags.caravan2_done) {
+        actions.push({
+          text: '⛏️ Отыскать заваленную штольню под Скалистым утёсом',
+          action: () => doSearchCaravanMine(loc)
+        });
+      }
+
       const isRepaired = !!(state.questFlags && state.questFlags.radio_repaired);
       const scrapCount = getItemCount('scrap');
       const wireCount = getItemCount('wire');
       const hasEnough = scrapCount >= 3 && wireCount >= 2 && state.energy >= loc.energyCost;
 
       if (!isRepaired) {
-        body += `
-          <div style="background:rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.1); border-radius:6px; padding:8px 10px; margin:8px 0; font-size:12px;">
-            <b style="color:var(--accent-gold);">📡 Материалы для ремонта антенны:</b>
-            <div style="margin-top:5px; display:flex; flex-direction:column; gap:4px;">
-              <div style="color:${scrapCount >= 3 ? 'var(--accent-green)' : 'var(--accent-danger)'};">
-                ${scrapCount >= 3 ? '✅' : '❌'} Металлолом: <b>${scrapCount} / 3</b>
-              </div>
-              <div style="color:${wireCount >= 2 ? 'var(--accent-green)' : 'var(--accent-danger)'};">
-                ${wireCount >= 2 ? '✅' : '❌'} Моток проволоки: <b>${wireCount} / 2</b>
-              </div>
-              <div style="color:${state.energy >= loc.energyCost ? 'var(--accent-green)' : 'var(--accent-danger)'};">
-                ${state.energy >= loc.energyCost ? '✅' : '❌'} Энергия: <b>${Math.round(state.energy)}% / ${loc.energyCost}%</b>
-              </div>
-            </div>
-          </div>
-        `;
-
         actions.push({
           text: hasEnough 
             ? '📡 Восстановить антенну (3 лома, 2 проволоки)' 
@@ -2018,9 +3352,6 @@ const Game = (() => {
           primary: hasEnough
         });
       } else {
-        body += `<div style="background:rgba(30,50,35,0.5); border:1px solid var(--accent-green); border-radius:6px; padding:6px 10px; margin:8px 0; color:var(--accent-green); font-size:12px;">
-          ✓ Антенна связи восстановлена! Принят аварийный сигнал НИИ «Сфера».
-        </div>`;
         actions.push({
           text: '📻 Прослушать радиоэфир',
           action: () => {
@@ -2051,6 +3382,12 @@ const Game = (() => {
           primary: true
         });
       } else {
+        if (state.questFlags.bunker_entered && !state.questFlags.bio4_cleared) {
+          actions.push({
+            text: '🧬 Взломать спецхран криолаборатории «Био-4» («Стимулятор-М»)',
+            action: () => doCrackBio4(loc)
+          });
+        }
         actions.push({
           text: '📦 Осмотреть научные склады Бункера',
           action: () => doScavengeBunker(loc),
@@ -2689,6 +4026,41 @@ const Game = (() => {
     renderQuests();
   }
 
+  
+  // --- ДОПОЛНИТЕЛЬНЫЕ И НЕОСНОВНЫЕ КВЕСТЫ (EXPANSION) ---
+  const SIDE_QUESTS = [
+    // Лагерные поручения (10)
+    { id: 'sq_wood_anna', category: 'camp', title: 'Дрова для лазарета', giver: 'Анна Павловна', desc: 'Собрать 4 охапки сухих дров для обогрева медицинского вагончика.', reward: '2 стерильных бинта, +10 репутации', isDone: (s) => s.sideQuests?.sq_wood_anna?.status === 'completed' },
+    { id: 'sq_fish_egor', category: 'camp', title: 'Копчёная щука', giver: 'Егор Лесник', desc: 'Поймать 3 свежих рыбы и заготовить 2 полена для лагерной коптильни.', reward: '2 порции ухи, 2 патрона, +15 репутации', isDone: (s) => s.sideQuests?.sq_fish_egor?.status === 'completed' },
+    { id: 'sq_water_batya', category: 'camp', title: 'Чистый глоток', giver: 'Майор Дмитрий (Батя)', desc: 'Вскипятить 3 фляги воды для штабного резерва общины.', reward: '4 патрона, +15 репутации', isDone: (s) => s.sideQuests?.sq_water_batya?.status === 'completed' },
+    { id: 'sq_berries_anna', category: 'camp', title: 'Таёжные витамины', giver: 'Анна Павловна', desc: 'Собрать 3 порции брусники для противоцинготного взвара.', reward: '1 цистамин (антирад), +10 репутации', isDone: (s) => s.sideQuests?.sq_berries_anna?.status === 'completed' },
+    { id: 'sq_coal_prokhor', category: 'camp', title: 'Уголь для горна', giver: 'Прохор Кузьмич', desc: 'Принести 2 металлолома для кузнечного горна.', reward: '3 мотка сталистой проволоки, 2 патрона, +15 репутации', isDone: (s) => s.sideQuests?.sq_coal_prokhor?.status === 'completed' },
+    { id: 'sq_snare_egor', category: 'camp', title: 'Силки на глухаря', giver: 'Егор Лесник', desc: 'Добыть мясо боровой дичи в проволочный силок.', reward: '2 вяленых мяса, +15 репутации', isDone: (s) => s.sideQuests?.sq_snare_egor?.status === 'completed' },
+    { id: 'sq_watch_batya', category: 'camp', title: 'Ночной дозор', giver: 'Майор Дмитрий (Батя)', desc: 'Отстоять караульную смену на смотровой вышке в ночную пору с факелом.', reward: '5 патронов, тушенка, +20 репутации', isDone: (s) => s.sideQuests?.sq_watch_batya?.status === 'completed' },
+    { id: 'sq_medkit_anna', category: 'camp', title: 'Полевая перевязка', giver: 'Анна Павловна', desc: 'Сдать 2 стерильных бинта и пучок целебных трав.', reward: 'Полное исцеление HP, +15 репутации', isDone: (s) => s.sideQuests?.sq_medkit_anna?.status === 'completed' },
+    { id: 'sq_nails_prokhor', category: 'camp', title: 'Кованые скобы', giver: 'Прохор Кузьмич', desc: 'Поработать у наковальни для укрепления ворот лагеря.', reward: 'Стальной капкан, +15 репутации', isDone: (s) => s.sideQuests?.sq_nails_prokhor?.status === 'completed' },
+    { id: 'sq_pier_egor', category: 'camp', title: 'Расчистка мостков', giver: 'Егор Лесник', desc: 'Расчистить причал Быстрянки от радиоактивного топляка.', reward: 'Земляные черви ×6, +15 репутации', isDone: (s) => s.sideQuests?.sq_pier_egor?.status === 'completed' },
+
+    // Тайны локаций (10)
+    { id: 'lq_river_container', category: 'location', title: 'Утопленный контейнер', giver: 'Река Быстрянка', desc: 'Нырнуть на стремнине у затопленной баржи за армейским термобоксом.', reward: '3 тушенки, 10 патронов, +25 репутации', isDone: (s) => s.questFlags.river_container_looted },
+    { id: 'lq_forest_wolves', category: 'location', title: 'Волчье логово в буреломе', giver: 'Ближний лесок', desc: 'Выследить и одолеть вожака стаи хищников под корнями кедра.', reward: 'Волчий клык (+5 к урону), 2 шкуры, +30 репутации', isDone: (s) => s.questFlags.wolves_defeated },
+    { id: 'lq_swamp_brdm', category: 'location', title: 'Останки группы «Север»', giver: 'Гнилая гать', desc: 'Обследовать затонувший БРДМ-2 и вернуть жетоны сержанта Гурова.', reward: 'Командирский бинокль, 8 патронов, +40 репутации', isDone: (s) => s.questFlags.brdm_reported },
+    { id: 'lq_swamp_moss', category: 'location', title: 'Светящийся сфагнум', giver: 'Гнилая гать', desc: 'Собрать образцы биолюминесцентного мха в ночную пору.', reward: 'Экстракт «Живая вода», +30 репутации', isDone: (s) => s.questFlags.glowing_moss_reported },
+    { id: 'lq_pump_drain', category: 'location', title: 'Дренаж машинного зала', giver: 'Насосная станция №4', desc: 'Открыть заклинивший донный клапан для промывки водовода.', reward: '+1 чистая вода каждое утро бесплатно!', isDone: (s) => s.pumpWaterActive },
+    { id: 'lq_pump_safe', category: 'location', title: 'Сейф инженера Кузьмина', giver: 'Насосная станция №4', desc: 'Вскрыть несгораемый стальной шкаф начальника станции.', reward: '+2.5 кг к вещмешку, 12 патронов, +35 репутации', isDone: (s) => s.questFlags.safe_reported },
+    { id: 'lq_cordon_stove', category: 'location', title: 'Тайник в печи', giver: 'Заброшенный кордон', desc: 'Разобрать кладку дымохода русской печи.', reward: '+2.5 кг к вещмешку, 6 патронов ТОЗ, +30 репутации', isDone: (s) => s.questFlags.stove_searched },
+    { id: 'lq_tower_logger', category: 'location', title: 'Самописец аварии', giver: 'Радиовышка', desc: 'Снять блок регистратора параметров радиационного выброса со шпиля.', reward: 'Архив аварии, радиодетали, +50 репутации', isDone: (s) => s.questFlags.logger_extracted },
+    { id: 'lq_hunt_boar', category: 'location', title: 'Железный вепрь-секач', giver: 'Охотничьи угодья', desc: 'Одолеть гигантского секача с закостеневшей шкурой.', reward: '4 мяса вепря, 2 толстые шкуры, +45 репутации', isDone: (s) => s.questFlags.boar_defeated },
+    { id: 'lq_bunker_bio4', category: 'location', title: 'Спецхран «Био-4»', giver: 'Бункер НИИ «Сфера»', desc: 'Вскрыть криогенный бокс и забрать армейский стимулятор.', reward: '«Стимулятор-М» (+25 постоянной энергии!), +60 репутации', isDone: (s) => s.questFlags.bio4_cleared },
+
+    // Сюжетные цепочки и персонажи
+    { id: 'chain_dog', category: 'story', title: 'Друг тайги — Лайка Буран', giver: 'Лес / Егор', desc: 'Спасти раненого щенка из капкана и вырастить боевого компаньона.', reward: 'Верный пёс Буран: +25% урона, утренние подарки', isDone: (s) => s.hasDog },
+    { id: 'chain_geo', category: 'story', title: 'Геологоразведка «Енисей-3»', giver: 'Триангулятор / Скважина №7', desc: 'Раскрыть тайну предвоенного бурения и найти аномальный минерал.', reward: 'Компас «Енисей»: -5 энергии на все вылазки', isDone: (s) => s.hasGeoCompass },
+    { id: 'chain_caravan', category: 'story', title: 'Эхо чёрного каравана', giver: 'Река / Штольня', desc: 'Выследить схрон мародёров «Хлыща» и вернуть украденное.', reward: 'Прицел ТОЗ (+30% крит), 25 патронов, +50 репутации', isDone: (s) => s.questFlags.caravan_completed },
+    { id: 'spiridon_line', category: 'npc', title: 'Таёжное знахарство Спиридона', giver: 'Дед Спиридон (Болота)', desc: 'Освоить древние рецепты настоек староверов.', reward: 'Крафт «Спиридоновки», Дегтярного бальзама и Ока рыси', isDone: (s) => s.sideQuests?.spiridon_mushrooms?.status === 'completed' },
+    { id: 'sasha_line', category: 'npc', title: 'Радиопост Саши Связиста', giver: 'Саша Связист (Вышка)', desc: 'Спасти радиста и восстановить приемник Р-326.', reward: 'Ежедневный радиопеленг контейнеров, крафт ДП-5 и фонаря', isDone: (s) => s.questFlags.met_sasha }
+  ];
+
   const MAIN_QUESTS = [
     // Акт I: Прибытие и Выживание (1-5)
     {
@@ -3063,6 +4435,65 @@ const Game = (() => {
         `;
         area.appendChild(card);
       });
+        } else if (state.questView === 'side') {
+      const completedCount = SIDE_QUESTS.filter(q => q.isDone(state)).length;
+      const progressPct = Math.round((completedCount / SIDE_QUESTS.length) * 100);
+
+      const headerDiv = document.createElement('div');
+      headerDiv.className = 'quest-campaign-header';
+      headerDiv.style.cssText = 'background:var(--bg-card); border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; margin-bottom:12px;';
+      headerDiv.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-weight:700; font-size:13px; color:var(--accent-gold);">📜 Дополнительные задания и тайны Зоны</span>
+          <span style="font-weight:700; font-size:12px; color:var(--text-main);">${completedCount} / ${SIDE_QUESTS.length} (${progressPct}%)</span>
+        </div>
+        <div style="background:rgba(0,0,0,0.4); border-radius:4px; height:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.08);">
+          <div style="background:linear-gradient(90deg, #3498db, var(--accent-green)); height:100%; width:${progressPct}%; transition:width 0.3s ease;"></div>
+        </div>
+        <div style="font-size:11px; color:var(--text-dim); margin-top:6px;">
+          Поручения лагеря, исследования отдалённых локаций, цепочки историй и союзники.
+        </div>
+      `;
+      area.appendChild(headerDiv);
+
+      const categories = [
+        { id: 'camp', name: '⛺ Поручения жителей лагеря' },
+        { id: 'location', name: '🗺️ Тайны открытых локаций' },
+        { id: 'story', name: '📖 Сюжетные цепочки историй' },
+        { id: 'npc', name: '🤝 Союзники и новые механики' }
+      ];
+
+      categories.forEach(cat => {
+        const catQuests = SIDE_QUESTS.filter(q => q.category === cat.id);
+        const catCompleted = catQuests.filter(q => q.isDone(state)).length;
+
+        const catTitle = document.createElement('div');
+        catTitle.style.cssText = 'font-family:Russo One,sans-serif; font-size:12px; color:var(--accent-gold); margin:12px 0 6px 2px; display:flex; justify-content:space-between;';
+        catTitle.innerHTML = `<span>${cat.name}</span> <span style="font-size:11px; color:var(--text-dim);">${catCompleted} / ${catQuests.length}</span>`;
+        area.appendChild(catTitle);
+
+        catQuests.forEach(q => {
+          const isCompleted = q.isDone(state);
+          const card = document.createElement('div');
+          card.className = `quest-item-card ${isCompleted ? 'completed' : ''}`;
+          card.style.cssText = `border-left: 3px solid ${isCompleted ? 'var(--accent-green)' : 'var(--accent-blue)'}; margin-bottom:8px;`;
+          card.innerHTML = `
+            <div class="quest-title-row" style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:700; font-size:13px; color:${isCompleted ? 'var(--accent-green)' : 'var(--text-main)'};">${q.title}</span>
+              <span style="font-size:11px; font-weight:700; color:${isCompleted ? 'var(--accent-green)' : 'var(--accent-gold)'};">
+                ${isCompleted ? '✓ Выполнено' : '⏳ Доступно'}
+              </span>
+            </div>
+            <div style="font-size:11px; color:var(--accent-blue); margin:2px 0 4px;">Квестодатель: <b>${q.giver}</b></div>
+            <p class="quest-desc" style="font-size:12px; margin-bottom:6px;">${q.desc}</p>
+            <div style="font-size:11px; color:var(--accent-gold); background:rgba(0,0,0,0.25); padding:4px 8px; border-radius:4px;">
+              🎁 Награда: ${q.reward}
+            </div>
+          `;
+          area.appendChild(card);
+        });
+      });
+
     } else if (state.questView === 'daily') {
       if (!state.dailyQuests || state.dailyQuests.length === 0) {
         area.innerHTML = `
@@ -3348,6 +4779,14 @@ const Game = (() => {
           parsed.questFlags.reactor_shutdown = true;
           parsed.questFlags.bunker_completed = true;
         }
+        parsed.maxEnergy = parsed.maxEnergy || 100;
+        parsed.sideQuests = Object.assign({}, INITIAL_STATE.sideQuests, parsed.sideQuests || {});
+        if (parsed.hasDog === undefined) parsed.hasDog = false;
+        if (parsed.pumpWaterActive === undefined) parsed.pumpWaterActive = false;
+        if (parsed.hasGeoCompass === undefined) parsed.hasGeoCompass = false;
+        if (parsed.hasGeiger === undefined) parsed.hasGeiger = false;
+        if (parsed.hasElectricTorch === undefined) parsed.hasElectricTorch = false;
+        if (parsed.hasTozScope === undefined) parsed.hasTozScope = false;
         if (parsed.introSeen === undefined) {
           parsed.introSeen = (parsed.mainQuestStep > 0 || parsed.day > 1);
         }
