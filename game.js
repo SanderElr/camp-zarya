@@ -8,7 +8,7 @@ const Game = (() => {
   const ITEMS = {
     clean_water: { id: 'clean_water', name: 'Чистая вода', type: 'food', icon: 'assets/images/bottled_water.png', weight: 0.5, desc: 'Кипячёная чистая вода в армейской фляге.', thirst: 45, rad: 0 },
     raw_water: { id: 'raw_water', name: 'Речная вода', type: 'food', icon: 'assets/images/polluted_water.png', weight: 0.5, desc: 'Мутная вода из реки Быстрянки. Опасно пить сырой!', thirst: 30, rad: 12 },
-    raw_fish: { id: 'raw_fish', name: 'Сырая рыба', type: 'food', icon: 'assets/images/fish_corpse.png?v=2.3', weight: 0.4, desc: 'Свежепойманная речная рыба. Зубастый таёжный хищник. Лучше зажарить на костре.', hunger: 15, rad: 8 },
+    raw_fish: { id: 'raw_fish', name: 'Сырая рыба', type: 'food', icon: 'assets/images/fresh_fish.png', weight: 0.4, desc: 'Свежепойманная речная рыба. Лучше зажарить на костре.', hunger: 15, rad: 8 },
     cooked_fish: { id: 'cooked_fish', name: 'Жареная рыба', type: 'food', icon: 'assets/images/fried_fish.png', weight: 0.3, desc: 'Аппетитная рыба с хрустящей корочкой, запечённая на углях.', hunger: 45, rad: 0 },
     fish_soup: { id: 'fish_soup', name: 'Уха таёжная', type: 'food', icon: 'assets/images/rich_soup.png', weight: 0.6, desc: 'Наваристая горячая уха с травами. Согревает и насыщает.', hunger: 60, thirst: 35, energy: 25 },
     raw_meat: { id: 'raw_meat', name: 'Сырое мясо', type: 'food', icon: 'assets/images/fresh_meat.png', weight: 0.6, desc: 'Свежая дичь. Сырой есть нельзя — риск паразитов.', hunger: 20, rad: 10 },
@@ -514,6 +514,10 @@ met_spiridon: false,
   function init() {
     initAudio();
     loadSavedState();
+    try {
+      const savedBg = localStorage.getItem('camp_bg_theme') || 'camp';
+      applyBgTheme(savedBg);
+    } catch(e) {}
     generateDailyQuestsIfNeeded();
     updateHUD();
     renderNPCs();
@@ -4907,8 +4911,8 @@ met_spiridon: false,
         }
       },
       {
-        text: '📱 Как запускать игру на телефоне',
-        action: () => showMobileHelp()
+        text: '🖼️ Фоновая атмосфера: выбор фона',
+        action: () => showBackgroundPickerModal()
       },
       {
         text: '🔄 Начать игру заново (Сбросить прогресс)',
@@ -4945,16 +4949,40 @@ met_spiridon: false,
     openModal(title, sub, 'assets/images/cabin.png', body, actions);
   }
 
-  function showMobileHelp() {
-    const title = '📱 ИГРА НА ТЕЛЕФОНЕ';
-    const sub = 'Как играть без проводов';
-    const body = `
-      <div style="font-size:12px; line-height:1.5;">
-        <p><b>1. Домашний Wi-Fi (самый быстрый способ):</b><br>
-        Запустите на ПК файл <code>start_mobile.bat</code>. Подключите телефон к тому же Wi-Fi и введите в браузере адрес <code>http://192.168.1.91:8080</code>.</p>
-        <p><b>2. GitHub Pages (вечная ссылка в интернет):</b><br>
-        Выложите репозиторий на GitHub и включите Pages — игра станет доступна через мобильный интернет отовсюду.</p>
-        <p style="color:var(--accent-gold); margin-top:6px;">💡 В браузере телефона нажмите <b>«Добавить на главный экран»</b>, чтобы играть во весь экран как в приложении!</p>
+  const BG_THEMES = [
+    { id: 'camp', name: '🏕️ Лагерь «Заря» (Атмосфера общины)', desc: 'Панорама лагеря выживших с бревенчатыми постройками и костром' },
+    { id: 'fog', name: '🌲 Таёжный туман (Утренняя мгла)', desc: 'Хвойная глухая тайга, скрытая радиационным туманом' },
+    { id: 'winter', name: '❄️ Зимняя тайга (Суровый мороз)', desc: 'Заснеженные сопки и ледяной сибирский бурелом' },
+    { id: 'map', name: '🗺️ Топографическая карта Зоны', desc: 'Военная топокарта с изолиниями и секторами катастрофы' },
+    { id: 'none', name: '⬛ Строгий тёмный (Без текстур)', desc: 'Классический минималистичный тёмный интерфейс' }
+  ];
+
+  function applyBgTheme(themeId) {
+    const valid = BG_THEMES.find(t => t.id === themeId) ? themeId : 'camp';
+    document.body.setAttribute('data-bg-theme', valid);
+    try {
+      localStorage.setItem('camp_bg_theme', valid);
+    } catch(e) {}
+  }
+
+  function showBackgroundPickerModal() {
+    const currentTheme = document.body.getAttribute('data-bg-theme') || 'camp';
+    const title = '🖼️ АТМОСФЕРНЫЕ ФОНЫ';
+    const sub = 'Выбор фонового оформления игры';
+    let body = `
+      <p style="font-size:12px; color:var(--text-dim); margin-bottom:10px;">
+        Выберите фоновую текстуру для погружения в атмосферу края:
+      </p>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        ${BG_THEMES.map(t => `
+          <div style="background:${t.id === currentTheme ? 'rgba(255, 190, 34, 0.12)' : 'rgba(0,0,0,0.3)'}; border:1px solid ${t.id === currentTheme ? 'var(--accent-gold)' : 'var(--border-dim)'}; border-radius:6px; padding:8px 10px; cursor:pointer;" onclick="Game.setBgTheme('${t.id}')">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:bold; font-size:12px; color:${t.id === currentTheme ? 'var(--accent-gold)' : 'var(--text-main)'};">${t.name}</span>
+              ${t.id === currentTheme ? '<span style="font-size:11px; color:var(--accent-gold); font-weight:bold;">✓ Выбран</span>' : ''}
+            </div>
+            <p style="font-size:11px; color:var(--text-dim); margin:2px 0 0;">${t.desc}</p>
+          </div>
+        `).join('')}
       </div>
     `;
     const actions = [
@@ -4964,6 +4992,12 @@ met_spiridon: false,
       }
     ];
     openModal(title, sub, 'assets/images/cabin.png', body, actions);
+  }
+
+  function setBgTheme(themeId) {
+    applyBgTheme(themeId);
+    toast('🖼️ Тема оформления обновлена!');
+    showBackgroundPickerModal();
   }
 
   // --- ТОСТ-УВЕДОМЛЕНИЯ ---
@@ -5160,7 +5194,9 @@ met_spiridon: false,
     setMusicFromIntro,
     startGameFromIntro,
     talkToNPC,
-    turnInDailyQuest
+    turnInDailyQuest,
+    setBgTheme,
+    applyBgTheme
   };
 
 })();

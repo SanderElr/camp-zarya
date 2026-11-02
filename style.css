@@ -66,6 +66,59 @@ html, body {
   display: flex;
   justify-content: center;
   overflow: hidden;
+  transition: background 0.3s ease;
+}
+
+/* ==========================================================================
+   АТМОСФЕРНЫЕ ФОНЫ И ТЕКСТУРЫ (ПОСТАПОКАЛИПТИЧЕСКАЯ ТАЙГА)
+   ========================================================================== */
+
+/* Тема по умолчанию: 🏕️ Лагерь «Заря» */
+body, body[data-bg-theme="camp"] {
+  background: radial-gradient(circle at center, rgba(14, 18, 15, 0.72) 0%, rgba(6, 8, 7, 0.96) 100%),
+              url('assets/images/backgrounds/camp_main.jpg') center/cover no-repeat fixed;
+}
+body[data-bg-theme="camp"] .game-container {
+  background: linear-gradient(180deg, rgba(20, 25, 22, 0.88) 0%, rgba(15, 18, 16, 0.95) 100%),
+              url('assets/images/backgrounds/camp_alt.jpg') center/cover no-repeat;
+}
+
+/* Тема: 🌲 Таёжный туман */
+body[data-bg-theme="fog"] {
+  background: radial-gradient(circle at center, rgba(14, 18, 15, 0.72) 0%, rgba(6, 8, 7, 0.96) 100%),
+              url('assets/images/backgrounds/taiga_fog.jpg') center/cover no-repeat fixed;
+}
+body[data-bg-theme="fog"] .game-container {
+  background: linear-gradient(180deg, rgba(20, 25, 22, 0.88) 0%, rgba(15, 18, 16, 0.95) 100%),
+              url('assets/images/backgrounds/taiga_fog.jpg') center/cover no-repeat;
+}
+
+/* Тема: ❄️ Зимняя тайга */
+body[data-bg-theme="winter"] {
+  background: radial-gradient(circle at center, rgba(14, 18, 16, 0.72) 0%, rgba(6, 9, 8, 0.96) 100%),
+              url('assets/images/backgrounds/taiga_winter.jpg') center/cover no-repeat fixed;
+}
+body[data-bg-theme="winter"] .game-container {
+  background: linear-gradient(180deg, rgba(20, 25, 22, 0.88) 0%, rgba(15, 18, 16, 0.95) 100%),
+              url('assets/images/backgrounds/taiga_winter.jpg') center/cover no-repeat;
+}
+
+/* Тема: 🗺️ Топографическая карта Зоны */
+body[data-bg-theme="map"] {
+  background: radial-gradient(circle at center, rgba(14, 18, 16, 0.72) 0%, rgba(6, 8, 7, 0.96) 100%),
+              url('assets/images/backgrounds/map_topo.jpg') center/cover no-repeat fixed;
+}
+body[data-bg-theme="map"] .game-container {
+  background: linear-gradient(180deg, rgba(20, 25, 22, 0.90) 0%, rgba(15, 18, 16, 0.96) 100%),
+              url('assets/images/backgrounds/map_topo.jpg') center/cover no-repeat;
+}
+
+/* Тема: ⬛ Строгий тёмный (без текстур) */
+body[data-bg-theme="none"] {
+  background: var(--bg-deep) !important;
+}
+body[data-bg-theme="none"] .game-container {
+  background: var(--bg-panel) !important;
 }
 
 .pixel-art {
@@ -86,6 +139,7 @@ html, body {
   border-right: 1px solid var(--border-dim);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 0 35px rgba(0,0,0,0.8);
 }
 
 /* ==========================================================================
@@ -260,13 +314,15 @@ html, body {
 }
 
 .location-banner {
-  background: var(--bg-card);
-  border: 1px solid var(--border-dim);
+  background: linear-gradient(180deg, rgba(25, 31, 27, 0.72) 0%, rgba(17, 21, 18, 0.92) 100%),
+              url('assets/images/backgrounds/camp_main.jpg') center/cover no-repeat;
+  border: 1px solid var(--border-accent);
   border-radius: 8px;
-  padding: 10px;
+  padding: 12px 14px;
   display: flex;
   align-items: center;
   gap: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 .loc-img {
   width: 56px;
@@ -556,6 +612,12 @@ html, body {
    ========================================================================== */
 .craft-header-bar {
   margin-bottom: 10px;
+  background: linear-gradient(180deg, rgba(30, 24, 20, 0.78) 0%, rgba(18, 15, 13, 0.94) 100%),
+              url('assets/images/backgrounds/workshop.jpg') center/cover no-repeat;
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 .craft-header-bar h2 {
   font-family: 'Russo One', sans-serif;
@@ -741,7 +803,8 @@ html, body {
 .modal-window {
   width: 100%;
   max-width: 600px;
-  background: var(--bg-panel);
+  background: linear-gradient(180deg, rgba(27, 33, 29, 0.96) 0%, rgba(18, 22, 19, 0.98) 100%),
+              url('assets/images/backgrounds/camp_alt.jpg') center/cover no-repeat;
   border-top: 2px solid var(--border-accent);
   border-radius: 12px 12px 0 0;
   padding: 14px;
@@ -749,6 +812,7 @@ html, body {
   display: flex;
   flex-direction: column;
   animation: slideUp 0.2s ease-out;
+  box-shadow: 0 -4px 25px rgba(0,0,0,0.8);
 }
 @keyframes slideUp {
   from { transform: translateY(100%); }
@@ -998,7 +1062,8 @@ html, body {
   display: none;
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(10, 12, 11, 0.96);
+  background: radial-gradient(circle at center, rgba(16, 22, 18, 0.88) 0%, rgba(8, 10, 9, 0.98) 100%),
+              url('assets/images/backgrounds/intro_bg.jpg') center/cover no-repeat;
   backdrop-filter: blur(6px);
   z-index: 2000;
   justify-content: center;
@@ -1016,7 +1081,8 @@ html, body {
 .intro-modal {
   width: 100%;
   max-width: 580px;
-  background: var(--bg-panel);
+  background: linear-gradient(180deg, rgba(27, 33, 29, 0.96) 0%, rgba(16, 20, 17, 0.98) 100%),
+              url('assets/images/backgrounds/intro_bg.jpg') center/cover no-repeat;
   border: 2px solid var(--border-accent);
   border-radius: 10px;
   padding: 16px 14px;
