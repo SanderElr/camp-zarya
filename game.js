@@ -3108,6 +3108,10 @@ met_spiridon: false,
 
       if (isUnlocked) {
         item.onclick = () => openLocationModal(loc);
+      } else {
+        item.onclick = () => {
+          toast(`Локация закрыта! Требуется: ${loc.reqRep ? `репутация ${loc.reqRep}+` : 'продвижение по сюжету'}.`, 'warning');
+        };
       }
       grid.appendChild(item);
     });
@@ -4699,15 +4703,35 @@ met_spiridon: false,
   }
 
   // --- ТОСТ-УВЕДОМЛЕНИЯ ---
-  function toast(message) {
+  function toast(message, type = 'auto') {
     const container = document.getElementById('toastLog');
+    if (!container) return;
     const toastEl = document.createElement('div');
-    toastEl.className = 'toast-msg';
-    toastEl.textContent = message;
+
+    const isWarning = type === 'warning' || (type === 'auto' && /недостаточно|слишком|не хватает|заперт|закрыт|требуется|ранен|гибель|яд|опасн|самоубийство|отсутствует|нужен|нужно|⚠️|❌|⛔|🔒/i.test(message));
+    const isSuccess = type === 'success' || (type === 'auto' && /выполнен|завершен|получен|наград|добыт|побежд|открыт|запущен|починен|спасен|найден|⭐|🏆|🎉|✓/i.test(message));
+
+    let prefix = '';
+    if (isWarning && !message.startsWith('⚠️') && !message.startsWith('❌') && !message.startsWith('🔒') && !message.startsWith('⛔')) {
+      prefix = '⚠️ ';
+    }
+
+    toastEl.className = `toast-msg ${isWarning ? 'toast-warning' : (isSuccess ? 'toast-success' : '')}`;
+    toastEl.textContent = prefix + message;
+
+    if (isWarning) {
+      sfx.init();
+      sfx.playDanger();
+    }
+
+    toastEl.onclick = () => {
+      if (toastEl.parentNode) toastEl.parentNode.removeChild(toastEl);
+    };
+
     container.appendChild(toastEl);
     setTimeout(() => {
       if (toastEl.parentNode) toastEl.parentNode.removeChild(toastEl);
-    }, 2500);
+    }, 2800);
   }
 
   // --- СОХРАНЕНИЕ И СБРОС ---
