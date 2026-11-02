@@ -177,19 +177,19 @@ const Game = (() => {
   // --- НПС ЛАГЕРЯ ---
   const NPCS = {
     batya: {
-      id: 'batya', name: 'Майор Дмитрий (Батя)', role: 'Комендант лагеря', avatar: 'assets/images/npc_leader.png',
+      id: 'batya', name: 'Майор Дмитрий (Батя)', role: 'Комендант лагеря', avatar: 'assets/images/npc_leader.png?v=2.1',
       desc: 'Руководит обороной лагеря и распределением припасов. Бывший военный.'
     },
     anna: {
-      id: 'anna', name: 'Анна Павловна', role: 'Фельдшер-травница', avatar: 'assets/images/npc_default_woman.png',
+      id: 'anna', name: 'Анна Павловна', role: 'Фельдшер-травница', avatar: 'assets/images/npc_default_woman.png?v=2.1',
       desc: 'Лечит раненых, готовит настойки и скупает таёжные травы.'
     },
     prokhor: {
-      id: 'prokhor', name: 'Прохор Кузьмич', role: 'Механик лагеря', avatar: 'assets/images/npc_engineer.png',
+      id: 'prokhor', name: 'Прохор Кузьмич', role: 'Механик лагеря', avatar: 'assets/images/npc_engineer.png?v=2.1',
       desc: 'Заведует верстаком. Из консервной банки и проволоки соберет капкан.'
     },
     egor: {
-      id: 'egor', name: 'Егор Лесник', role: 'Охотник и следопыт', avatar: 'assets/images/npc_def_male.png',
+      id: 'egor', name: 'Егор Лесник', role: 'Охотник и следопыт', avatar: 'assets/images/npc_def_male.png?v=2.1',
       desc: 'Знает каждый овраг в тайге. Учит ловить рыбу и ставить силки.'
     }
   };
