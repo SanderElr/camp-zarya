@@ -189,7 +189,7 @@ const Game = (() => {
       desc: 'Заведует верстаком. Из консервной банки и проволоки соберет капкан.'
     },
     egor: {
-      id: 'egor', name: 'Егор Лесник', role: 'Охотник и следопыт', avatar: 'assets/images/npc_spiridon.png',
+      id: 'egor', name: 'Егор Лесник', role: 'Охотник и следопыт', avatar: 'assets/images/npc_def_male.png',
       desc: 'Знает каждый овраг в тайге. Учит ловить рыбу и ставить силки.'
     }
   };
