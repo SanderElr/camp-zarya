@@ -52,13 +52,17 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-body {
+html, body {
   background-color: var(--bg-deep);
   color: var(--text-main);
   font-family: 'FreeMono', monospace;
   font-size: 14px;
   line-height: 1.5;
+  height: 100%;
   height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
   display: flex;
   justify-content: center;
   overflow: hidden;
@@ -72,7 +76,9 @@ body {
 .game-container {
   width: 100%;
   max-width: 600px;
+  height: 100%;
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   background-color: var(--bg-panel);
@@ -192,8 +198,9 @@ body {
 .main-content {
   flex: 1;
   overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
   padding: 10px;
-  padding-bottom: 75px; /* Запас под нижнее меню */
+  padding-bottom: 20px;
 }
 .main-content::-webkit-scrollbar {
   width: 4px;
@@ -681,7 +688,8 @@ body {
 .modal-overlay {
   display: none;
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0; left: 0; right: 0;
+  bottom: var(--nav-height); /* Не закрывает нижнюю панель вкладок! */
   background: rgba(0,0,0,0.85);
   backdrop-filter: blur(2px);
   z-index: 100;
@@ -843,58 +851,69 @@ body {
    НИЖНЯЯ НАВИГАЦИОННАЯ ПАНЕЛЬ (ТАБЫ)
    ========================================================================== */
 .bottom-nav {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: relative;
+  flex-shrink: 0;
   height: var(--nav-height);
   background: #141815;
   border-top: 1px solid var(--border-dim);
   display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 2px 4px;
-  z-index: 20;
+  justify-content: space-between;
+  align-items: stretch;
+  padding: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  z-index: 120;
+  box-shadow: 0 -3px 12px rgba(0,0,0,0.6);
+  width: 100%;
 }
 
 .nav-btn {
-  flex: 1;
+  flex: 1 1 0;
+  min-width: 0;
   background: transparent;
   border: none;
   color: var(--text-dim);
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 2px;
-  padding: 6px 0;
+  padding: 4px 1px;
   cursor: pointer;
   position: relative;
   transition: all 0.12s;
 }
 .nav-btn:hover, .nav-btn:active {
   color: var(--text-main);
+  background: rgba(255, 255, 255, 0.04);
 }
 .nav-btn.active {
   color: var(--accent-ember);
+  background: rgba(255, 119, 34, 0.08);
 }
 .nav-icon {
-  font-size: 18px;
+  font-size: 17px;
+  line-height: 1;
 }
 .nav-label {
   font-family: 'Russo One', sans-serif;
-  font-size: 10px;
-  letter-spacing: 0.5px;
+  font-size: 9.5px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 }
 .nav-badge {
   position: absolute;
-  top: 4px;
-  right: calc(50% - 16px);
+  top: 3px;
+  right: calc(50% - 15px);
   background: var(--accent-danger);
   color: #fff;
-  font-size: 9px;
+  font-size: 8.5px;
   font-family: 'Russo One', sans-serif;
   padding: 1px 4px;
   border-radius: 8px;
+  line-height: 1;
 }
 
 .quest-item-card.active-quest {

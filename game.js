@@ -786,7 +786,6 @@ const Game = (() => {
             saveState();
             renderQuests();
             closeModal();
-            setTimeout(() => talkBatya(), 300);
           },
           primary: true
         });
@@ -806,7 +805,6 @@ const Game = (() => {
             saveState();
             renderQuests();
             closeModal();
-            setTimeout(() => talkBatya(), 300);
           }
         });
       }
@@ -832,7 +830,6 @@ const Game = (() => {
             saveState();
             renderQuests();
             closeModal();
-            setTimeout(() => talkBatya(), 300);
           },
           primary: true
         });
@@ -884,7 +881,6 @@ const Game = (() => {
             renderLocations();
             renderQuests();
             closeModal();
-            setTimeout(() => talkBatya(), 300);
           },
           primary: true
         });
@@ -961,7 +957,6 @@ const Game = (() => {
             saveState();
             renderQuests();
             closeModal();
-            setTimeout(() => talkBatya(), 300);
           },
           primary: true
         });
@@ -1004,7 +999,6 @@ const Game = (() => {
             saveState();
             renderQuests();
             closeModal();
-            setTimeout(() => talkBatya(), 300);
           },
           primary: true
         });
@@ -1066,7 +1060,6 @@ const Game = (() => {
             saveState();
             renderQuests();
             closeModal();
-            setTimeout(() => talkBatya(), 300);
           },
           primary: true
         });
@@ -1109,7 +1102,6 @@ const Game = (() => {
             renderLocations();
             renderQuests();
             closeModal();
-            setTimeout(() => talkBatya(), 300);
           },
           primary: true
         });
@@ -1149,7 +1141,6 @@ const Game = (() => {
             renderLocations();
             renderQuests();
             closeModal();
-            setTimeout(() => talkBatya(), 300);
           },
           primary: true
         });
@@ -1185,7 +1176,6 @@ const Game = (() => {
             saveState();
             renderQuests();
             closeModal();
-            setTimeout(() => talkBatya(), 300);
           },
           primary: true
         });
@@ -1222,7 +1212,6 @@ const Game = (() => {
             saveState();
             renderQuests();
             closeModal();
-            setTimeout(() => talkBatya(), 300);
           },
           primary: true
         });
@@ -1272,7 +1261,6 @@ const Game = (() => {
             saveState();
             renderQuests();
             closeModal();
-            setTimeout(() => talkBatya(), 300);
           },
           primary: true
         });
@@ -1310,7 +1298,6 @@ const Game = (() => {
             saveState();
             renderQuests();
             closeModal();
-            setTimeout(() => talkBatya(), 300);
           },
           primary: true
         });
@@ -1402,7 +1389,6 @@ const Game = (() => {
             saveState();
             renderQuests();
             closeModal();
-            setTimeout(() => talkAnna(), 300);
           },
           primary: true
         });
@@ -1436,7 +1422,6 @@ const Game = (() => {
             saveState();
             renderQuests();
             closeModal();
-            setTimeout(() => talkAnna(), 300);
           },
           primary: true
         });
@@ -1474,7 +1459,6 @@ const Game = (() => {
             renderLocations();
             renderQuests();
             closeModal();
-            setTimeout(() => talkAnna(), 300);
           },
           primary: true
         });
@@ -1589,7 +1573,6 @@ const Game = (() => {
           renderLocations();
           renderQuests();
           closeModal();
-          setTimeout(() => talkBatya(), 300);
         },
         primary: true
       });
@@ -1703,7 +1686,6 @@ const Game = (() => {
             saveState();
             renderQuests();
             closeModal();
-            setTimeout(() => talkEgor(), 300);
           },
           primary: true
         });
@@ -1736,7 +1718,6 @@ const Game = (() => {
             saveState();
             renderQuests();
             closeModal();
-            setTimeout(() => talkEgor(), 300);
           },
           primary: true
         });
@@ -3088,6 +3069,7 @@ const Game = (() => {
   function switchTab(tabId) {
     sfx.init();
     sfx.playClick();
+    closeModal();
     document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
     document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
 
@@ -3377,7 +3359,6 @@ const Game = (() => {
 
     toast('🏕️ Вы прибыли в лагерь «Заря»! Поговорите с Батей в штабе.');
     if (state.mainQuestStep === 0) {
-      setTimeout(() => talkToNPC('batya'), 350);
     }
   }
 
