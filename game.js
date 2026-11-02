@@ -127,37 +127,44 @@ const Game = (() => {
     {
       id: 'craft_stalker_suit', station: 'bench', name: 'Сшить броню сталкера', icon: 'assets/images/combined_armor.png',
       cost: { bear_pelt: 1, scrap: 3, wire: 2 }, result: { stalker_suit: 1 }, energy: 25, timeMin: 60,
-      desc: 'Укреплённый костюм. Навсегда увеличивает вместимость рюкзака до 30 кг.'
+      desc: 'Укреплённый костюм. Навсегда увеличивает вместимость рюкзака до 30 кг.',
+      unlocked: (s) => s.mainQuestStep >= 15 || !!s.questFlags?.suit_crafted
     },
     {
       id: 'craft_respirator', station: 'bench', name: 'Собрать респиратор Р-2', icon: 'assets/images/respirator.png',
       cost: { swamp_moss: 2, herbs: 1, wire: 1 }, result: { respirator: 1 }, energy: 15, timeMin: 30,
-      desc: 'Защищает лёгкие от радиоактивного тумана и ядовитых газов Бункера.'
+      desc: 'Защищает лёгкие от радиоактивного тумана и ядовитых газов Бункера.',
+      unlocked: (s) => s.mainQuestStep >= 16 || !!s.questFlags?.respirator_crafted
     },
     {
       id: 'brew_spiridon_vodka', station: 'fire', name: 'Сварить настойку «Спиридоновка»', icon: 'assets/images/hw_potion.png',
       cost: { amanita: 1, alcohol: 1, clean_water: 1 }, result: { spiridon_vodka: 1 }, energy: 5, timeMin: 20,
-      desc: 'Ядрёное снадобье староверов. Мгновенно даёт +40% энергии и прогоняет сонливость.'
+      desc: 'Ядрёное снадобье староверов. Мгновенно даёт +40% энергии и прогоняет сонливость.',
+      unlocked: (s) => s.sideQuests?.spiridon_mushrooms?.status === 'completed'
     },
     {
       id: 'brew_tar_salve', station: 'fire', name: 'Сварить дегтярный бальзам', icon: 'assets/images/hw_potion.png',
       cost: { swamp_moss: 1, firewood: 1, herbs: 1 }, result: { tar_salve: 1 }, energy: 5, timeMin: 20,
-      desc: 'Смолистая мазь от рваных ран (+40 HP). Защищает от укусов хищников и снижает урон на 3 вылазки.'
+      desc: 'Смолистая мазь от рваных ран (+40 HP). Защищает от укусов хищников и снижает урон на 3 вылазки.',
+      unlocked: (s) => s.sideQuests?.spiridon_mushrooms?.status === 'completed'
     },
     {
       id: 'brew_lynx_eye', station: 'fire', name: 'Сварить эликсир «Око рыси»', icon: 'assets/images/hw_potion.png',
       cost: { berries: 2, herbs: 1, clean_water: 1 }, result: { lynx_eye: 1 }, energy: 5, timeMin: 15,
-      desc: 'Таёжный отвар обостряет зрение во тьме: ночные вылазки проходят без штрафов к энергии!'
+      desc: 'Таёжный отвар обостряет зрение во тьме: ночные вылазки проходят без штрафов к энергии!',
+      unlocked: (s) => s.sideQuests?.spiridon_mushrooms?.status === 'completed'
     },
     {
       id: 'craft_geiger', station: 'bench', name: 'Собрать Счётчик Гейгера ДП-5', icon: 'assets/images/geiger_counter.png',
       cost: { scrap: 2, wire: 2, batteryaaa: 1 }, result: { geiger_counter: 1 }, energy: 10, timeMin: 30,
-      desc: 'Армейский дозиметр. Пассивно снижает накопление радиации на 30% во всех вылазках!'
+      desc: 'Армейский дозиметр. Пассивно снижает накопление радиации на 30% во всех вылазках!',
+      unlocked: (s) => !!s.questFlags?.met_sasha
     },
     {
       id: 'craft_electric_torch', station: 'bench', name: 'Собрать полевой электрофонарь', icon: 'assets/images/electric_torch.png?v=2.3',
       cost: { wire: 1, batteryaaa: 1, scrap: 1 }, result: { electric_torch: 1 }, energy: 5, timeMin: 15,
-      desc: 'Электрический фонарь с вечным светодиодом. Освещает ночной путь без расхода дров.'
+      desc: 'Электрический фонарь с вечным светодиодом. Освещает ночной путь без расхода дров.',
+      unlocked: (s) => !!s.questFlags?.met_sasha
     }
   ];
 
@@ -2634,7 +2641,7 @@ met_spiridon: false,
             state.sideQuests.spiridon_mushrooms.status = 'completed';
             addItem('spiridon_vodka', 2);
             state.reputation += 30;
-            toast('⭐ Дед Спиридон сварил первую партию «Спиридоновки» (+2 настойки, +30 репутации)!');
+            toast('⭐ Дед Спиридон сварил первую партию «Спиридоновки» и обучил вас рецептам (+2 настойки, +30 репутации)! Теперь их можно варить на костре лагеря.');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -2660,79 +2667,83 @@ met_spiridon: false,
       });
     }
 
-    // Рецепты алхимии Спиридона
-    actions.push(
-      {
-        text: '🧪 Сварить «Спиридоновку» (1 мухомор, 1 спирт, 1 чистая вода)',
-        action: () => {
-          if (getItemCount('amanita') >= 1 && getItemCount('alcohol') >= 1 && getItemCount('clean_water') >= 1) {
-            removeItem('amanita', 1);
-            removeItem('alcohol', 1);
-            removeItem('clean_water', 1);
-            addItem('spiridon_vodka', 1);
-            toast('🧪 Сварен флакон крепкой «Спиридоновки» (+40 энергии при приеме)!');
-            sfx.playSuccess();
-            updateHUD();
-            saveState();
-            talkSpiridon();
-          } else {
-            toast('Нужно: 1 мухомор, 1 спирт и 1 чистая вода.');
+    // Рецепты алхимии Спиридона (доступны только после завершения обучения и сдачи мухоморов)
+    if (state.sideQuests?.spiridon_mushrooms?.status === 'completed') {
+      body += `<p style="color:var(--accent-green); font-size:12px;"><b>[ТАЙНЫ СТАРОВЕРОВ]:</b> <i>«Теперь ты посвящен в знахарство. Можешь готовить снадобья прямо здесь или у костра в лагере.»</i></p>`;
+      actions.push(
+        {
+          text: '🧪 Сварить «Спиридоновку» (1 мухомор, 1 спирт, 1 чистая вода)',
+          action: () => {
+            if (getItemCount('amanita') >= 1 && getItemCount('alcohol') >= 1 && getItemCount('clean_water') >= 1) {
+              removeItem('amanita', 1);
+              removeItem('alcohol', 1);
+              removeItem('clean_water', 1);
+              addItem('spiridon_vodka', 1);
+              toast('🧪 Сварен флакон крепкой «Спиридоновки» (+40 энергии при приеме)!');
+              sfx.playSuccess();
+              updateHUD();
+              saveState();
+              talkSpiridon();
+            } else {
+              toast('Нужно: 1 мухомор, 1 спирт и 1 чистая вода.');
+            }
+          }
+        },
+        {
+          text: '🍯 Сварить «Дегтярный бальзам» (1 сфагнум, 1 дрова, 1 травы)',
+          action: () => {
+            if (getItemCount('swamp_moss') >= 1 && getItemCount('firewood') >= 1 && getItemCount('herbs') >= 1) {
+              removeItem('swamp_moss', 1);
+              removeItem('firewood', 1);
+              removeItem('herbs', 1);
+              addItem('tar_salve', 1);
+              toast('🍯 Приготовлен «Дегтярный бальзам» (+40 HP, защита от урона на 3 вылазки)!');
+              sfx.playSuccess();
+              updateHUD();
+              saveState();
+              talkSpiridon();
+            } else {
+              toast('Нужно: 1 сфагнум, 1 дрова и 1 травы.');
+            }
+          }
+        },
+        {
+          text: '👁️ Сварить эликсир «Око рыси» (2 брусники, 1 травы, 1 чистая вода)',
+          action: () => {
+            if (getItemCount('berries') >= 2 && getItemCount('herbs') >= 1 && getItemCount('clean_water') >= 1) {
+              removeItem('berries', 2);
+              removeItem('herbs', 1);
+              removeItem('clean_water', 1);
+              addItem('lynx_eye', 1);
+              toast('👁️ Приготовлен эликсир «Око рыси» (ночные вылазки без штрафов к энергии)!');
+              sfx.playSuccess();
+              updateHUD();
+              saveState();
+              talkSpiridon();
+            } else {
+              toast('Нужно: 2 брусники, 1 травы и 1 чистая вода.');
+            }
           }
         }
-      },
-      {
-        text: '🍯 Сварить «Дегтярный бальзам» (1 сфагнум, 1 дрова, 1 травы)',
-        action: () => {
-          if (getItemCount('swamp_moss') >= 1 && getItemCount('firewood') >= 1 && getItemCount('herbs') >= 1) {
-            removeItem('swamp_moss', 1);
-            removeItem('firewood', 1);
-            removeItem('herbs', 1);
-            addItem('tar_salve', 1);
-            toast('🍯 Приготовлен «Дегтярный бальзам» (+40 HP, защита от урона на 3 вылазки)!');
-            sfx.playSuccess();
-            updateHUD();
-            saveState();
-            talkSpiridon();
-          } else {
-            toast('Нужно: 1 сфагнум, 1 дрова и 1 травы.');
-          }
-        }
-      },
-      {
-        text: '👁️ Сварить эликсир «Око рыси» (2 брусники, 1 травы, 1 чистая вода)',
-        action: () => {
-          if (getItemCount('berries') >= 2 && getItemCount('herbs') >= 1 && getItemCount('clean_water') >= 1) {
-            removeItem('berries', 2);
-            removeItem('herbs', 1);
-            removeItem('clean_water', 1);
-            addItem('lynx_eye', 1);
-            toast('👁️ Приготовлен эликсир «Око рыси» (ночные вылазки без штрафов к энергии)!');
-            sfx.playSuccess();
-            updateHUD();
-            saveState();
-            talkSpiridon();
-          } else {
-            toast('Нужно: 2 брусники, 1 травы и 1 чистая вода.');
-          }
-        }
-      },
-      {
-        text: '🌿 Купить спирт за 2 патрона',
-        action: () => {
-          if (getItemCount('ammo') >= 2) {
-            removeItem('ammo', 2);
-            addItem('alcohol', 1);
-            toast('Куплен флакон чистого медицинского спирта.');
-            sfx.playSuccess();
-            updateHUD();
-            saveState();
-            talkSpiridon();
-          } else {
-            toast('Недостаточно патронов.');
-          }
+      );
+    }
+
+    actions.push({
+      text: '🌿 Купить спирт за 2 патрона',
+      action: () => {
+        if (getItemCount('ammo') >= 2) {
+          removeItem('ammo', 2);
+          addItem('alcohol', 1);
+          toast('Куплен флакон чистого медицинского спирта.');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          talkSpiridon();
+        } else {
+          toast('Недостаточно патронов.');
         }
       }
-    );
+    });
 
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }
@@ -4045,7 +4056,7 @@ met_spiridon: false,
     if (!list) return;
     list.innerHTML = '';
 
-    const currentRecipes = RECIPES.filter(r => r.station === state.craftStation);
+    const currentRecipes = RECIPES.filter(r => r.station === state.craftStation && (!r.unlocked || r.unlocked(state)));
     currentRecipes.forEach(r => {
       let canCraft = true;
       let costBadges = [];
@@ -4081,6 +4092,11 @@ met_spiridon: false,
     sfx.init();
     const r = RECIPES.find(x => x.id === recipeId);
     if (!r) return;
+
+    if (r.unlocked && !r.unlocked(state)) {
+      toast('Этот рецепт вам ещё неизвестен!');
+      return;
+    }
 
     // Проверка ингредиентов
     for (const [resId, reqCount] of Object.entries(r.cost)) {
