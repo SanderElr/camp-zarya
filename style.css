@@ -69,7 +69,7 @@ html, body {
 }
 
 .pixel-art {
-  image-rendering: pixelated;
+  image-rendering: auto;
 }
 
 /* Контейнер приложения */
@@ -157,6 +157,17 @@ html, body {
   display: flex;
   flex-direction: column;
   gap: 2px;
+}
+.stat-pill-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.stat-icon-img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  flex-shrink: 0;
 }
 .rep-pill {
   grid-column: span 1;
@@ -855,7 +866,7 @@ html, body {
   flex-direction: column;
   gap: 4px;
   pointer-events: none;
-  z-index: 1000;
+  z-index: 90;
 }
 .toast-msg {
   background: rgba(18,21,19,0.95);

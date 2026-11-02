@@ -35,43 +35,55 @@
       <div class="hud-stats-grid">
         <!-- Здоровье -->
         <div class="stat-pill" title="Здоровье">
-          <span class="stat-icon">❤️</span>
-          <span class="stat-num" id="statHp">100</span>
+          <div class="stat-pill-header">
+            <img src="assets/images/stat_hp.png" class="stat-icon-img" alt="HP">
+            <span class="stat-num" id="statHp">100</span>
+          </div>
           <div class="stat-bar-mini"><div class="stat-bar-fill hp" id="barHp" style="width: 100%;"></div></div>
         </div>
 
         <!-- Сытость (Еда) -->
         <div class="stat-pill" title="Сытость">
-          <span class="stat-icon">🍖</span>
-          <span class="stat-num" id="statHunger">85%</span>
+          <div class="stat-pill-header">
+            <img src="assets/images/stat_food.png" class="stat-icon-img" alt="Еда">
+            <span class="stat-num" id="statHunger">85%</span>
+          </div>
           <div class="stat-bar-mini"><div class="stat-bar-fill hunger" id="barHunger" style="width: 85%;"></div></div>
         </div>
 
         <!-- Жажда (Вода) -->
         <div class="stat-pill" title="Жажда">
-          <span class="stat-icon">💧</span>
-          <span class="stat-num" id="statThirst">80%</span>
+          <div class="stat-pill-header">
+            <img src="assets/images/stat_water.png" class="stat-icon-img" alt="Вода">
+            <span class="stat-num" id="statThirst">80%</span>
+          </div>
           <div class="stat-bar-mini"><div class="stat-bar-fill thirst" id="barThirst" style="width: 80%;"></div></div>
         </div>
 
         <!-- Радиация -->
         <div class="stat-pill" title="Радиация">
-          <span class="stat-icon">☢️</span>
-          <span class="stat-num" id="statRad">0 Р</span>
+          <div class="stat-pill-header">
+            <img src="assets/images/stat_radiation.png" class="stat-icon-img" alt="Радиация">
+            <span class="stat-num" id="statRad">0 Р</span>
+          </div>
           <div class="stat-bar-mini"><div class="stat-bar-fill rad" id="barRad" style="width: 0%;"></div></div>
         </div>
 
         <!-- Энергия -->
         <div class="stat-pill" title="Бодрость / Энергия">
-          <span class="stat-icon">⚡</span>
-          <span class="stat-num" id="statEnergy">100%</span>
+          <div class="stat-pill-header">
+            <img src="assets/images/stat_energy.png" class="stat-icon-img" alt="Энергия">
+            <span class="stat-num" id="statEnergy">100%</span>
+          </div>
           <div class="stat-bar-mini"><div class="stat-bar-fill energy" id="barEnergy" style="width: 100%;"></div></div>
         </div>
 
         <!-- Репутация -->
         <div class="stat-pill rep-pill" title="Репутация в лагере">
-          <span class="stat-icon">🎖️</span>
-          <span class="stat-num" id="statRep">Чужак (10)</span>
+          <div class="stat-pill-header">
+            <span class="stat-icon">🎖️</span>
+            <span class="stat-num" id="statRep">Чужак (10)</span>
+          </div>
         </div>
       </div>
     </header>
@@ -83,7 +95,7 @@
       <section class="tab-pane active" id="tabCamp">
         <div class="location-card">
           <div class="location-banner">
-            <img src="assets/images/cabin.png" class="loc-img pixel-art" alt="Лагерь">
+            <img src="assets/images/camp_base.png" class="loc-img" alt="Лагерь">
             <div class="loc-banner-info">
               <h2>Центр лагеря «Заря»</h2>
               <p>Островок безопасности среди мёртвой тайги. Потрескивает костёр, пахнет хвоей и дымом.</p>
