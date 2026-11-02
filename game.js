@@ -649,6 +649,7 @@ met_spiridon: false,
     renderQuests();
     updateHUD();
     saveState();
+    checkSideQuestProgressReminders();
   }
 
   function removeItem(itemId, count = 1) {
@@ -663,7 +664,62 @@ met_spiridon: false,
     renderQuests();
     updateHUD();
     saveState();
+    checkSideQuestProgressReminders();
     return true;
+  }
+
+  function checkSideQuestProgressReminders() {
+    if (!state.sideQuests) return;
+    if (state.sideQuests.sq_wood_anna?.status === 'active') {
+      if (getItemCount('firewood') >= 4) {
+        if (!state.sideQuests.sq_wood_anna.notified) {
+          state.sideQuests.sq_wood_anna.notified = true;
+          toast('🪵 Дрова для лазарета собраны (4/4)! Сдайте поручение Анне Павловне в лазарете.');
+        }
+      } else {
+        state.sideQuests.sq_wood_anna.notified = false;
+      }
+    }
+    if (state.sideQuests.sq_fish_egor?.status === 'active') {
+      if (getItemCount('raw_fish') >= 3 && getItemCount('firewood') >= 2) {
+        if (!state.sideQuests.sq_fish_egor.notified) {
+          state.sideQuests.sq_fish_egor.notified = true;
+          toast('🐟 Улов для коптильни готов (3/3 рыбы, 2/2 дров)! Сдайте поручение Егору Леснику.');
+        }
+      } else {
+        state.sideQuests.sq_fish_egor.notified = false;
+      }
+    }
+    if (state.sideQuests.sq_berries_anna?.status === 'active') {
+      if (getItemCount('berries') >= 3) {
+        if (!state.sideQuests.sq_berries_anna.notified) {
+          state.sideQuests.sq_berries_anna.notified = true;
+          toast('🫐 Таёжные ягоды собраны (3/3)! Сдайте бруснику Анне Павловне в лазарете.');
+        }
+      } else {
+        state.sideQuests.sq_berries_anna.notified = false;
+      }
+    }
+    if (state.sideQuests.sq_coal_prokhor?.status === 'active') {
+      if (getItemCount('scrap') >= 2) {
+        if (!state.sideQuests.sq_coal_prokhor.notified) {
+          state.sideQuests.sq_coal_prokhor.notified = true;
+          toast('⚙️ Металлолом для горна собран (2/2)! Отнесите его Прохору в лагерь.');
+        }
+      } else {
+        state.sideQuests.sq_coal_prokhor.notified = false;
+      }
+    }
+    if (state.sideQuests.spiridon_mushrooms?.status === 'active') {
+      if (getItemCount('amanita') >= 3) {
+        if (!state.sideQuests.spiridon_mushrooms.notified) {
+          state.sideQuests.spiridon_mushrooms.notified = true;
+          toast('🍄 Мухоморы собраны (3/3)! Отнесите их деду Спиридону на болота.');
+        }
+      } else {
+        state.sideQuests.spiridon_mushrooms.notified = false;
+      }
+    }
   }
 
   function getItemCount(itemId) {
@@ -4010,7 +4066,7 @@ met_spiridon: false,
           q.completed = true;
           state.reputation += q.rewardRep;
           addItem('ammo', q.rewardAmmo);
-          toast(`⭐ ВЫПОЛНЕНО: «${q.title}» (+${q.rewardRep} репутации, +${q.rewardAmmo} патрона)!`);
+          toast(`📅 Ежедневное поручение выполнено: «${q.title}» (+${q.rewardRep} репутации, +${q.rewardAmmo} патрона)!`, 'success');
           sfx.playSuccess();
           updateHUD();
         }
@@ -4478,18 +4534,88 @@ met_spiridon: false,
 
         catQuests.forEach(q => {
           const isCompleted = q.isDone(state);
+          const sq = state.sideQuests?.[q.id];
+          const isActive = sq && sq.status === 'active';
+
+          let statusBadge = '⏳ Доступно';
+          let statusColor = 'var(--accent-gold)';
+          let statusBorder = isCompleted ? 'var(--accent-green)' : 'var(--accent-blue)';
+          let progressDetail = '';
+
+          if (isCompleted) {
+            statusBadge = '✓ Выполнено (Сдано)';
+            statusColor = 'var(--accent-green)';
+            statusBorder = 'var(--accent-green)';
+          } else if (isActive) {
+            let ready = false;
+            let info = '';
+            if (q.id === 'sq_wood_anna') {
+              const c = getItemCount('firewood');
+              ready = c >= 4;
+              info = `Дрова: ${c}/4`;
+            } else if (q.id === 'sq_fish_egor') {
+              const f = getItemCount('raw_fish');
+              const w = getItemCount('firewood');
+              ready = f >= 3 && w >= 2;
+              info = `Рыба: ${f}/3, Дрова: ${w}/2`;
+            } else if (q.id === 'sq_water_batya') {
+              const c = getItemCount('clean_water');
+              ready = c >= 3;
+              info = `Чистая вода: ${c}/3`;
+            } else if (q.id === 'sq_berries_anna') {
+              const c = getItemCount('berries');
+              ready = c >= 3;
+              info = `Брусника: ${c}/3`;
+            } else if (q.id === 'sq_coal_prokhor') {
+              const c = getItemCount('scrap');
+              ready = c >= 2;
+              info = `Лом: ${c}/2`;
+            } else if (q.id === 'sq_snare_egor') {
+              const c = getItemCount('raw_meat');
+              ready = c >= 1;
+              info = `Мясо: ${c}/1`;
+            } else if (q.id === 'sq_medkit_anna') {
+              const b = getItemCount('bandage');
+              const h = getItemCount('herbs');
+              ready = b >= 2 && h >= 1;
+              info = `Бинты: ${b}/2, Травы: ${h}/1`;
+            } else if (q.id === 'sq_watch_batya') {
+              const isNight = state.timeOfDay === 3;
+              const hasTorch = getItemCount('torch') > 0 || getItemCount('electric_torch') > 0;
+              ready = isNight && hasTorch;
+              info = isNight ? 'Ночь наступила!' : 'Ждите ночи';
+            } else if (q.id === 'spiridon_mushrooms') {
+              const c = getItemCount('amanita');
+              ready = c >= 3;
+              info = `Мухоморы: ${c}/3`;
+            }
+
+            if (ready) {
+              statusBadge = '🟢 Готово к сдаче!';
+              statusColor = 'var(--accent-green)';
+              statusBorder = 'var(--accent-green)';
+              progressDetail = `<div style="font-size:11.5px; color:var(--accent-green); margin:3px 0 5px; font-weight:700;">🟢 Все предметы собраны! Вернитесь в лагерь и сдайте поручение: ${q.giver}.</div>`;
+            } else {
+              statusBadge = `● В процессе (${info || 'выполняется'})`;
+              statusColor = 'var(--accent-gold)';
+              statusBorder = 'var(--accent-gold)';
+              progressDetail = `<div style="font-size:11.5px; color:var(--accent-gold); margin:3px 0 5px;">● Собрано: <b>${info}</b>. Сдаётся лично у: <b>${q.giver}</b>.</div>`;
+            }
+          }
+
           const card = document.createElement('div');
           card.className = `quest-item-card ${isCompleted ? 'completed' : ''}`;
-          card.style.cssText = `border-left: 3px solid ${isCompleted ? 'var(--accent-green)' : 'var(--accent-blue)'}; margin-bottom:8px;`;
+          card.style.cssText = `border-left: 3px solid ${statusBorder}; margin-bottom:8px;`;
           card.innerHTML = `
             <div class="quest-title-row" style="display:flex; justify-content:space-between; align-items:center;">
               <span style="font-weight:700; font-size:13px; color:${isCompleted ? 'var(--accent-green)' : 'var(--text-main)'};">${q.title}</span>
-              <span style="font-size:11px; font-weight:700; color:${isCompleted ? 'var(--accent-green)' : 'var(--accent-gold)'};">
-                ${isCompleted ? '✓ Выполнено' : '⏳ Доступно'}
+              <span style="font-size:11px; font-weight:700; color:${statusColor};">
+                ${statusBadge}
               </span>
             </div>
             <div style="font-size:11px; color:var(--accent-blue); margin:2px 0 4px;">Квестодатель: <b>${q.giver}</b></div>
             <p class="quest-desc" style="font-size:12px; margin-bottom:6px;">${q.desc}</p>
+            ${progressDetail}
             <div style="font-size:11px; color:var(--accent-gold); background:rgba(0,0,0,0.25); padding:4px 8px; border-radius:4px;">
               🎁 Награда: ${q.reward}
             </div>
