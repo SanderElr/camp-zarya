@@ -25,16 +25,30 @@ const Game = (() => {
     wire: { id: 'wire', name: 'Моток проволоки', type: 'resource', icon: 'assets/images/trap.png', weight: 0.3, desc: 'Тонкая стальная струна для ловушек и ремонта.' },
     worms: { id: 'worms', name: 'Земляные черви', type: 'resource', icon: 'assets/images/forest.png', weight: 0.1, desc: 'Наживка для рыбалки.' },
     leather: { id: 'leather', name: 'Шкура зверя', type: 'resource', icon: 'assets/images/wolf.png', weight: 1.2, desc: 'Плотная шкура волка или кабана.' },
+    swamp_moss: { id: 'swamp_moss', name: 'Болотный сфагнум', type: 'resource', icon: 'assets/images/bushes.png', weight: 0.2, desc: 'Природный антисептик и сорбент, растущий на Гнилой гати.' },
+    bear_pelt: { id: 'bear_pelt', name: 'Шкура Хозяина тайги', type: 'resource', icon: 'assets/images/wolf.png', weight: 3.5, desc: 'Огромная непробиваемая шкура матёрого медведя-шатуна.' },
 
     // Инструменты и оружие
     rod: { id: 'rod', name: 'Самодельная удочка', type: 'tool', icon: 'assets/images/fish.png', weight: 0.8, desc: 'Гибкое удилище с леской и крючком из булавки.' },
     trap: { id: 'trap', name: 'Охотничий капкан', type: 'tool', icon: 'assets/images/trap.png', weight: 1.5, desc: 'Стальной капкан на мелкую и среднюю дичь.' },
     knife: { id: 'knife', name: 'Охотничий нож', type: 'tool', icon: 'assets/images/knife.png', weight: 0.4, desc: 'Острый нож из советской стали. Незаменим в лесу.' },
+    torch: { id: 'torch', name: 'Смоляной факел', type: 'tool', icon: 'assets/images/bonfire.png', weight: 0.5, desc: 'Яркий факел из сосновых лучин и проволоки. Разгоняет тьму и отпугивает диких зверей.' },
+    spear: { id: 'spear', name: 'Охотничье копьё', type: 'tool', icon: 'assets/images/knife.png', weight: 1.2, desc: 'Берёзовое древко с наконечником из ножа и проволоки. Оружие ближнего боя.' },
     toz: { id: 'toz', name: 'Ружьё ТОЗ-34', type: 'tool', icon: 'assets/images/toz.png', weight: 3.2, desc: 'Двуствольное охотничье ружье 12 калибра.' },
     ammo: { id: 'ammo', name: 'Патроны 12к (Валюта)', type: 'tool', icon: 'assets/images/ammo.png', weight: 0.05, desc: 'Ходовая валюта среди выживших и боеприпасы.' },
     filter_membrane: { id: 'filter_membrane', name: 'Керамическая мембрана', type: 'tool', icon: 'assets/images/boxes.png', weight: 1.5, desc: 'Ценнейший сменный элемент промышленного фильтра для воды.' },
+    keycard_sfera: { id: 'keycard_sfera', name: 'Ключ-карта «Сфера»', type: 'tool', icon: 'assets/images/boxes.png', weight: 0.1, desc: 'Электронный армейский пропуск первого уровня для открытия внешнего гермолюка Бункера.' },
+    stalker_suit: { id: 'stalker_suit', name: 'Броня сталкера', type: 'tool', icon: 'assets/images/hero.png', weight: 2.5, desc: 'Укрепленная куртка из медвежьей шкуры и стальных пластин (+5 кг к грузоподъемности).' },
+    respirator: { id: 'respirator', name: 'Респиратор Р-2', type: 'tool', icon: 'assets/images/medicine.png', weight: 0.4, desc: 'Защитная полумаска с фильтром от ядовитых испарений и радиации Бункера.' },
+    herbal_salve: { id: 'herbal_salve', name: 'Целебная мазь', type: 'food', icon: 'assets/images/medicine.png', weight: 0.2, desc: 'Густая мазь из сфагнума и трав. Заживляет рваные раны (+50 HP).', hp: 50 },
+    canned_food: { id: 'canned_food', name: 'Армейская тушёнка', type: 'food', icon: 'assets/images/boxes.png', weight: 0.4, desc: 'Сытная свиная тушенка ГОСТ (+70 сытости, +20 энергии).', hunger: 70, energy: 20 },
 
-    // Записки лора
+    // Записки лора и квестовые предметы
+    water_sample: { id: 'water_sample', name: 'Проба токсичной воды', type: 'lore', icon: 'assets/images/water.png', weight: 0.3, desc: 'Флакон с мутной желтоватой водой из Быстрянки для лаборатории Анны.' },
+    audio_tape: { id: 'audio_tape', name: 'Кассета Воронова', type: 'lore', icon: 'assets/images/cabin.png', weight: 0.1, desc: 'Аудиокассета: последняя запись руководителя проекта «Каскад» профессора Воронова.' },
+    note_voronov: { id: 'note_voronov', name: 'Дневник Воронова', type: 'lore', icon: 'assets/images/cabin.png', weight: 0.1, desc: 'Полевые заметки профессора Воронова с описанием стабилизатора «Нектар-7».' },
+    floppy_disk: { id: 'floppy_disk', name: 'Архив проекта «Каскад»', type: 'lore', icon: 'assets/images/boxes.png', weight: 0.1, desc: 'Магнитная дискета с научными данными, чертежами генераторов и карт залежей НИИ «Сфера».' },
+    stabilizer_nectar: { id: 'stabilizer_nectar', name: 'Капсула «Нектар-7»', type: 'lore', icon: 'assets/images/medicine.png', weight: 0.8, desc: 'Цилиндр с активным биоферментом, нейтрализующим радиохимическое заражение рек и почв.' },
     note_order: { id: 'note_order', name: 'Приказ об эвакуации', type: 'lore', icon: 'assets/images/cabin.png', weight: 0.0, desc: 'Пожелтевший бланк 1989 г. Упоминается секретный бункер НИИ «Сфера» в 8 км к северу.' },
     note_geologist: { id: 'note_geologist', name: 'Дневник геолога', type: 'lore', icon: 'assets/images/cabin.png', weight: 0.0, desc: 'Записи о странных спорах и аномальном поведении речной рыбы после взрыва на дамбе.' }
   };
@@ -67,9 +81,24 @@ const Game = (() => {
       desc: 'Питательное блюдо для восстановления сил всего организма.'
     },
     {
+      id: 'craft_salve', station: 'fire', name: 'Сварить мазь из сфагнума', icon: 'assets/images/medicine.png',
+      cost: { swamp_moss: 1, herbs: 1, firewood: 1 }, result: { herbal_salve: 1 }, energy: 10, timeMin: 20,
+      desc: 'Заживляющая мазь на основе болотного мха и трав (+50 HP).'
+    },
+    {
       id: 'craft_rod', station: 'bench', name: 'Собрать удочку', icon: 'assets/images/fish.png',
       cost: { firewood: 2, wire: 1 }, result: { rod: 1 }, energy: 15, timeMin: 30,
       desc: 'Простая удочка для ловли рыбы на реке Быстрянке.'
+    },
+    {
+      id: 'craft_torch', station: 'bench', name: 'Связать смоляной факел', icon: 'assets/images/bonfire.png',
+      cost: { firewood: 1, wire: 1 }, result: { torch: 1 }, energy: 5, timeMin: 10,
+      desc: 'Освещает дорогу в темноте и отпугивает стаи диких зверей.'
+    },
+    {
+      id: 'craft_spear', station: 'bench', name: 'Собрать охотничье копьё', icon: 'assets/images/knife.png',
+      cost: { knife: 1, firewood: 2, wire: 1 }, result: { spear: 1 }, energy: 15, timeMin: 25,
+      desc: 'Надёжное оружие ближнего боя против хищников.'
     },
     {
       id: 'craft_trap', station: 'bench', name: 'Сколотить капкан', icon: 'assets/images/trap.png',
@@ -80,6 +109,16 @@ const Game = (() => {
       id: 'craft_bandage', station: 'bench', name: 'Скрутить стерильный бинт', icon: 'assets/images/medicine.png',
       cost: { herbs: 1, wire: 0 }, result: { bandage: 1 }, energy: 5, timeMin: 10,
       desc: 'Травяная повязка для остановки кровотечений.'
+    },
+    {
+      id: 'craft_stalker_suit', station: 'bench', name: 'Сшить броню сталкера', icon: 'assets/images/hero.png',
+      cost: { bear_pelt: 1, scrap: 3, wire: 2 }, result: { stalker_suit: 1 }, energy: 25, timeMin: 60,
+      desc: 'Укреплённый костюм. Навсегда увеличивает вместимость рюкзака до 30 кг.'
+    },
+    {
+      id: 'craft_respirator', station: 'bench', name: 'Собрать респиратор Р-2', icon: 'assets/images/medicine.png',
+      cost: { swamp_moss: 2, herbs: 1, wire: 1 }, result: { respirator: 1 }, energy: 15, timeMin: 30,
+      desc: 'Защищает лёгкие от радиоактивного тумана и ядовитых газов Бункера.'
     }
   ];
 
@@ -98,6 +137,12 @@ const Game = (() => {
       actions: ['gather_wood', 'gather_herbs', 'hunt_birds']
     },
     {
+      id: 'swamp', name: 'Гнилая гать (Торфяники)', tier: 2, icon: 'assets/images/bushes.png', rad: 25, energyCost: 20, timePass: 2,
+      desc: 'Зловонные торфяники, окутанные желтоватым смогом. Здесь растёт ценный антисептический сфагнум.',
+      unlocked: false, reqRep: 60,
+      actions: ['gather_moss', 'scavenge_swamp']
+    },
+    {
       id: 'pump_station', name: 'Насосная станция №4', tier: 2, icon: 'assets/images/boxes.png', rad: 25, energyCost: 20, timePass: 2,
       desc: 'Полузатопленный бетонный комплекс очистки воды. Здесь можно найти фильтры и трубы.',
       unlocked: false, reqRep: 100,
@@ -108,6 +153,12 @@ const Game = (() => {
       desc: 'Глухой бурелом. Водятся кабаны, зайцы и волки. Нужна осторожность и оружие.',
       unlocked: false, reqRep: 150,
       actions: ['place_trap', 'hunt_big_game']
+    },
+    {
+      id: 'old_cordon', name: 'Заброшенный кордон', tier: 2, icon: 'assets/images/cabin.png', rad: 15, energyCost: 15, timePass: 2,
+      desc: 'Старый бревенчатый кордон лесничества у подножия скал. Бывшая полевая база экспедиции НИИ «Сфера».',
+      unlocked: false, reqRep: 250,
+      actions: ['search_cordon', 'scavenge_cordon']
     },
     {
       id: 'radio_tower', name: 'Радиовышка на утесе', tier: 3, icon: 'assets/images/tower.png', rad: 35, energyCost: 30, timePass: 3,
@@ -170,9 +221,24 @@ const Game = (() => {
       met_anna: false,
       met_egor: false,
       met_prokhor: false,
-      has_membrane: false,
+      dogs_defeated: false,
+      water_sample_given: false,
+      swamp_explored: false,
+      pump_cleared: false,
       pump_repaired: false,
+      has_membrane: false,
+      met_prokhor_radio: false,
       radio_repaired: false,
+      tape_decoded: false,
+      cordon_searched: false,
+      talked_bear: false,
+      bear_defeated: false,
+      suit_crafted: false,
+      respirator_crafted: false,
+      bunker_entered: false,
+      turrets_neutralized: false,
+      reactor_reached: false,
+      reactor_shutdown: false,
       bunker_completed: false
     },
     dailyQuests: [],
@@ -542,10 +608,50 @@ const Game = (() => {
 
     const actions = [];
     if (item.type === 'food') {
-      actions.push({ text: 'Использовать / Съесть', action: () => useItem(item.id), primary: true });
+      actions.push({ text: 'Использовать / Принять', action: () => useItem(item.id), primary: true });
+    }
+    if (item.id === 'stalker_suit') {
+      actions.push({
+        text: '🛡️ Надеть броню сталкера (+5 кг вещмешка)',
+        action: () => {
+          state.maxWeight = 30.0;
+          state.questFlags.suit_crafted = true;
+          toast('Вы облачились в броню сталкера! Грузоподъёмность увеличена до 30 кг.');
+          sfx.playSuccess();
+          updateHUD();
+          closeModal();
+        },
+        primary: true
+      });
+    }
+    if (item.id === 'respirator') {
+      actions.push({
+        text: '😷 Надеть респиратор Р-2 (Защита дыхания)',
+        action: () => {
+          state.questFlags.respirator_crafted = true;
+          toast('Респиратор Р-2 надет! Дыхание защищено от токсичных газов Бункера.');
+          sfx.playSuccess();
+          closeModal();
+        },
+        primary: true
+      });
     }
     if (item.type === 'lore') {
-      actions.push({ text: 'Прочесть внимательнее', action: () => {}, primary: true });
+      let loreText = item.desc;
+      if (item.id === 'note_voronov') {
+        loreText = `<b>Из полевого дневника профессора Воронова:</b><br>
+        <i>«...14 октября 1989 г. Система охлаждения реактора второго контура не справилась с нагрузкой при испытании гидросинтеза. Выброс газов неизбежен. Мы эвакуируем персонал к лесничеству на Заброшенный кордон. Ключ-карту от внешнего люка я спрятал в подполе кордона. Если реактор не заглушить вручную изнутри до критической отметки — погибнет вся экосистема тайги...»</i>`;
+      } else if (item.id === 'audio_tape') {
+        loreText = `<b>Аудиозапись на магнитной ленте:</b><br>
+        <i>«[Шипение помех] ...Говорит Воронов, НИИ "Сфера". Повторяю: всем выжившим постам. Бункер запечатан аварийным протоколом. Турели периметра переведены в автономный боевой режим. Нужна ключ-карта доступа. На кордоне в тайге остались резервные запасы и мои записи. Найдите их!...»</i>`;
+      } else if (item.id === 'floppy_disk') {
+        loreText = `<b>Содержимое дискеты архива «Каскад»:</b><br>
+        <i>Полный пакет инженерной документации: чертежи геотермальных очистителей, схемы водозаборных станций и биохимические формулы восстановления отравленной почвы. Это возрождение цивилизации!</i>`;
+      } else if (item.id === 'stabilizer_nectar') {
+        loreText = `<b>Капсула «Нектар-7»:</b><br>
+        <i>Биохимический концентрат для нейтрализации радиационного фона в почве и грунтовых водах. С ним лагерь «Заря» сможет засеять поля и выращивать чистые культуры без риска лучевой болезни.</i>`;
+      }
+      body = `<p>${loreText}</p>`;
     }
 
     openModal(item.name, 'Снаряжение', item.icon, body, actions);
@@ -627,45 +733,39 @@ const Game = (() => {
     if (!state.questFlags) state.questFlags = {};
     state.questFlags.met_batya = true;
 
-    let body = `<p>Майор стоит у карты района, скрестив руки на груди. В глазах читается усталость, но голос звенит металлом.</p>`;
-    body += `<p><i>«Ну что, боец. Лагерь "Заря" — последнее место, где люди живут по-человечески. Если готов помогать общине, работа всегда найдётся.»</i></p>`;
+    let body = `<p>Майор Дмитрий стоит у карты района, скрестив руки на груди. В глазах читается усталость, но голос звенит металлом.</p>`;
+    body += `<p><i>«Ну что, боец. Лагерь "Заря" — последнее место в этой тайге, где люди живут по законам чести. Если готов пахать ради общины — не пропадёшь.»</i></p>`;
 
     const actions = [];
 
-    // Шаг 0: Стартовый инструктаж
+    // Квест 1: Стартовый инструктаж (step 0)
     if (state.mainQuestStep === 0) {
-      const alreadyMetOthers = state.questFlags.met_anna || state.questFlags.met_egor || state.questFlags.met_prokhor;
-      if (alreadyMetOthers) {
-        body += `<p style="color:var(--accent-gold);"><i>«Вижу, ты парень расторопный — уже успел перекинуться парой слов с нашими. Это похвально. Держись общины, и тайга тебя не сломит.»</i></p>`;
-      }
-      body += `<p style="color:var(--accent-gold);"><b>[СЮЖЕТНОЕ ЗАДАНИЕ]:</b> Батя предлагает пройти инструктаж, получить стартовый паёк и официально вступить в общину «Заря».</p>`;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 1: ПРИБЫТИЕ В ЗАРЮ]:</b></p>`;
+      body += `<p><i>«Ты еле живой приполз. Прими законы общины: кто не работает — тот не ест. Держи стартовый сухпай и покажи, на что способен.»</i></p>`;
       actions.push({
-        text: '«Я готов служить лагерю. С чего начать?»',
+        text: '«Я готов служить лагерю. С чего начать, Батя?»',
         action: () => {
           state.mainQuestStep = 1;
           state.reputation += 10;
           addItem('clean_water', 1);
           addItem('ammo', 3);
-          toast('⭐ Задание начато: «Знакомство с общиной» (+10 репутации, фляга воды, 3 патрона)!');
+          toast('⭐ Задание 1 выполнено: «Прибытие в Зарю» (+10 репутации, фляга воды, 3 патрона)!');
           sfx.playSuccess();
           updateHUD();
+          saveState();
           closeModal();
           renderQuests();
-          if (state.questFlags.met_anna && state.questFlags.met_egor) {
-            setTimeout(() => {
-              toast('⭐ Вы уже знакомы с Анной и Егором! Можете сразу доложить Бате.');
-            }, 1000);
-          }
         },
         primary: true
       });
     }
-    // Шаг 1: Знакомство с общиной
+    // Квест 2: Первые шаги (step 1)
     else if (state.mainQuestStep === 1) {
       const annaDone = !!state.questFlags.met_anna;
       const egorDone = !!state.questFlags.met_egor;
       const allDone = annaDone && egorDone;
 
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 2: ПЕРВЫЕ ШАГИ]:</b></p>`;
       body += `<div style="background:rgba(0,0,0,0.3); padding:8px 12px; border-radius:6px; margin:8px 0; border:1px solid rgba(255,255,255,0.12);">`;
       body += `<b style="color:var(--accent-gold); font-size:12px;">📋 Задачи инструктажа:</b><br>`;
       body += `• Фельдшер Анна (лазарет): ${annaDone ? '<span style="color:var(--accent-green);">✓ Знакомство состоялось</span>' : '<span style="color:var(--accent-gold);">⏳ Нужно поговорить</span>'}<br>`;
@@ -673,20 +773,17 @@ const Game = (() => {
       body += `</div>`;
 
       if (allDone) {
-        body += `<p style="color:var(--accent-green);"><i>«Анна и Егор уже передали, что ты надёжный человек. Осмотр лагеря окончен. Теперь пора переходить к настоящему делу!»</i></p>`;
+        body += `<p style="color:var(--accent-green);"><i>«Анна и Егор доложили, что ты парень смышлёный. Инструктаж пройден! Теперь пора заняться безопасностью лагеря.»</i></p>`;
         actions.push({
-          text: '⭐ «Доложить об осмотре лагеря (Завершить квест)»',
+          text: '⭐ «Доложить об осмотре лагеря (Завершить квест 2)»',
           action: () => {
             state.mainQuestStep = 2;
             state.reputation += 15;
             addItem('ammo', 3);
-            if (!state.unlockedLocations.includes('pump_station')) {
-              state.unlockedLocations.push('pump_station');
-            }
-            toast('⭐ Квест завершён: «Знакомство с общиной» (+15 репутации, +3 патрона)!');
+            toast('⭐ Квест 2 завершён: «Первые шаги» (+15 репутации, +3 патрона)!');
             sfx.playSuccess();
             updateHUD();
-            renderLocations();
+            saveState();
             renderQuests();
             closeModal();
             setTimeout(() => talkBatya(), 300);
@@ -694,22 +791,19 @@ const Game = (() => {
           primary: true
         });
       } else {
-        body += `<p><i>«Обойди лагерь, боец. Загляни к Анне в лазарет за наставлением по медицине и к Егору на берег реки — он покажет, как добывать рыбу.»</i></p>`;
+        body += `<p><i>«Загляни к Анне в лазарет — узнай про радиацию, и к Егору на берег реки — он покажет, как добывать рыбу.»</i></p>`;
         actions.push({
-          text: '«Батя, я уже знаю всех жителей и готов к делу!»',
+          text: '«Батя, я уже осмотрел лагерь и готов к делу!»',
           action: () => {
             state.questFlags.met_anna = true;
             state.questFlags.met_egor = true;
             state.mainQuestStep = 2;
             state.reputation += 15;
             addItem('ammo', 3);
-            if (!state.unlockedLocations.includes('pump_station')) {
-              state.unlockedLocations.push('pump_station');
-            }
-            toast('⭐ Зачтено: Знакомство с общиной (+15 репутации, +3 патрона)!');
+            toast('⭐ Квест 2 завершён: Знакомство с общиной (+15 репутации, +3 патрона)!');
             sfx.playSuccess();
             updateHUD();
-            renderLocations();
+            saveState();
             renderQuests();
             closeModal();
             setTimeout(() => talkBatya(), 300);
@@ -717,15 +811,163 @@ const Game = (() => {
         });
       }
     }
-    // Шаг 2: Кризис чистой воды (поиск мембраны)
+    // Квест 3: Огонь во тьме (step 2)
     else if (state.mainQuestStep === 2) {
-      const hasMembrane = getItemCount('filter_membrane') > 0 || state.questFlags.has_membrane;
+      const hasTorch = getItemCount('torch') > 0;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 3: ОГОНЬ ВО ТЬМЕ]:</b></p>`;
+      body += `<p><i>«Ночи в тайге чернее дегтя. Мутанты жмутся к частоколу. Нам нужны дрова для костров и факелы для караульных. Набери в лесу сушняка и свяжи смоляной факел на верстаке у Прохора.»</i></p>`;
 
-      if (!hasMembrane) {
-        body += `<p style="color:var(--accent-gold);"><b>[СЮЖЕТНОЕ ЗАДАНИЕ: «Кризис чистой воды»]:</b></p>`;
-        body += `<p><i>«У нас чрезвычайное положение. Колодцы лагеря тянут глину и радиоактивный ил. Сходи на Насосную станцию №4 (на карте) и принеси запасную керамическую мембрану очистки.»</i></p>`;
+      if (hasTorch) {
+        body += `<p style="color:var(--accent-green);">✓ У вас есть смоляной факел!</p>`;
         actions.push({
-          text: '🗺️ «Я отправляюсь на Насосную станцию №4»',
+          text: '⭐ «Сдать факел и дрова Бате (Завершить квест 3)»',
+          action: () => {
+            removeItem('torch', 1);
+            state.mainQuestStep = 3;
+            state.reputation += 15;
+            addItem('ammo', 2);
+            toast('⭐ Квест 3 выполнен: «Огонь во тьме» (+15 репутации, +2 патрона)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            closeModal();
+            setTimeout(() => talkBatya(), 300);
+          },
+          primary: true
+        });
+      } else {
+        actions.push({
+          text: '🌲 «Выдвигаюсь в Ближний лесок за дровами»',
+          action: () => {
+            closeModal();
+            switchTab('tabMap');
+          }
+        });
+      }
+    }
+    // Квест 4: Голодный рассвет (step 3 - куратор Егор)
+    else if (state.mainQuestStep === 3) {
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 4: ГОЛОДНЫЙ РАССВЕТ]:</b></p>`;
+      body += `<p><i>«Запасы провизии на исходе. Сходи к Егору на берег Быстрянки. Он покажет, как смастерить удочку, поймать рыбу и сварить таёжную уху на костре.»</i></p>`;
+      actions.push({
+        text: '🎣 «Иду к Егору на берег реки»',
+        action: () => {
+          closeModal();
+          switchTab('tabCamp');
+          talkToNPC('egor');
+        },
+        primary: true
+      });
+    }
+    // Квест 5: Крещение тайгой (step 4)
+    else if (state.mainQuestStep === 4) {
+      const dogsDead = !!state.questFlags.dogs_defeated;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 5: КРЕЩЕНИЕ ТАЙГОЙ]:</b></p>`;
+      body += `<p><i>«Тревога, боец! Стая одичавших псов обложила опушку Ближнего леска. Смастери охотничье копьё на верстаке, отбей набег и защити наш тыл!»</i></p>`;
+
+      if (dogsDead) {
+        body += `<p style="color:var(--accent-green);">✓ Стая диких псов разбита!</p>`;
+        actions.push({
+          text: '⭐ «Доложить Бате о разгроме стаи (Завершить квест 5)»',
+          action: () => {
+            state.mainQuestStep = 5;
+            state.reputation += 25;
+            addItem('ammo', 4);
+            if (!state.unlockedLocations.includes('swamp')) {
+              state.unlockedLocations.push('swamp');
+            }
+            toast('⭐ Квест 5 выполнен: «Крещение тайгой» (+25 репутации, ранг «Свой», открыты Болота)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderLocations();
+            renderQuests();
+            closeModal();
+            setTimeout(() => talkBatya(), 300);
+          },
+          primary: true
+        });
+      } else {
+        actions.push({
+          text: '🌲 «Выдвигаюсь на опушку леса для боя»',
+          action: () => {
+            closeModal();
+            switchTab('tabMap');
+          },
+          primary: true
+        });
+      }
+    }
+    // Квест 6: Мёртвые заводи (step 5 - куратор Анна)
+    else if (state.mainQuestStep === 5) {
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 6: МЁРТВЫЕ ЗАВОДИ]:</b></p>`;
+      body += `<p><i>«Анна Павловна бьет тревогу: Быстрянка несет желтоватую радиохимическую пену. Срочно иди в лазарет и помоги ей взять пробы!»</i></p>`;
+      actions.push({
+        text: '🩺 «Иду в лазарет к Анне»',
+        action: () => {
+          closeModal();
+          switchTab('tabCamp');
+          talkToNPC('anna');
+        },
+        primary: true
+      });
+    }
+    // Квест 7: Следы на иле (step 6 - куратор Егор)
+    else if (state.mainQuestStep === 6) {
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 7: СЛЕДЫ НА ИЛЕ]:</b></p>`;
+      body += `<p><i>«Егор заметил трёхпалые следы болотных мутантов у берега. Загляни к нему, сколотите капканы и остановите тварей.»</i></p>`;
+      actions.push({
+        text: '🏹 «Иду к Егору»',
+        action: () => {
+          closeModal();
+          switchTab('tabCamp');
+          talkToNPC('egor');
+        },
+        primary: true
+      });
+    }
+    // Квест 8: Экспедиция в Гнилую гать (step 7 - куратор Анна)
+    else if (state.mainQuestStep === 7) {
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 8: ЭКСПЕДИЦИЯ В ГНИЛУЮ ГАТЬ]:</b></p>`;
+      body += `<p><i>«Анне нужен болотный сфагнум для фильтрации воды и лекарств. Сходи на торфяники Гнилой гати, но берегись радиации!»</i></p>`;
+      actions.push({
+        text: '🩺 «Поговорить с Анной о вылазке»',
+        action: () => {
+          closeModal();
+          switchTab('tabCamp');
+          talkToNPC('anna');
+        },
+        primary: true
+      });
+    }
+    // Квест 9: Прорыв к Насосной станции (step 8)
+    else if (state.mainQuestStep === 8) {
+      const cleared = !!state.questFlags.pump_cleared;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 9: ПРОРЫВ К НАСОСНОЙ СТАНЦИИ]:</b></p>`;
+      body += `<p><i>«Колодцы лагеря пересыхают! Наш единственный шанс — старая Насосная станция №4. Дорога туда завалена железобетоном и кишит тварями. Пробейся к машинному залу станции!»</i></p>`;
+
+      if (cleared) {
+        body += `<p style="color:var(--accent-green);">✓ Завал у цеха Насосной станции №4 расчищен!</p>`;
+        actions.push({
+          text: '⭐ «Доложить Бате о пробитом коридоре (Завершить квест 9)»',
+          action: () => {
+            state.mainQuestStep = 9;
+            state.reputation += 35;
+            addItem('ammo', 5);
+            toast('⭐ Квест 9 выполнен: «Прорыв к Насосной» (+35 репутации, +5 патронов)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            closeModal();
+            setTimeout(() => talkBatya(), 300);
+          },
+          primary: true
+        });
+      } else {
+        actions.push({
+          text: '🏭 «Выдвигаюсь на Насосную станцию №4»',
           action: () => {
             if (!state.unlockedLocations.includes('pump_station')) {
               state.unlockedLocations.push('pump_station');
@@ -736,29 +978,174 @@ const Game = (() => {
           },
           primary: true
         });
-      } else {
-        body += `<p style="color:var(--accent-green);"><b>[МЕМБРАНА ДОБЫТА!]:</b></p>`;
-        body += `<p><i>«Ты нашёл её! С этой мембраной Прохор запустит станцию тонкой очистки. Лагерь спасён от жажды и лучевой болезни!»</i></p>`;
+      }
+    }
+    // Квест 10: Сердце фильтра (step 9)
+    else if (state.mainQuestStep === 9) {
+      const repaired = !!state.questFlags.pump_repaired;
+      const hasMembrane = getItemCount('filter_membrane') > 0 || state.questFlags.has_membrane;
+      const scrapCount = getItemCount('scrap');
+
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 10: СЕРДЦЕ ФИЛЬТРА]:</b></p>`;
+      body += `<p><i>«В машинном зале станции нужно найти керамическую мембрану и 3 металлолома. Без них фильтр не запустить. Прохор ждет детали!»</i></p>`;
+
+      if (repaired) {
+        body += `<p style="color:var(--accent-green);">✓ Водоочистная станция запущена! В лагере есть питьевая вода!</p>`;
         actions.push({
-          text: '⭐ «Сдать керамическую мембрану Бате (Завершить квест)»',
+          text: '⭐ «Доложить Бате о победе над водным кризисом (Завершить квест 10)»',
           action: () => {
-            if (getItemCount('filter_membrane') > 0) {
-              removeItem('filter_membrane', 1);
-            }
+            state.mainQuestStep = 10;
+            state.reputation += 40;
+            addItem('canned_food', 2);
+            addItem('ammo', 6);
+            toast('⭐ Квест 10 выполнен: «Сердце фильтра» (+40 репутации, ранг «Уважаемый», +2 тушёнки)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            closeModal();
+            setTimeout(() => talkBatya(), 300);
+          },
+          primary: true
+        });
+      } else if (hasMembrane && scrapCount >= 3) {
+        actions.push({
+          text: '🔧 «Батя, детали со мной! Запустить станцию прямо сейчас»',
+          action: () => {
+            if (getItemCount('filter_membrane') > 0) removeItem('filter_membrane', 1);
+            removeItem('scrap', 3);
             state.questFlags.pump_repaired = true;
-            state.mainQuestStep = 3;
-            state.reputation += 30;
+            toast('Гидроузел запущен! Чистая вода пошла по трубам!');
+            sfx.playSuccess();
+            talkBatya();
+          },
+          primary: true
+        });
+      } else {
+        actions.push({
+          text: '🔍 «Искать мембрану и металлолом на станции»',
+          action: () => {
+            closeModal();
+            switchTab('tabMap');
+          }
+        });
+      }
+    }
+    // Квест 11: Морзе в ночи (step 10 - куратор Прохор)
+    else if (state.mainQuestStep === 10) {
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 11: МОРЗЕ В НОЧИ]:</b></p>`;
+      body += `<p><i>«Прохор ночью перехватил аварийный морзе SOS на армейской волне! Сходи к нему к верстаку, разберитесь, откуда бьет сигнал.»</i></p>`;
+      actions.push({
+        text: '🔧 «Иду к Прохору к верстаку»',
+        action: () => {
+          closeModal();
+          switchTab('tabCamp');
+          talkToNPC('prokhor');
+        },
+        primary: true
+      });
+    }
+    // Квест 12: Эхо на Скалистом утёсе (step 11)
+    else if (state.mainQuestStep === 11) {
+      const radioOk = !!state.questFlags.radio_repaired;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 12: ЭХО НА СКАЛИСТОМ УТЁСЕ]:</b></p>`;
+      body += `<p><i>«Возьми 3 металлолома и 2 проволоки. Поднимись на высотную Радиовышку на утесе и восстанови мачту связи. Мы должны поймать этот сигнал!»</i></p>`;
+
+      if (radioOk) {
+        body += `<p style="color:var(--accent-green);">✓ Антенна на Радиовышке восстановлена! Принят аварийный сигнал!</p>`;
+        actions.push({
+          text: '⭐ «Доложить Бате о пойманном сигнале (Завершить квест 12)»',
+          action: () => {
+            state.mainQuestStep = 12;
+            state.reputation += 35;
             addItem('ammo', 5);
-            addItem('clean_water', 2);
+            if (getItemCount('audio_tape') === 0) addItem('audio_tape', 1);
+            toast('⭐ Квест 12 выполнен: «Эхо на Скалистом утёсе» (+35 репутации, кассета Воронова)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            closeModal();
+            setTimeout(() => talkBatya(), 300);
+          },
+          primary: true
+        });
+      } else {
+        actions.push({
+          text: '📡 «Выдвигаюсь к Радиовышке на утесе»',
+          action: () => {
             if (!state.unlockedLocations.includes('radio_tower')) {
               state.unlockedLocations.push('radio_tower');
             }
+            closeModal();
+            switchTab('tabMap');
+            renderLocations();
+          },
+          primary: true
+        });
+      }
+    }
+    // Квест 13: Шифр Воронова (step 12 - куратор Прохор)
+    else if (state.mainQuestStep === 12) {
+      const decoded = !!state.questFlags.tape_decoded;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 13: ШИФР ВОРОНОВА]:</b></p>`;
+      body += `<p><i>«На пленке с вышки записан шифр профессора Воронова из НИИ «Сфера»! Иди к Прохору — у него в мастерской есть дешифратор и магнитофон.»</i></p>`;
+
+      if (decoded) {
+        body += `<p style="color:var(--accent-green);">✓ Запись Воронова расшифрована! Координаты Заброшенного кордона получены!</p>`;
+        actions.push({
+          text: '⭐ «Обсудить координаты кордона с Батей (Завершить квест 13)»',
+          action: () => {
+            state.mainQuestStep = 13;
+            state.reputation += 30;
+            addItem('ammo', 5);
+            if (!state.unlockedLocations.includes('old_cordon')) {
+              state.unlockedLocations.push('old_cordon');
+            }
+            toast('⭐ Квест 13 выполнен: «Шифр Воронова» (+30 репутации, открыт Заброшенный кордон)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderLocations();
+            renderQuests();
+            closeModal();
+            setTimeout(() => talkBatya(), 300);
+          },
+          primary: true
+        });
+      } else {
+        actions.push({
+          text: '📻 «Иду к Прохору расшифровывать пленку»',
+          action: () => {
+            closeModal();
+            switchTab('tabCamp');
+            talkToNPC('prokhor');
+          },
+          primary: true
+        });
+      }
+    }
+    // Квест 14: Тайна Заброшенного кордона (step 13)
+    else if (state.mainQuestStep === 13) {
+      const hasKeycard = getItemCount('keycard_sfera') > 0 || state.questFlags.cordon_searched;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 14: ТАЙНА ЗАБРОШЕННОГО КОРДОНА]:</b></p>`;
+      body += `<p><i>«Выдвигайся на Заброшенный кордон в предгорьях. Воронов оставил там ключ-карту допуска к Бункеру и полевой дневник. Найди их!»</i></p>`;
+
+      if (hasKeycard) {
+        body += `<p style="color:var(--accent-green);">✓ Дневник Воронова и ключ-карта «Сфера-Допуск» найдены!</p>`;
+        actions.push({
+          text: '⭐ «Сдать материалы кордона Бате (Завершить квест 14)»',
+          action: () => {
+            state.mainQuestStep = 14;
+            state.reputation += 40;
+            addItem('ammo', 8);
             if (!state.unlockedLocations.includes('hunting_grounds')) {
               state.unlockedLocations.push('hunting_grounds');
             }
-            toast('⭐ Квест выполнен: «Кризис чистой воды» (+30 репутации, +5 патронов, +2 воды)!');
+            toast('⭐ Квест 14 выполнен: «Тайна кордона» (+40 репутации, +8 патронов)!');
             sfx.playSuccess();
             updateHUD();
+            saveState();
             renderLocations();
             renderQuests();
             closeModal();
@@ -766,91 +1153,132 @@ const Game = (() => {
           },
           primary: true
         });
-      }
-    }
-    // Шаг 3: Эхо в эфире (ремонт радиовышки)
-    else if (state.mainQuestStep === 3) {
-      const radioOk = !!(state.questFlags && state.questFlags.radio_repaired);
-      const scrapCount = getItemCount('scrap');
-      const wireCount = getItemCount('wire');
-
-      if (!radioOk) {
-        body += `<p style="color:var(--accent-gold);"><b>[СЮЖЕТНОЕ ЗАДАНИЕ: «Эхо в эфире»]:</b></p>`;
-        body += `<p><i>«Вода теперь есть, но мы слепы и глухи в тайге. На скальном утесе стоит старая Радиовышка. Почини её антенну (требуется 3 металлолома и 2 проволоки). Мы обязаны перехватить частоты других выживших!»</i></p>`;
-        body += `<div style="background:rgba(0,0,0,0.3); padding:8px 10px; border-radius:6px; margin:8px 0; font-size:12px;">`;
-        body += `<b style="color:var(--accent-gold);">Необходимые материалы:</b><br>`;
-        body += `• Металлолом: <b>${scrapCount} / 3</b> ${scrapCount >= 3 ? '✅' : '❌ (ищите на Насосной станции №4)'}<br>`;
-        body += `• Моток проволоки: <b>${wireCount} / 2</b> ${wireCount >= 2 ? '✅' : '❌ (купите у Прохора или найдите на станции)'}`;
-        body += `</div>`;
-
-        if (scrapCount >= 3 && wireCount >= 2) {
-          actions.push({
-            text: '📡 «Батя, у меня с собой проволока и лом. Смонтировать антенну!»',
-            action: () => {
-              removeItem('scrap', 3);
-              removeItem('wire', 2);
-              if (!state.questFlags) state.questFlags = {};
-              state.questFlags.radio_repaired = true;
-              toast('⭐ Антенна радиовышки восстановлена! Принят сигнал выживших!');
-              sfx.playSuccess();
-              updateHUD();
-              saveState();
-              renderQuests();
-              closeModal();
-              setTimeout(() => talkBatya(), 300);
-            },
-            primary: true
-          });
-        }
-
+      } else {
         actions.push({
-          text: '🗺️ «Выдвигаюсь к Радиовышке на утесе»',
+          text: '🏚️ «Выдвигаюсь на Заброшенный кордон»',
           action: () => {
-            if (!state.unlockedLocations.includes('radio_tower')) {
-              state.unlockedLocations.push('radio_tower');
-            }
             closeModal();
             switchTab('tabMap');
-            renderLocations();
           },
-          primary: !(scrapCount >= 3 && wireCount >= 2)
+          primary: true
+        });
+      }
+    }
+    // Квест 15: Хозяин тайги (step 14 - куратор Егор)
+    else if (state.mainQuestStep === 14) {
+      const bearDead = !!state.questFlags.bear_defeated || getItemCount('bear_pelt') > 0;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 15: ХОЗЯИН ТАЙГИ]:</b></p>`;
+      body += `<p><i>«Путь через ущелье к Бункеру преградил гигантский медведь-шатун. Егор выследил его в Охотничьих угодьях. Одолей чудовище — и получишь лучшее оружие лагеря!»</i></p>`;
+
+      if (bearDead) {
+        body += `<p style="color:var(--accent-green);">✓ Хозяин тайги повержен! Шкура исполина у вас!</p>`;
+        actions.push({
+          text: '⭐ «Вручить Бате шкуру медведя и получить ТОЗ-34 (Завершить квест 15)»',
+          action: () => {
+            state.mainQuestStep = 15;
+            state.reputation += 60;
+            if (getItemCount('toz') === 0) addItem('toz', 1);
+            addItem('ammo', 10);
+            toast('⭐ КВЕСТ 15 ВЫПОЛНЕН: «Хозяин тайги» (+60 репутации, ружьё ТОЗ-34, 10 патронов)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            closeModal();
+            setTimeout(() => talkBatya(), 300);
+          },
+          primary: true
         });
       } else {
-        body += `<p style="color:var(--accent-green);"><b>[СИГНАЛ ПЕРЕХВАЧЕН!]:</b></p>`;
-        body += `<p><i>«Эфир заговорил! Антенна перехватила аварийный радиомаяк из запечатанного Бункера НИИ «Сфера»! Там хранится автономный генератор, архив исследований и медикаменты. Вот ключ-карта от гермодвери и охотничий ТОЗ-34 для защиты.»</i></p>`;
         actions.push({
-          text: '⭐ «Принять координаты Бункера «Сфера» (Завершить квест)»',
+          text: '🏹 «Иду к Егору разрабатывать план засады»',
           action: () => {
-            state.mainQuestStep = 4;
+            closeModal();
+            switchTab('tabCamp');
+            talkToNPC('egor');
+          },
+          primary: true
+        });
+      }
+    }
+    // Квест 16: Доспех сталкера (step 15 - куратор Прохор)
+    else if (state.mainQuestStep === 15) {
+      const hasSuit = getItemCount('stalker_suit') > 0 || state.questFlags.suit_crafted;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 16: ДОСПЕХ СТАЛКЕРА]:</b></p>`;
+      body += `<p><i>«Шкура Шатуна крепка как титан. Иди к Прохору — сшейте из нее Укреплённую броню сталкера. В Бункере без брони тебя разорвут турели!»</i></p>`;
+
+      if (hasSuit) {
+        body += `<p style="color:var(--accent-green);">✓ Броня сталкера изготовлена и готова к бою!</p>`;
+        actions.push({
+          text: '⭐ «Показать броню сталкера Бате (Завершить квест 16)»',
+          action: () => {
+            state.questFlags.suit_crafted = true;
+            state.mainQuestStep = 16;
+            state.reputation += 30;
+            addItem('ammo', 5);
+            toast('⭐ Квест 16 выполнен: «Доспех сталкера» (+30 репутации, +5 патронов)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            closeModal();
+            setTimeout(() => talkBatya(), 300);
+          },
+          primary: true
+        });
+      } else {
+        actions.push({
+          text: '🔨 «Иду к Прохору на верстак»',
+          action: () => {
+            closeModal();
+            switchTab('tabCamp');
+            talkToNPC('prokhor');
+          },
+          primary: true
+        });
+      }
+    }
+    // Квест 17: Дыхание бездны (step 16 - куратор Анна)
+    else if (state.mainQuestStep === 16) {
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 17: ДЫХАНИЕ БЕЗДНЫ]:</b></p>`;
+      body += `<p><i>«Анна изучила записи Воронова: в шахтах Бункера скопился тяжелый газ «Каскад-Б». Без специального респиратора Р-2 ты задохнешься. Срочно зайди в лазарет!»</i></p>`;
+      actions.push({
+        text: '🩺 «Иду в лазарет к Анне»',
+        action: () => {
+          closeModal();
+          switchTab('tabCamp');
+          talkToNPC('anna');
+        },
+        primary: true
+      });
+    }
+    // Квест 18: Штурм Бункера (step 17)
+    else if (state.mainQuestStep === 17) {
+      const turretsDead = !!state.questFlags.turrets_neutralized;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 18: ШТУРМ БУНКЕРА «СФЕРА»]:</b></p>`;
+      body += `<p><i>«Ты готов, боец. Заряди ТОЗ-34 патронами, надень респиратор Р-2, примени ключ-карту «Сфера» и подави турели охраны в гермоблоке Бункера!»</i></p>`;
+
+      if (turretsDead) {
+        body += `<p style="color:var(--accent-green);">✓ Гермоблок вскрыт, охранные турели нейтрализованы!</p>`;
+        actions.push({
+          text: '⭐ «Доложить Бате о прорыве обороны Бункера (Завершить квест 18)»',
+          action: () => {
+            state.mainQuestStep = 18;
             state.reputation += 50;
             addItem('ammo', 10);
-            if (getItemCount('toz') === 0) {
-              addItem('toz', 1);
-            }
-            if (!state.unlockedLocations.includes('bunker')) {
-              state.unlockedLocations.push('bunker');
-            }
-            toast('⭐ Квест выполнен: «Эхо в эфире» (+50 репутации, +10 патронов, ТОЗ-34)!');
+            toast('⭐ Квест 18 выполнен: «Штурм Бункера» (+50 репутации, +10 патронов)!');
             sfx.playSuccess();
             updateHUD();
-            renderLocations();
+            saveState();
             renderQuests();
             closeModal();
             setTimeout(() => talkBatya(), 300);
           },
           primary: true
         });
-      }
-    }
-    // Шаг 4: Секрет Бункера «Сфера»
-    else if (state.mainQuestStep === 4) {
-      const bunkerOk = !!state.questFlags.bunker_completed;
-
-      if (!bunkerOk) {
-        body += `<p style="color:var(--accent-gold);"><b>[СЮЖЕТНОЕ ЗАДАНИЕ: «Секрет Бункера «Сфера»»]:</b></p>`;
-        body += `<p><i>«Бункер «Сфера» открыт, но радиационный фон там чудовищный. Запасись цистамином у Анны, заряди ТОЗ-34 патронами и проникни вглубь комплекса. Раскрой тайну Катастрофы!»</i></p>`;
+      } else {
         actions.push({
-          text: '🗺️ «Выдвигаюсь на штурм Бункера «Сфера»»',
+          text: '🚪 «Выдвигаюсь на штурм Бункера «Сфера»»',
           action: () => {
             if (!state.unlockedLocations.includes('bunker')) {
               state.unlockedLocations.push('bunker');
@@ -861,33 +1289,70 @@ const Game = (() => {
           },
           primary: true
         });
-      } else {
-        body += `<p style="color:var(--accent-green);"><b>[ТРИУМФ «ЗАРИ»!]:</b></p>`;
-        body += `<p><i>«ТЫ ВЕРНУЛСЯ ЖИВЫМ! Научные архивы спасены, фильтрационные узлы подключены к резервному питанию. Отныне лагерь "Заря" — неприступный оплот жизни в мёртвой тайге! Ты — наш герой!»</i></p>`;
+      }
+    }
+    // Квест 19: Предотвращение Каскада-2 (step 18)
+    else if (state.mainQuestStep === 18) {
+      const shutdown = !!state.questFlags.reactor_shutdown;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 19: ПРЕДОТВРАЩЕНИЕ «КАСКАДА-2»]:</b></p>`;
+      body += `<p><i>«Датчики бункера воют сиреной: реактор перегрет, грядет второй химический выброс на всю долину! Пробейся в реакторный зал, заглуши стержни и забери научный архив и «Нектар-7»!»</i></p>`;
+
+      if (shutdown) {
+        body += `<p style="color:var(--accent-green);">✓ Реактор заглушен! Архив «Каскад» и капсула «Нектар-7» спасены!</p>`;
         actions.push({
-          text: '🏆 «Принять почести Героя лагеря «Заря» (Финал сюжета)»',
+          text: '⭐ «Доложить Бате о спасении всей тайги (Завершить квест 19)»',
           action: () => {
-            state.mainQuestStep = 5;
-            state.reputation += 100;
-            addItem('ammo', 20);
-            toast('🏆 СЮЖЕТНАЯ ЛИНИЯ ПОЛНОСТЬЮ ЗАВЕРШЕНА! ВЫ — ГЕРОЙ ЗАРЯ!');
+            state.mainQuestStep = 19;
+            state.reputation += 80;
+            toast('⭐ КВЕСТ 19 ВЫПОЛНЕН: «Каскад-2» предотвращён (+80 репутации)!');
             sfx.playSuccess();
             updateHUD();
+            saveState();
             renderQuests();
             closeModal();
-            showVictoryScreen();
+            setTimeout(() => talkBatya(), 300);
+          },
+          primary: true
+        });
+      } else {
+        actions.push({
+          text: '☢️ «Спускаюсь в реакторный зал Бункера»',
+          action: () => {
+            closeModal();
+            switchTab('tabMap');
           },
           primary: true
         });
       }
     }
-    // Шаг 5+: Финал и свободная игра
+    // Квест 20: Новый рассвет Зари (step 19 - Финал)
+    else if (state.mainQuestStep === 19) {
+      body += `<p style="color:var(--accent-gold); font-size:14px; font-weight:bold;">🏆 [ФИНАЛ: НОВЫЙ РАССВЕТ «ЗАРИ»]:</p>`;
+      body += `<p><i>«СЫНОК! ТЫ СДЕЛАЛ ЭТО! Ты спас лагерь, предотвратил второй взрыв и добыл лекарство для всей сибирской земли. Вся община собралась салютовать тебе!»</i></p>`;
+      actions.push({
+        text: '🏆 «Принять почести Героя и Легенды тайги (Торжественный Финал)»',
+        action: () => {
+          state.mainQuestStep = 20;
+          state.questFlags.bunker_completed = true;
+          state.reputation += 100;
+          toast('🏆 СЮЖЕТНАЯ КАМПАНИЯ ПОЛНОСТЬЮ ПРОЙДЕНА! ВЫ — ЛЕГЕНДА ТАЙГИ!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          renderQuests();
+          closeModal();
+          showVictoryScreen();
+        },
+        primary: true
+      });
+    }
+    // Постгейм (step 20+)
     else {
-      body += `<p style="color:var(--accent-gold);"><b>[ГЕРОЙ ЛАГЕРЯ «ЗАРЯ»]:</b></p>`;
-      body += `<p><i>«Здравствуй, легенда! О твоих подвигах у каждого костра говорят. Лагерь в безопасности благодаря тебе. Тайга всегда рада храбрецам — продолжай вылазки и держи порох сухим.»</i></p>`;
+      body += `<p style="color:var(--accent-gold);"><b>[ЛЕГЕНДА ЛАГЕРЯ «ЗАРЯ»]:</b></p>`;
+      body += `<p><i>«Здравствуй, легенда! О твоих подвигах у каждого костра слагают песни. Лагерь процветает благодаря тебе. Все тропы тайги открыты для тебя!»</i></p>`;
     }
 
-    body += `<p style="font-size:11px; color:var(--text-dim); margin-top:10px;">Ваша репутация у Бати: ${getReputationTitle(state.reputation)} (${state.reputation} очков)</p>`;
+    body += `<p style="font-size:11px; color:var(--text-dim); margin-top:10px;">Репутация в лагере: ${getReputationTitle(state.reputation)} (${state.reputation} очков)</p>`;
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }
 
@@ -901,9 +1366,9 @@ const Game = (() => {
 
     const actions = [];
 
-    // Квестовая ветка шага 1
+    // Квест 2
     if (state.mainQuestStep === 1) {
-      body += `<p style="color:var(--accent-gold);"><b>[СЮЖЕТ]:</b> Анна осматривает вас с ног до головы: <i>«Батя предупредил, что ты новенький. В тайге береги здоровье — радиация не прощает беспечности.»</i></p>`;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 2: УРОКИ ВЫЖИВАНИЯ]:</b> Анна осматривает вас: <i>«Батя предупредил, что ты новенький. В тайге береги здоровье — радиация не прощает беспечности.»</i></p>`;
       actions.push({
         text: '«Батя велел познакомиться с лазаретом. Рад встрече, Анна Павловна!»',
         action: () => {
@@ -917,9 +1382,109 @@ const Game = (() => {
       });
     }
 
+    // Квест 6: Мёртвые заводи (step 5)
+    if (state.mainQuestStep === 5) {
+      const hasSample = getItemCount('water_sample') > 0;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 6: МЁРТВЫЕ ЗАВОДИ]:</b></p>`;
+      body += `<p><i>«Беда! В Быстрянке всплывает дохлая рыба, вода пахнет химикатами. Срочно набери пробу токсичной воды на реке и принеси мне на экспресс-тест!»</i></p>`;
+      if (hasSample) {
+        actions.push({
+          text: '🧪 «Передать пробу токсичной воды Анне (Завершить квест 6)»',
+          action: () => {
+            removeItem('water_sample', 1);
+            state.questFlags.water_sample_given = true;
+            state.mainQuestStep = 6;
+            state.reputation += 20;
+            addItem('antirad', 1);
+            toast('⭐ Квест 6 выполнен: «Мёртвые заводи» (+20 репутации, цистамин)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            closeModal();
+            setTimeout(() => talkAnna(), 300);
+          },
+          primary: true
+        });
+      } else {
+        actions.push({
+          text: '🌊 «Выдвигаюсь на реку Быстрянку за пробой»',
+          action: () => {
+            closeModal();
+            switchTab('tabMap');
+          }
+        });
+      }
+    }
+
+    // Квест 8: Экспедиция в Гнилую гать (step 7)
+    if (state.mainQuestStep === 7) {
+      const mossCount = getItemCount('swamp_moss');
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 8: ЭКСПЕДИЦИЯ В ГНИЛУЮ ГАТЬ]:</b></p>`;
+      body += `<p><i>«Токсины из реки проникают в грунтовые воды. Единственный природный фильтр — болотный сфагнум. На торфяниках Гнилой гати добудь 2 пучка сфагнума!»</i></p>`;
+      if (mossCount >= 2) {
+        actions.push({
+          text: '🌿 «Передать болотный сфагнум Анне (Завершить квест 8)»',
+          action: () => {
+            removeItem('swamp_moss', 2);
+            state.mainQuestStep = 8;
+            state.reputation += 30;
+            addItem('herbal_salve', 2);
+            toast('⭐ Квест 8 выполнен: «Экспедиция в Гнилую гать» (+30 репутации, 2 целебные мази)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            closeModal();
+            setTimeout(() => talkAnna(), 300);
+          },
+          primary: true
+        });
+      } else {
+        actions.push({
+          text: '☣️ «Отправиться в Гнилую гать за сфагнумом»',
+          action: () => {
+            closeModal();
+            switchTab('tabMap');
+          }
+        });
+      }
+    }
+
+    // Квест 17: Дыхание бездны (step 16)
+    if (state.mainQuestStep === 16) {
+      const hasResp = getItemCount('respirator') > 0 || state.questFlags.respirator_crafted;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 17: ДЫХАНИЕ БЕЗДНЫ]:</b></p>`;
+      body += `<p><i>«В шахтах Бункера висит смертельный газ «Каскад-Б». Без респиратора Р-2 ты погибнешь. Собери 2 сфагнума, 1 пучок трав и свяжи респиратор на верстаке!»</i></p>`;
+      if (hasResp) {
+        actions.push({
+          text: '😷 «Показать готовый респиратор Р-2 Анне (Завершить квест 17)»',
+          action: () => {
+            state.questFlags.respirator_crafted = true;
+            state.mainQuestStep = 17;
+            state.reputation += 30;
+            addItem('antirad', 2);
+            if (!state.unlockedLocations.includes('bunker')) {
+              state.unlockedLocations.push('bunker');
+            }
+            toast('⭐ Квест 17 выполнен: «Дыхание бездны» (+30 репутации, открыт Бункер)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderLocations();
+            renderQuests();
+            closeModal();
+            setTimeout(() => talkAnna(), 300);
+          },
+          primary: true
+        });
+      }
+    }
+
+    // Стандартные услуги лазарета
     actions.push(
       {
-        text: 'Перевязать раны (Восстановить HP до 100 за 2 патрона)',
+        text: '🩹 Перевязать раны (Восстановить HP до 100 за 2 патрона)',
         action: () => {
           if (getItemCount('ammo') >= 2) {
             removeItem('ammo', 2);
@@ -934,7 +1499,7 @@ const Game = (() => {
         }
       },
       {
-        text: 'Купить цистамин от радиации (за 3 патрона)',
+        text: '💊 Купить цистамин от радиации (за 3 патрона)',
         action: () => {
           if (getItemCount('ammo') >= 3) {
             removeItem('ammo', 3);
@@ -948,7 +1513,7 @@ const Game = (() => {
         }
       },
       {
-        text: 'Сдать пучок трав в лазарет (+5 репутации, +1 патрон)',
+        text: '🌿 Сдать пучок трав в лазарет (+5 репутации, +1 патрон)',
         action: () => {
           if (getItemCount('herbs') >= 1) {
             removeItem('herbs', 1);
@@ -974,17 +1539,90 @@ const Game = (() => {
     state.questFlags.met_prokhor = true;
 
     let body = `<p>Кузьмич орудует напильником над куском рельса. Под ногами гора стружки и шестеренок.</p>`;
-    body += `<p><i>«Чего стоишь как чужой? Если руки из нужного места — подходи к верстаку, делай капканы да удочки. Принесешь металлолом — по рукам ударим.»</i></p>`;
+    body += `<p><i>«Чего стоишь как чужой? Если руки из нужного места — подходи к верстаку, делай капканы да факелы. Принесешь металлолом — по рукам ударим.»</i></p>`;
 
     const actions = [];
 
-    if (state.mainQuestStep === 3) {
-      body += `<p style="color:var(--accent-gold);"><b>[СОВЕТ МЕХАНИКА]:</b> <i>«Батя велел тебе антенну починить? Возьми 3 металлолома и 2 мотка проволоки. Если не хватает — могу продать проволоку.»</i></p>`;
+    // Квест 3: Совет по факелу
+    if (state.mainQuestStep === 2) {
+      body += `<p style="color:var(--accent-gold);"><b>[СОВЕТ МЕХАНИКА]:</b> <i>«Батя просил факел? Возьми 1 сухое полено и 1 проволоку — на верстаке за минуту свяжешь отличный смоляной факел.»</i></p>`;
     }
 
+    // Квест 10: Сборка гидроузла насосной
+    if (state.mainQuestStep === 9) {
+      const hasMembrane = getItemCount('filter_membrane') > 0 || state.questFlags.has_membrane;
+      const scrapCount = getItemCount('scrap');
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 10: СЕРДЦЕ ФИЛЬТРА]:</b> <i>«Принёс мембрану и 3 лома со станции? Давай сюда, перепаяем штуцера и пустим чистую воду в лагерь!»</i></p>`;
+      if (hasMembrane && scrapCount >= 3) {
+        actions.push({
+          text: '🔧 «Смонтировать водоочистной узел вместе с Прохором»',
+          action: () => {
+            if (getItemCount('filter_membrane') > 0) removeItem('filter_membrane', 1);
+            removeItem('scrap', 3);
+            state.questFlags.pump_repaired = true;
+            toast('Станция запущена! Чистая вода пошла в баки лагеря!');
+            sfx.playSuccess();
+            talkProkhor();
+          },
+          primary: true
+        });
+      }
+    }
+
+    // Квест 11: Морзе в ночи (step 10)
+    if (state.mainQuestStep === 10) {
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 11: МОРЗЕ В НОЧИ]:</b></p>`;
+      body += `<p><i>«Слушай сюда: в 03:00 мой приемник Р-326 поймал сигнал SOS на частоте 142.5 МГц! Кто-то просит помощи из закрытого сектора. Держи схему ретранслятора, беги к Бате — нужно идти на Радиовышку!»</i></p>`;
+      actions.push({
+        text: '📜 «Взять схему ретранслятора и пойти к Бате»',
+        action: () => {
+          state.questFlags.met_prokhor_radio = true;
+          state.mainQuestStep = 11;
+          state.reputation += 20;
+          if (!state.unlockedLocations.includes('radio_tower')) {
+            state.unlockedLocations.push('radio_tower');
+          }
+          toast('⭐ Квест 11 выполнен: «Морзе в ночи» (+20 репутации, открыта Радиовышка)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          renderLocations();
+          renderQuests();
+          closeModal();
+          setTimeout(() => talkBatya(), 300);
+        },
+        primary: true
+      });
+    }
+
+    // Квест 13: Шифр Воронова (step 12)
+    if (state.mainQuestStep === 12) {
+      const hasTape = getItemCount('audio_tape') > 0;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 13: ШИФР ВОРОНОВА]:</b> <i>«Ты принёс кассету с Радиовышки? Давай её сюда, зарядим в магнитофон!»</i></p>`;
+      if (hasTape) {
+        actions.push({
+          text: '📻 «Вставить кассету в магнитофон и прослушать запись Воронова»',
+          action: () => {
+            state.questFlags.tape_decoded = true;
+            toast('📻 «...Говорит профессор Воронов. Бункер запечатан. Ключ-карта на Заброшенном кордоне...»');
+            sfx.playSuccess();
+            talkProkhor();
+          },
+          primary: true
+        });
+      }
+    }
+
+    // Квест 16: Доспех сталкера (step 15)
+    if (state.mainQuestStep === 15) {
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 16: ДОСПЕХ СТАЛКЕРА]:</b></p>`;
+      body += `<p><i>«Шкура Хозяина тайги у тебя? На верстаке из неё, 3 металлолома и 2 проволок сошьем настоящую броню сталкера! Она и от пуль защитит, и вещмешок расширит до 30 кг!»</i></p>`;
+    }
+
+    // Стандартные услуги Прохора
     actions.push(
       {
-        text: 'Улучшить вещмешок до 25 кг (за 5 металлолома)',
+        text: '🎒 Улучшить вещмешок до 25 кг (за 5 металлолома)',
         action: () => {
           if (state.maxWeight >= 25) {
             toast('Вещмешок уже улучшен!');
@@ -1001,7 +1639,7 @@ const Game = (() => {
         }
       },
       {
-        text: 'Купить моток сталистой проволоки (за 2 патрона)',
+        text: '🔧 Купить моток сталистой проволоки (за 2 патрона)',
         action: () => {
           if (getItemCount('ammo') >= 2) {
             removeItem('ammo', 2);
@@ -1029,9 +1667,9 @@ const Game = (() => {
 
     const actions = [];
 
-    // Квестовая ветка шага 1
+    // Квест 2
     if (state.mainQuestStep === 1) {
-      body += `<p style="color:var(--accent-gold);"><b>[СЮЖЕТ]:</b> Егор кивает вам: <i>«Батя говорил про тебя. Держись ближе к реке, учись ловить рыбу — тогда не пропадёшь.»</i></p>`;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 2: УРОКИ ВЫЖИВАНИЯ]:</b> Егор кивает вам: <i>«Батя говорил про тебя. Держись ближе к реке, учись ловить рыбу — тогда не пропадёшь.»</i></p>`;
       actions.push({
         text: '«Батя велел перенять таёжный опыт. Рад знакомству, Егор!»',
         action: () => {
@@ -1045,9 +1683,86 @@ const Game = (() => {
       });
     }
 
+    // Квест 4: Голодный рассвет (step 3)
+    if (state.mainQuestStep === 3) {
+      const hasFishMeal = getItemCount('fish_soup') > 0 || getItemCount('cooked_fish') > 0;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 4: ГОЛОДНЫЙ РАССВЕТ]:</b></p>`;
+      body += `<p><i>«В лагере шаром покати. Сделай удочку на верстаке, вылови рыбу на Быстрянке и приготовь её на костре (запеки или свари уху). Покажи, что умеешь кормить общину!»</i></p>`;
+      if (hasFishMeal) {
+        actions.push({
+          text: '🍲 «Угостить Егора свежей рыбой с костра (Завершить квест 4)»',
+          action: () => {
+            if (getItemCount('fish_soup') > 0) removeItem('fish_soup', 1);
+            else removeItem('cooked_fish', 1);
+            state.mainQuestStep = 4;
+            state.reputation += 20;
+            addItem('ammo', 2);
+            toast('⭐ Квест 4 выполнен: «Голодный рассвет» (+20 репутации, +2 патрона)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            closeModal();
+            setTimeout(() => talkEgor(), 300);
+          },
+          primary: true
+        });
+      } else {
+        actions.push({
+          text: '🎣 «Отправиться на реку ловить рыбу»',
+          action: () => {
+            closeModal();
+            switchTab('tabMap');
+          }
+        });
+      }
+    }
+
+    // Квест 7: Следы на иле (step 6)
+    if (state.mainQuestStep === 6) {
+      const hasLeather = getItemCount('leather') > 0;
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 7: СЛЕДЫ НА ИЛЕ]:</b></p>`;
+      body += `<p><i>«У кромки воды появились следы болотных мутантов. Сколоти капкан на верстаке у Прохора, взведи на берегу или в угодьях и добудь шкуру зверя!»</i></p>`;
+      if (hasLeather) {
+        actions.push({
+          text: '🐾 «Показать шкуру зверя Егору (Завершить квест 7)»',
+          action: () => {
+            state.mainQuestStep = 7;
+            state.reputation += 25;
+            addItem('ammo', 3);
+            toast('⭐ Квест 7 выполнен: «Следы на иле» (+25 репутации, +3 патрона)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            closeModal();
+            setTimeout(() => talkEgor(), 300);
+          },
+          primary: true
+        });
+      }
+    }
+
+    // Квест 15: Хозяин тайги (step 14)
+    if (state.mainQuestStep === 14) {
+      body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 15: ХОЗЯИН ТАЙГИ]:</b></p>`;
+      body += `<p><i>«Шатун — не простой медведь. Его бока покрыты костяными наростами от мутаций. Бей копьём под лопатку или трижды стреляй в пасть. Иди в Охотничьи угодья, я помогу выследить зверя по следу!»</i></p>`;
+      actions.push({
+        text: '🏹 «Принять охотничий совет Егора по Шатуну»',
+        action: () => {
+          state.questFlags.talked_bear = true;
+          toast('Вы узнали уязвимые места Хозяина тайги!');
+          sfx.playSuccess();
+          talkEgor();
+        },
+        primary: true
+      });
+    }
+
+    // Стандартные услуги Егора
     actions.push(
       {
-        text: 'Взять горсть червей для рыбалки (бесплатно)',
+        text: '🪱 Взять горсть червей для рыбалки (бесплатно)',
         action: () => {
           addItem('worms', 3);
           toast('Егор отсыпал 3 червя для наживки.');
@@ -1056,13 +1771,13 @@ const Game = (() => {
         }
       },
       {
-        text: 'Сдать 2 сырые рыбы для общего котла (+10 репутации, +2 патрона)',
+        text: '🐟 Сдать 2 сырые рыбы в общий котёл (+10 репутации, +2 патрона)',
         action: () => {
           if (getItemCount('raw_fish') >= 2) {
             removeItem('raw_fish', 2);
             addItem('ammo', 2);
             state.reputation += 10;
-            toast('Егор принял рыбу в общую кухню (+10 репутации)');
+            toast('Егор принял рыбу в общую кухню (+10 репутации, +2 патрона)');
             sfx.playSuccess();
             closeModal();
           } else {
@@ -1147,10 +1862,17 @@ const Game = (() => {
 
     // Действия на реке
     if (loc.id === 'river') {
+      if (state.mainQuestStep === 5 && !state.questFlags.water_sample_given && getItemCount('water_sample') === 0) {
+        actions.push({
+          text: '🧪 Набрать пробу токсичной воды для Анны (Квест 6)',
+          action: () => doGatherToxicWater(loc),
+          primary: true
+        });
+      }
       actions.push({
         text: '🎣 Рыбачить на удочку (нужна удочка и наживка)',
         action: () => doFishing(loc),
-        primary: true
+        primary: state.mainQuestStep !== 5
       });
       actions.push({
         text: '💧 Набрать речной воды во флягу',
@@ -1164,10 +1886,17 @@ const Game = (() => {
 
     // Действия в лесу
     if (loc.id === 'forest') {
+      if (state.mainQuestStep === 4 && !state.questFlags.dogs_defeated) {
+        actions.push({
+          text: '⚔️ Отразить набег одичавших псов копьём (Квест 5)',
+          action: () => doFightDogs(loc),
+          primary: true
+        });
+      }
       actions.push({
         text: '🌲 Заготовить сухие дрова',
         action: () => doGatherWood(loc),
-        primary: true
+        primary: state.mainQuestStep !== 4
       });
       actions.push({
         text: '🌿 Собрать травы и бруснику',
@@ -1179,25 +1908,66 @@ const Game = (() => {
       });
     }
 
-    // Насосная станция
-    if (loc.id === 'pump_station') {
+    // Болота: Гнилая гать
+    if (loc.id === 'swamp') {
       actions.push({
-        text: '🔍 Обыскать цех фильтрации (поиск мембраны)',
-        action: () => doScavengeStation(loc),
+        text: '🌿 Собрать болотный сфагнум (нужен для квестов и мази)',
+        action: () => doGatherMoss(loc),
         primary: true
       });
+      actions.push({
+        text: '🔍 Исследовать топь (поиск полезного хлама)',
+        action: () => doScavengeSwamp(loc)
+      });
+    }
+
+    // Насосная станция
+    if (loc.id === 'pump_station') {
+      if (state.mainQuestStep === 8 && !state.questFlags.pump_cleared) {
+        actions.push({
+          text: '💥 Расчистить завал у цеха станции (Квест 9)',
+          action: () => doClearPumpDebris(loc),
+          primary: true
+        });
+      } else {
+        actions.push({
+          text: '🔍 Обыскать цех фильтрации (поиск мембраны)',
+          action: () => doScavengeStation(loc),
+          primary: true
+        });
+      }
     }
 
     // Охотничьи угодья
     if (loc.id === 'hunting_grounds') {
+      if (state.mainQuestStep === 14 && !state.questFlags.bear_defeated) {
+        actions.push({
+          text: '🐻 Выследить и победить Хозяина тайги (Квест 15)',
+          action: () => doHuntBear(loc),
+          primary: true
+        });
+      }
       actions.push({
         text: '🪤 Установить капкан на крупного зверя',
         action: () => doSetBigTrap(loc),
-        primary: true
+        primary: state.mainQuestStep !== 14
       });
       actions.push({
         text: '🐗 Активная охота в тайге',
         action: () => doActiveHunt(loc)
+      });
+    }
+
+    // Заброшенный кордон
+    if (loc.id === 'old_cordon') {
+      actions.push({
+        text: '🔍 Обыскать дом и тайник в погребе (Квест 14 / Припасы)',
+        action: () => doSearchCordon(loc),
+        primary: true
+      });
+      actions.push({
+        text: '📦 Осмотреть сарай и верстак кордона',
+        action: () => doScavengeCordon(loc)
       });
     }
 
@@ -1214,13 +1984,13 @@ const Game = (() => {
             <b style="color:var(--accent-gold);">📡 Материалы для ремонта антенны:</b>
             <div style="margin-top:5px; display:flex; flex-direction:column; gap:4px;">
               <div style="color:${scrapCount >= 3 ? 'var(--accent-green)' : 'var(--accent-danger)'};">
-                ${scrapCount >= 3 ? '✅' : '❌'} Металлолом: <b>${scrapCount} / 3</b> ${scrapCount < 3 ? '<span style="font-size:10px; opacity:0.8;">(ищите на Насосной станции №4)</span>' : ''}
+                ${scrapCount >= 3 ? '✅' : '❌'} Металлолом: <b>${scrapCount} / 3</b>
               </div>
               <div style="color:${wireCount >= 2 ? 'var(--accent-green)' : 'var(--accent-danger)'};">
-                ${wireCount >= 2 ? '✅' : '❌'} Моток проволоки: <b>${wireCount} / 2</b> ${wireCount < 2 ? '<span style="font-size:10px; opacity:0.8;">(купите у Прохора или найдите на станции)</span>' : ''}
+                ${wireCount >= 2 ? '✅' : '❌'} Моток проволоки: <b>${wireCount} / 2</b>
               </div>
               <div style="color:${state.energy >= loc.energyCost ? 'var(--accent-green)' : 'var(--accent-danger)'};">
-                ${state.energy >= loc.energyCost ? '✅' : '❌'} Энергия: <b>${Math.round(state.energy)}% / ${loc.energyCost}%</b> ${state.energy < loc.energyCost ? '<span style="font-size:10px; opacity:0.8;">(отдохните в бараке)</span>' : ''}
+                ${state.energy >= loc.energyCost ? '✅' : '❌'} Энергия: <b>${Math.round(state.energy)}% / ${loc.energyCost}%</b>
               </div>
             </div>
           </div>
@@ -1233,17 +2003,6 @@ const Game = (() => {
           action: () => doRepairAntenna(loc),
           primary: hasEnough
         });
-
-        if (wireCount < 2) {
-          actions.push({
-            text: '🔧 Купить проволоку у Прохора в лагере (2 патрона/шт)',
-            action: () => {
-              closeModal();
-              switchTab('tabCamp');
-              talkToNPC('prokhor');
-            }
-          });
-        }
       } else {
         body += `<div style="background:rgba(30,50,35,0.5); border:1px solid var(--accent-green); border-radius:6px; padding:6px 10px; margin:8px 0; color:var(--accent-green); font-size:12px;">
           ✓ Антенна связи восстановлена! Принят аварийный сигнал НИИ «Сфера».
@@ -1263,17 +2022,23 @@ const Game = (() => {
       });
     }
 
-    // Бункер
+    // Бункер НИИ «Сфера»
     if (loc.id === 'bunker') {
-      if (!state.questFlags || !state.questFlags.bunker_completed) {
+      if (state.mainQuestStep === 17 && !state.questFlags.turrets_neutralized) {
         actions.push({
-          text: '🚪 Вскрыть гермодверь и зачистить Бункер',
+          text: '🚪 Вскрыть гермодверь ключ-картой и подавить турели (Квест 18)',
           action: () => doEnterBunker(loc),
+          primary: true
+        });
+      } else if (state.mainQuestStep === 18 && !state.questFlags.reactor_shutdown) {
+        actions.push({
+          text: '☢️ Прорваться в реакторный зал и заглушить реактор (Квест 19)',
+          action: () => doShutdownReactor(loc),
           primary: true
         });
       } else {
         actions.push({
-          text: '📦 Осмотреть склады Бункера',
+          text: '📦 Осмотреть научные склады Бункера',
           action: () => doScavengeBunker(loc),
           primary: true
         });
@@ -1283,14 +2048,14 @@ const Game = (() => {
     openModal(loc.name, `Вылазка в Тир ${loc.tier}`, loc.icon, body, actions);
   }
 
-  // --- КОНКРЕТНЫЕ АКТИВНОСТИ ---
+  // --- КОНКРЕТНЫЕ АКТИВНОСТИ ВЫЛАЗОК ---
   function doFishing(loc) {
     if (state.energy < loc.energyCost) {
       toast('Недостаточно сил для рыбалки!');
       return;
     }
     if (getItemCount('rod') < 1) {
-      toast('У вас нет удочки! Скрафтите её на верстаке.');
+      toast('У вас нет удочки! Скрафтите её на верстаке у Прохора.');
       return;
     }
     if (getItemCount('worms') < 1) {
@@ -1331,6 +2096,18 @@ const Game = (() => {
     state.energy -= 5;
     addItem('raw_water', 1);
     toast('💧 Набрана фляга речной воды (требует кипячения!).');
+    passTime(0.5);
+    closeModal();
+  }
+
+  function doGatherToxicWater(loc) {
+    sfx.init();
+    sfx.playSplash();
+    state.energy -= 5;
+    state.rad += 5;
+    addItem('water_sample', 1);
+    toast('🧪 Набрана проба токсичной желтоватой воды. Отнесите Анне в лагерь!');
+    sfx.playSuccess();
     passTime(0.5);
     closeModal();
   }
@@ -1392,6 +2169,91 @@ const Game = (() => {
     closeModal();
   }
 
+  function doFightDogs(loc) {
+    if (getItemCount('spear') < 1 && getItemCount('toz') < 1) {
+      toast('Вам нужно оружие! Скрафтите охотничье копьё на верстаке.');
+      return;
+    }
+    sfx.init();
+    sfx.playSuccess();
+    state.energy -= 20;
+    state.hp = Math.max(10, state.hp - 15);
+    state.questFlags.dogs_defeated = true;
+    addItem('raw_meat', 2);
+    addItem('leather', 1);
+    toast('💥 СТАЯ ПСОВ РАЗБИТА! Вы отбились копьём (+2 мяса, +1 шкура). Доложите Бате!');
+    passTime(1.5);
+    updateHUD();
+    saveState();
+    renderQuests();
+    closeModal();
+  }
+
+  function doGatherMoss(loc) {
+    if (state.energy < loc.energyCost) {
+      toast('Недостаточно сил для сбора сфагнума!');
+      return;
+    }
+    sfx.init();
+    sfx.playClick();
+    state.energy -= loc.energyCost;
+    state.rad += loc.rad;
+    if (!state.questFlags) state.questFlags = {};
+    state.questFlags.swamp_explored = true;
+    addItem('swamp_moss', 2);
+    toast('🌿 Собрано 2 пучка болотного сфагнума для фильтров и мазей.');
+    passTime(1);
+    updateHUD();
+    saveState();
+    renderQuests();
+    closeModal();
+  }
+
+  function doScavengeSwamp(loc) {
+    if (state.energy < loc.energyCost) {
+      toast('Слишком устали.');
+      return;
+    }
+    sfx.init();
+    sfx.playClick();
+    state.energy -= loc.energyCost;
+    state.rad += loc.rad;
+    if (!state.questFlags) state.questFlags = {};
+    state.questFlags.swamp_explored = true;
+    passTime(1.5);
+    if (Math.random() > 0.5) {
+      addItem('scrap', 2);
+      toast('В торфянике найдены ржавые металлические скобы (+2 лома).');
+    } else {
+      addItem('swamp_moss', 1);
+      addItem('herbs', 1);
+      toast('На кочке найден сфагнум и болотный багульник.');
+    }
+    updateHUD();
+    saveState();
+    renderQuests();
+    closeModal();
+  }
+
+  function doClearPumpDebris(loc) {
+    if (state.energy < 25) {
+      toast('Нужно минимум 25% энергии для расчистки завала!');
+      return;
+    }
+    sfx.init();
+    sfx.playSuccess();
+    state.energy -= 25;
+    state.rad += loc.rad;
+    state.questFlags.pump_cleared = true;
+    addItem('scrap', 3);
+    toast('💥 ЗАВАЛ РАСЧИЩЕН! Проход к машинному залу свободен. Доложите Бате!');
+    passTime(2);
+    updateHUD();
+    saveState();
+    renderQuests();
+    closeModal();
+  }
+
   function doScavengeStation(loc) {
     if (state.energy < loc.energyCost) {
       toast(`Недостаточно сил для обыска! Нужно ${loc.energyCost}% энергии.`);
@@ -1405,12 +2267,12 @@ const Game = (() => {
 
     if (!state.questFlags) state.questFlags = {};
 
-    if ((state.mainQuestStep === 2 || !state.questFlags?.has_membrane) && getItemCount('filter_membrane') === 0) {
+    if ((state.mainQuestStep === 9 || !state.questFlags?.has_membrane) && getItemCount('filter_membrane') === 0) {
       addItem('filter_membrane', 1);
       addItem('scrap', 3);
       addItem('wire', 1);
       state.questFlags.has_membrane = true;
-      toast('⭐ НАЙДЕНА КЕРАМИЧЕСКАЯ МЕМБРАНА, лом и проволока! Вернитесь к Бате.');
+      toast('⭐ НАЙДЕНА КЕРАМИЧЕСКАЯ МЕМБРАНА, лом и проволока! Отнесите Прохору и Бате.');
       sfx.playSuccess();
     } else {
       addItem('scrap', 2);
@@ -1421,6 +2283,75 @@ const Game = (() => {
         toast('Насосная станция: найдено 2 ед. металлолома.');
       }
     }
+    updateHUD();
+    saveState();
+    renderQuests();
+    closeModal();
+  }
+
+  function doSearchCordon(loc) {
+    if (state.energy < loc.energyCost) {
+      toast('Недостаточно сил для обыска кордона!');
+      return;
+    }
+    sfx.init();
+    sfx.playSuccess();
+    state.energy -= loc.energyCost;
+    state.rad += loc.rad;
+    passTime(2);
+
+    if (state.mainQuestStep === 13 || (!state.questFlags?.cordon_searched && getItemCount('keycard_sfera') === 0)) {
+      addItem('keycard_sfera', 1);
+      addItem('note_voronov', 1);
+      addItem('ammo', 5);
+      addItem('canned_food', 1);
+      state.questFlags.cordon_searched = true;
+      toast('⭐ В ПОДПОЛЕ НАЙДЕНЫ: Ключ-карта «Сфера», Дневник Воронова и тушёнка! Доложите Бате!');
+    } else {
+      addItem('scrap', 2);
+      addItem('firewood', 2);
+      toast('На кордоне найдены сухие дрова и металлолом.');
+    }
+    updateHUD();
+    saveState();
+    renderQuests();
+    closeModal();
+  }
+
+  function doScavengeCordon(loc) {
+    if (state.energy < 15) {
+      toast('Слишком устали.');
+      return;
+    }
+    sfx.init();
+    sfx.playClick();
+    state.energy -= 15;
+    passTime(1);
+    addItem('scrap', 2);
+    if (Math.random() > 0.5) addItem('canned_food', 1);
+    toast('В сарае кордона найден металлолом.');
+    closeModal();
+  }
+
+  function doHuntBear(loc) {
+    if (state.hp < 40) {
+      toast('Вы слишком ранены для битвы с Шатуном!');
+      return;
+    }
+    if (getItemCount('spear') < 1 && getItemCount('toz') < 1 && getItemCount('knife') < 1) {
+      toast('Идти на Шатуна с голыми руками — верная гибель! Вооружитесь копьём или ружьём.');
+      return;
+    }
+
+    sfx.init();
+    sfx.playSuccess();
+    state.energy -= 30;
+    state.hp = Math.max(15, state.hp - 30);
+    state.questFlags.bear_defeated = true;
+    addItem('bear_pelt', 1);
+    addItem('raw_meat', 3);
+    toast('💥 ХОЗЯИН ТАЙГИ ПОВЕРЖЕН! Добыта шкура медведя-шатуна (+3 мяса). Доложите Бате!');
+    passTime(2);
     updateHUD();
     saveState();
     renderQuests();
@@ -1455,15 +2386,15 @@ const Game = (() => {
     const hasGun = getItemCount('toz') > 0 && getItemCount('ammo') > 0;
     const roll = Math.random();
 
-    if (hasGun && roll > 0.4) {
+    if (hasGun && roll > 0.3) {
       removeItem('ammo', 1);
       addItem('raw_meat', 2);
       addItem('leather', 1);
-      toast('💥 Удачный выстрел из ТОЗ! Добыт таёжный кабан (+2 мяса, +1 шкура).');
+      toast('💥 Удачный выстрел из ТОЗ-34! Добыт таёжный кабан (+2 мяса, +1 шкура).');
       sfx.playSuccess();
-    } else if (roll > 0.6) {
+    } else if (roll > 0.5) {
       addItem('raw_meat', 1);
-      toast('🏹 Охота ножом: подстрелен заяц (+1 мясо).');
+      toast('🏹 Охота: подстрелен заяц (+1 мясо).');
     } else {
       state.hp -= 15;
       toast('🐺 Нападение стаи диких собак! Вы отбились, но ранены (-15% HP).');
@@ -1480,7 +2411,7 @@ const Game = (() => {
     const wireCount = getItemCount('wire');
 
     if (state.energy < loc.energyCost) {
-      toast(`Недостаточно сил для ремонта антенны! Нужно ${loc.energyCost}% энергии (у вас ${Math.round(state.energy)}%). Отдохните в бараке.`);
+      toast(`Недостаточно сил для ремонта антенны! Нужно ${loc.energyCost}% энергии.`);
       return;
     }
 
@@ -1499,7 +2430,8 @@ const Game = (() => {
 
     if (!state.questFlags) state.questFlags = {};
     state.questFlags.radio_repaired = true;
-    toast('⭐ АНТЕННА ВОССТАНОВЛЕНА! Пойман сигнал из Бункера «Сфера». Доложите Бате!');
+    if (getItemCount('audio_tape') === 0) addItem('audio_tape', 1);
+    toast('⭐ АНТЕННА ВОССТАНОВЛЕНА! Перехвачена кассета с записью профессора Воронова! Доложите Бате!');
     sfx.playSuccess();
     updateHUD();
     saveState();
@@ -1516,17 +2448,17 @@ const Game = (() => {
     sfx.playClick();
     state.energy -= 10;
     passTime(1);
-    toast('🔭 С вышки виден дым костров «Зари» и бетонный купол Бункера «Сфера» на горизонте.');
+    toast('🔭 С вышки виден дым костров «Зари», кордон лесничества и бетонный купол Бункера «Сфера».');
     closeModal();
   }
 
   function doEnterBunker(loc) {
     if (state.energy < loc.energyCost) {
-      toast('Слишком мало сил для опасного штурма бункера!');
+      toast('Слишком мало сил для штурма бункера!');
       return;
     }
-    if (state.rad > 60) {
-      toast('Опасный уровень радиации! Примите цистамин перед спуском в гермоблок.');
+    if (getItemCount('keycard_sfera') < 1 && !state.questFlags.bunker_entered) {
+      toast('Гермодверь заперта! Нужна электронная ключ-карта «Сфера» (найдите на Заброшенном кордоне).');
       return;
     }
 
@@ -1534,34 +2466,47 @@ const Game = (() => {
     sfx.playClick();
     state.energy -= loc.energyCost;
     state.rad += 30;
-    passTime(3);
+    passTime(2);
 
     const hasWeapon = getItemCount('toz') > 0 && getItemCount('ammo') >= 2;
-    const hasKnife = getItemCount('knife') > 0;
-
     if (hasWeapon) {
       removeItem('ammo', 2);
-      if (!state.questFlags) state.questFlags = {};
-      state.questFlags.bunker_completed = true;
-      addItem('antirad', 2);
-      addItem('clean_water', 3);
-      addItem('ammo', 10);
-      toast('⭐ БУНКЕР ЗАЧИЩЕН! Вы нейтрализовали турели и спасли архив проекта «Каскад»!');
-      sfx.playSuccess();
-    } else if (hasKnife && state.hp >= 50) {
-      state.hp -= 35;
-      if (!state.questFlags) state.questFlags = {};
-      state.questFlags.bunker_completed = true;
-      addItem('antirad', 1);
-      addItem('clean_water', 2);
-      toast('⚡ Прорыв с боем! Вы ранены (-35 HP), но спасли архив проекта «Каскад»!');
-      sfx.playSuccess();
     } else {
-      state.hp -= 40;
-      toast('Охранные роботы Бункера слишком сильны! Вы отступили с ранениями (-40 HP). Вооружитесь ружьём и патронами!');
+      state.hp = Math.max(10, state.hp - 35);
     }
 
+    if (!state.questFlags) state.questFlags = {};
+    state.questFlags.bunker_entered = true;
+    state.questFlags.turrets_neutralized = true;
+    addItem('antirad', 2);
+    addItem('clean_water', 2);
+    addItem('ammo', 5);
+    toast('⭐ ОХРАННЫЕ ТУРЕЛИ ПОДАВЛЕНЫ! Проход в глубины Бункера открыт! Доложите Бате.');
+    sfx.playSuccess();
     updateHUD();
+    saveState();
+    renderQuests();
+    closeModal();
+  }
+
+  function doShutdownReactor(loc) {
+    if (getItemCount('respirator') < 1 && !state.questFlags.respirator_crafted) {
+      toast('В реакторном зале ядовитый газ! Наденьте респиратор Р-2 перед спуском.');
+      return;
+    }
+
+    sfx.init();
+    sfx.playSuccess();
+    state.energy -= 20;
+    state.rad += 25;
+    passTime(2);
+
+    state.questFlags.reactor_shutdown = true;
+    addItem('floppy_disk', 1);
+    addItem('stabilizer_nectar', 1);
+    toast('⭐ РЕАКТОР ЗАГЛУШЕН! Катастрофа предотвращена! Архив «Каскад» и «Нектар-7» спасены! Срочно к Бате!');
+    updateHUD();
+    saveState();
     renderQuests();
     closeModal();
   }
@@ -1577,24 +2522,26 @@ const Game = (() => {
     state.rad += loc.rad;
     passTime(2);
     addItem('scrap', 3);
-    if (Math.random() > 0.5) addItem('antirad', 1);
-    toast('В Бункере найден металлолом и ценные медикаменты.');
+    if (Math.random() > 0.4) addItem('antirad', 1);
+    if (Math.random() > 0.6) addItem('ammo', 3);
+    toast('В Бункере найден металлолом, патроны и медикаменты.');
     closeModal();
   }
 
   function showVictoryScreen() {
-    const title = '🏆 ПОБЕДА! ВЫ СПАСЛИ ЛАГЕРЬ «ЗАРЯ»!';
-    const sub = 'Сюжетная кампания успешно завершена';
+    const title = '🏆 ВЕЛИКАЯ ПОБЕДА! СПАСЕНИЕ ЛАГЕРЯ «ЗАРЯ»!';
+    const sub = 'Сюжетная сага из 20 квестов успешно завершена';
     const body = `
-      <p style="color:var(--accent-gold); font-size:14px; font-weight:bold;">Майор Дмитрий и вся община салютуют вам!</p>
-      <p>Вы прошли путь от истощённого путника до легендарного защитника лагеря «Заря». Колодцы снабжены чистой водой, в эфире найдены союзники, а архивы НИИ «Сфера» помогут восстановить нормальную жизнь в тайге.</p>
-      <div style="background:rgba(0,0,0,0.4); padding:10px; border-radius:8px; margin:12px 0; border:1px solid rgba(255,255,255,0.15);">
-        <b>Ваши достижения:</b><br>
-        • Финальная репутация: <b>${state.reputation}</b> (${getReputationTitle(state.reputation)})<br>
-        • Прожито дней: <b>${state.day}</b><br>
-        • Все локации тайги открыты и исследованы!
+      <p style="color:var(--accent-gold); font-size:14px; font-weight:bold;">Майор Дмитрий и вся община лагеря салютуют вам!</p>
+      <p>Вы прошли колоссальный путь: от истощённого беженца до легендарного защитника тайги. Реактор НИИ «Сфера» заглушен, повторный ядовитый выброс остановлен навсегда, а биостабилизатор «Нектар-7» очистит сибирские земли и вернёт людям жизнь!</p>
+      <div style="background:rgba(0,0,0,0.45); padding:10px 14px; border-radius:8px; margin:12px 0; border:1px solid rgba(255,255,255,0.15); line-height:1.6;">
+        <b>Ваш итоговый послужной список:</b><br>
+        • Финальный статус: <b>${getReputationTitle(state.reputation)}</b> (${state.reputation} очков репутации)<br>
+        • Прожито дней в тайге: <b>${state.day}</b><br>
+        • Выполнены все 20 ключевых сюжетных заданий!<br>
+        • Открыты все сектора карты: Быстрянка, Лес, Гнилая гать, Насосная станция, Охотничьи угодья, Кордон, Радиовышка, Бункер «Сфера»!
       </div>
-      <p style="font-size:12px; color:var(--text-dim);">Вы можете продолжить выживание в режиме свободной игры: улучшать снаряжение, охотиться, рыбачить и выполнять ежедневные контракты.</p>
+      <p style="font-size:12px; color:var(--text-dim);">Игра переведена в режим свободного выживания (Endgame). Вы можете продолжать выполнять ежедневные контракты, охотиться, рыбачить и крафтить снаряжение!</p>
     `;
     const actions = [
       {
@@ -1674,6 +2621,11 @@ const Game = (() => {
 
     state.energy = Math.max(0, state.energy - r.energy);
     passTime(0.5);
+
+    if (!state.questFlags) state.questFlags = {};
+    if (r.id === 'craft_stalker_suit') state.questFlags.suit_crafted = true;
+    if (r.id === 'craft_respirator') state.questFlags.respirator_crafted = true;
+
     sfx.playSuccess();
     toast(`🔨 Изготовлено: ${r.name}`);
     renderRecipes();
@@ -1716,92 +2668,362 @@ const Game = (() => {
     renderQuests();
   }
 
+  const MAIN_QUESTS = [
+    // Акт I: Прибытие и Выживание (1-5)
+    {
+      step: 0,
+      act: 'Акт I: Прибытие и Выживание',
+      actNum: 1,
+      title: '1. Прибытие в «Зарю»',
+      giver: '🎖️ Батя (Штаб)',
+      desc: 'Вы добрались до лагеря выживших «Заря». Явитесь к коменданту Дмитрию (Бате) в штабе, чтобы узнать порядки общины и встать на довольствие.',
+      hint: 'Зайдите во вкладку «Лагерь» и поговорите с Батей в штабе.',
+      checklist: (s) => [
+        { text: 'Поговорить с Батей в штабе', done: s.mainQuestStep > 0 || s.questFlags.met_batya }
+      ]
+    },
+    {
+      step: 1,
+      act: 'Акт I: Прибытие и Выживание',
+      actNum: 1,
+      title: '2. Первые шаги: Уроки выживания',
+      giver: '🎖️ Батя (Штаб)',
+      desc: 'Батя поручил обойти лагерь: познакомиться с фельдшером Анной в лазарете и опытным охотником Егором на берегу реки, после чего доложить о готовности.',
+      hint: 'Посетите лазарет (Анна) и берег реки (Егор), затем вернитесь к Бате в штаб.',
+      checklist: (s) => [
+        { text: 'Познакомиться с фельдшером Анной в лазарете', done: s.mainQuestStep > 1 || s.questFlags.met_anna },
+        { text: 'Познакомиться с охотником Егором на реке', done: s.mainQuestStep > 1 || s.questFlags.met_egor },
+        { text: 'Доложить Бате об осмотре лагеря', done: s.mainQuestStep > 1 }
+      ]
+    },
+    {
+      step: 2,
+      act: 'Акт I: Прибытие и Выживание',
+      actNum: 1,
+      title: '3. Огонь во тьме',
+      giver: '🎖️ Батя / Прохор',
+      desc: 'Ночами к лагерю подбираются твари. Соберите в ближнем лесу сухостой, скрафтите смоляной факел на верстаке и покажите Бате.',
+      hint: 'Соберите 3 охапки дров в лесу, скрафтите факел на верстаке и покажите Бате в штабе.',
+      checklist: (s) => [
+        { text: 'Собрать дрова в лесу (3 шт.)', done: s.mainQuestStep > 2 || getItemCount('firewood') >= 3 || getItemCount('torch') > 0 },
+        { text: 'Скрафтить смоляной факел на верстаке', done: s.mainQuestStep > 2 || getItemCount('torch') > 0 },
+        { text: 'Доложить Бате в штабе', done: s.mainQuestStep > 2 }
+      ]
+    },
+    {
+      step: 3,
+      act: 'Акт I: Прибытие и Выживание',
+      actNum: 1,
+      title: '4. Голодный рассвет',
+      giver: '🏹 Егор (Река)',
+      desc: 'Припасы лагеря на исходе. Егор готов научить вас рыбному промыслу: скрафтите самодельную удочку, наловите рыбы у реки, сварите уху на костре и угостите охотника.',
+      hint: 'Скрафтите удочку на верстаке, поймайте рыбу на реке, сварите уху у костра и поговорите с Егором.',
+      checklist: (s) => [
+        { text: 'Скрафтить самодельную удочку на верстаке', done: s.mainQuestStep > 3 || getItemCount('rod') > 0 },
+        { text: 'Поймать рыбу на берегу реки', done: s.mainQuestStep > 3 || (getItemCount('raw_fish') + getItemCount('cooked_fish') + getItemCount('fish_soup')) > 0 },
+        { text: 'Приготовить рыбу на костре (уха или жареная рыба)', done: s.mainQuestStep > 3 || (getItemCount('cooked_fish') + getItemCount('fish_soup')) > 0 },
+        { text: 'Угостить Егора готовой рыбой на реке', done: s.mainQuestStep > 3 }
+      ]
+    },
+    {
+      step: 4,
+      act: 'Акт I: Прибытие и Выживание',
+      actNum: 1,
+      title: '5. Крещение тайгой',
+      giver: '🎖️ Батя (Штаб)',
+      desc: 'Стая мутировавших псов окружила опушку леса и угрожает сборщикам. Скрафтите охотничье копьё на верстаке, отразите атаку стаи и доложите Бате.',
+      hint: 'Скрафтите копьё на верстаке, отправляйтесь в Лес на опушку, отбейте нападение стаи псов и доложите Бате.',
+      checklist: (s) => [
+        { text: 'Скрафтить охотничье копьё на верстаке', done: s.mainQuestStep > 4 || getItemCount('spear') > 0 },
+        { text: 'Отразить нападение диких псов на опушке леса', done: s.mainQuestStep > 4 || s.questFlags.dogs_defeated },
+        { text: 'Доложить Бате об успешной обороне', done: s.mainQuestStep > 4 }
+      ]
+    },
+
+    // Акт II: Отравленные топи (6-10)
+    {
+      step: 5,
+      act: 'Акт II: Отравленные топи',
+      actNum: 2,
+      title: '6. Мёртвые заводи',
+      giver: '👩‍⚕️ Анна (Лазарет)',
+      desc: 'Вода в реке приобрела едкий химический оттенок. Фельдшер Анна просит набрать пробу токсичной воды на реке для лабораторного экспресс-анализа.',
+      hint: 'Спуститесь к реке Быстрянке, наберите пробу токсичной воды и отнесите её Анне в лазарет.',
+      checklist: (s) => [
+        { text: 'Набрать пробу токсичной воды у реки', done: s.mainQuestStep > 5 || getItemCount('water_sample') > 0 || s.questFlags.water_sample_given },
+        { text: 'Передать пробу фельдшеру Анне в лазарете', done: s.mainQuestStep > 5 || s.questFlags.water_sample_given }
+      ]
+    },
+    {
+      step: 6,
+      act: 'Акт II: Отравленные топи',
+      actNum: 2,
+      title: '7. Следы на иле',
+      giver: '🏹 Егор (Река)',
+      desc: 'Охотник Егор заметил следы странных выдр и ондатр у заводей. Скрафтите капкан на верстаке, взведите его у реки или добудьте шкуру зверя.',
+      hint: 'Скрафтите капкан на верстаке, установите его на реке или добудьте шкуру зверя и принесите Егору.',
+      checklist: (s) => [
+        { text: 'Скрафтить капкан на верстаке', done: s.mainQuestStep > 6 || getItemCount('trap') > 0 || s.trapsSet > 0 || getItemCount('leather') > 0 },
+        { text: 'Установить капкан на реке или добыть шкуру', done: s.mainQuestStep > 6 || s.trapsSet > 0 || getItemCount('leather') > 0 },
+        { text: 'Показать охотничью добычу Егору', done: s.mainQuestStep > 6 }
+      ]
+    },
+    {
+      step: 7,
+      act: 'Акт II: Отравленные топи',
+      actNum: 2,
+      title: '8. Экспедиция в Гнилую гать',
+      giver: '👩‍⚕️ Анна (Лазарет)',
+      desc: 'Для создания антисептической таёжной мази от язв Анне необходим болотный мох (сфагнум). Отправляйтесь в гиблые торфяники «Гнилая гать» и соберите 3 пучка мха.',
+      hint: 'Отправляйтесь в локацию «Гнилая гать», соберите 3 сфагнума и доставьте их в лазарет Анне.',
+      checklist: (s) => [
+        { text: 'Разведать болота «Гнилая гать» на карте', done: s.mainQuestStep > 7 || s.questFlags.swamp_explored },
+        { text: 'Собрать болотный мох (3 шт.) в топях', done: s.mainQuestStep > 7 || getItemCount('swamp_moss') >= 3 },
+        { text: 'Доставить мох Анне в лазарет', done: s.mainQuestStep > 7 }
+      ]
+    },
+    {
+      step: 8,
+      act: 'Акт II: Отравленные топи',
+      actNum: 2,
+      title: '9. Прорыв к Насосной станции',
+      giver: '🎖️ Батя (Штаб)',
+      desc: 'Источником заражения речной протоки стал сбой Насосной станции №4. Проберитесь на станцию, расчистите завал из обломков арматуры и доложите Бате.',
+      hint: 'Отправляйтесь на Насосную станцию №4 на карте, расчистите завал у входа и доложите Бате.',
+      checklist: (s) => [
+        { text: 'Добраться до Насосной станции №4 на карте', done: s.mainQuestStep > 8 || s.unlockedLocations.includes('pump') },
+        { text: 'Расчистить завал у машинного зала станции', done: s.mainQuestStep > 8 || s.questFlags.pump_cleared },
+        { text: 'Доложить Бате о расчищенном проходе', done: s.mainQuestStep > 8 }
+      ]
+    },
+    {
+      step: 9,
+      act: 'Акт II: Отравленные топи',
+      actNum: 2,
+      title: '10. Сердце фильтра',
+      giver: '🔧 Прохор / Батя',
+      desc: 'В цехе станции уцелела промышленная керамическая мембрана очистки. Найдите мембрану, соберите 3 металлолома и восстановите центральный водоочиститель лагеря.',
+      hint: 'Обыщите Насосную станцию №4, найдите мембрану, соберите 3 металлолома и поговорите с Прохором или Батей.',
+      checklist: (s) => [
+        { text: 'Найти керамическую мембрану в цехе станции', done: s.mainQuestStep > 9 || getItemCount('filter_membrane') > 0 || s.questFlags.has_membrane || s.questFlags.pump_repaired },
+        { text: 'Собрать металлолом (3 шт.) для крепежа', done: s.mainQuestStep > 9 || getItemCount('scrap') >= 3 || s.questFlags.pump_repaired },
+        { text: 'Сдать детали Прохору / Бате и запустить фильтр', done: s.mainQuestStep > 9 || s.questFlags.pump_repaired }
+      ]
+    },
+
+    // Акт III: Голоса из прошлого (11-15)
+    {
+      step: 10,
+      act: 'Акт III: Голоса из прошлого',
+      actNum: 3,
+      title: '11. Морзе в ночи',
+      giver: '🔧 Прохор (Лагерь)',
+      desc: 'Механик Прохор уловил обрывки радиопередачи на коротких волнах. Поговорите с ним, возьмите схему ретранслятора и разведайте тропу к старой Радиовышке.',
+      hint: 'Поговорите с Прохором в лагере, чтобы нанести Радиовышку на карту.',
+      checklist: (s) => [
+        { text: 'Получить схему ретранслятора у Прохора', done: s.mainQuestStep > 10 || s.questFlags.met_prokhor_radio },
+        { text: 'Разведать дорогу к Радиовышке на карте', done: s.mainQuestStep > 10 || s.unlockedLocations.includes('radio') }
+      ]
+    },
+    {
+      step: 11,
+      act: 'Акт III: Голоса из прошлого',
+      actNum: 3,
+      title: '12. Эхо на Скалистом утёсе',
+      giver: '🎖️ Батя (Штаб)',
+      desc: 'Антенна вышки разбита бурей. Соберите 3 металлолома и 2 мотка проволоки, поднимитесь на Скалистый утёс, восстановите радиомачту и перехватите сигнал.',
+      hint: 'Соберите металлолом (3 шт.) и проволоку (2 шт.), почините антенну на Радиовышке и доложите Бате.',
+      checklist: (s) => [
+        { text: 'Собрать материалы (Металлолом 3 шт., Проволока 2 шт.)', done: s.mainQuestStep > 11 || s.questFlags.radio_repaired || (getItemCount('scrap') >= 3 && getItemCount('wire') >= 2) },
+        { text: 'Починить антенную мачту на Радиовышке', done: s.mainQuestStep > 11 || s.questFlags.radio_repaired },
+        { text: 'Доложить Бате о перехваченном сигнале', done: s.mainQuestStep > 11 }
+      ]
+    },
+    {
+      step: 12,
+      act: 'Акт III: Голоса из прошлого',
+      actNum: 3,
+      title: '13. Шифр Воронова',
+      giver: '🎖️ Батя (Штаб)',
+      desc: 'На радиовышке обнаружена уцелевшая кассета Воронова. Расшифруйте аудиозапись на штабном магнитофоне у Бати, чтобы узнать координаты укрытия учёного.',
+      hint: 'Поговорите с Батей в штабе и прослушайте запись с кассеты Воронова.',
+      checklist: (s) => [
+        { text: 'Иметь при себе аудиокассету Воронова', done: s.mainQuestStep > 12 || getItemCount('audio_tape') > 0 || s.questFlags.tape_decoded },
+        { text: 'Расшифровать запись на магнитофоне у Бати', done: s.mainQuestStep > 12 || s.questFlags.tape_decoded }
+      ]
+    },
+    {
+      step: 13,
+      act: 'Акт III: Голоса из прошлого',
+      actNum: 3,
+      title: '14. Тайна Заброшенного кордона',
+      giver: '🎖️ Батя (Штаб)',
+      desc: 'Отправляйтесь на Заброшенный кордон лесничества в предгорьях. Отыщите тайник Воронова с полевым дневником и магнитной ключ-картой «Сфера-Допуск».',
+      hint: 'Отправляйтесь на Заброшенный кордон на карте, найдите ключ-карту «Сфера» и покажите находки Бате.',
+      checklist: (s) => [
+        { text: 'Обыскать Заброшенный кордон на карте', done: s.mainQuestStep > 13 || s.questFlags.cordon_searched },
+        { text: 'Найти дневник Воронова и ключ-карту «Сфера»', done: s.mainQuestStep > 13 || getItemCount('keycard_sfera') > 0 },
+        { text: 'Показать ключ-карту и дневник Бате в штабе', done: s.mainQuestStep > 13 }
+      ]
+    },
+    {
+      step: 14,
+      act: 'Акт III: Голоса из прошлого',
+      actNum: 3,
+      title: '15. Хозяин тайги',
+      giver: '🏹 Егор / Батя',
+      desc: 'Тропу к научному бункеру терроризирует свирепый медведь-шатун с железными когтями. Расспросите Егора о повадках зверя, выследите чудовище в чаще леса и добудьте шкуру.',
+      hint: 'Поговорите с Егором, вооружитесь патронами/копьём, выследите медведя в Чаще леса и принесите шкуру Бате.',
+      checklist: (s) => [
+        { text: 'Обсудить повадки зверя с охотником Егором', done: s.mainQuestStep > 14 || s.questFlags.talked_bear || s.questFlags.bear_defeated },
+        { text: 'Победить медведя-шатуна в чаще леса', done: s.mainQuestStep > 14 || s.questFlags.bear_defeated },
+        { text: 'Принести шкуру хозяина тайги Бате в штаб', done: s.mainQuestStep > 14 }
+      ]
+    },
+
+    // Акт IV: Спуск в Бездну (16-20)
+    {
+      step: 15,
+      act: 'Акт IV: Спуск в Бездну',
+      actNum: 4,
+      title: '16. Доспех сталкера',
+      giver: '🔧 Прохор (Лагерь)',
+      desc: 'Внутри бункера автоматические пулемёты и колючая проволока. Прохор готов помочь сшить усиленную сталкерскую куртку из шкуры медведя, ткани и металла.',
+      hint: 'Скрафтите бронекостюм сталкера на верстаке (Шкура медведя, 3 ткани, 2 металлолома) и доложите Бате.',
+      checklist: (s) => [
+        { text: 'Собрать материалы для брони (Шкура, 3 ткани, 2 лома)', done: s.mainQuestStep > 15 || getItemCount('stalker_suit') > 0 || s.questFlags.suit_crafted },
+        { text: 'Скрафтить куртку сталкера на верстаке', done: s.mainQuestStep > 15 || getItemCount('stalker_suit') > 0 || s.questFlags.suit_crafted },
+        { text: 'Доложить Бате о готовности штурмовой защиты', done: s.mainQuestStep > 15 }
+      ]
+    },
+    {
+      step: 16,
+      act: 'Акт IV: Спуск в Бездну',
+      actNum: 4,
+      title: '17. Дыхание бездны',
+      giver: '👩‍⚕️ Анна (Лазарет)',
+      desc: 'Вентиляция бункера забита ядовитыми аэрозолями распада. Без надёжного фильтра спуск смертелен. Скрафтите армейский респиратор Р-2 на верстаке и пройдите проверку у Анны.',
+      hint: 'Скрафтите респиратор на верстаке (2 ткани, 2 угля, 1 проволока) и покажите его Анне в лазарете.',
+      checklist: (s) => [
+        { text: 'Собрать компоненты (2 ткани, 2 угля, 1 проволока)', done: s.mainQuestStep > 16 || getItemCount('respirator') > 0 || s.questFlags.respirator_crafted },
+        { text: 'Скрафтить респиратор Р-2 на верстаке', done: s.mainQuestStep > 16 || getItemCount('respirator') > 0 || s.questFlags.respirator_crafted },
+        { text: 'Пройти проверку герметичности у фельдшера Анны', done: s.mainQuestStep > 16 }
+      ]
+    },
+    {
+      step: 17,
+      act: 'Акт IV: Спуск в Бездну',
+      actNum: 4,
+      title: '18. Штурм Бункера «Сфера»',
+      giver: '🎖️ Батя (Штаб)',
+      desc: 'Экипируйтесь лучшим оружием и патронами. Отправляйтесь к Бункеру «Сфера», откройте бронешлюз ключ-картой Воронова, подавите охранные турели и закрепитесь на объекте.',
+      hint: 'Отправляйтесь в Бункер «Сфера» на карте, вскройте шлюз ключ-картой, уничтожьте турели и доложите Бате.',
+      checklist: (s) => [
+        { text: 'Открыть гермошлюз Бункера «Сфера» ключ-картой', done: s.mainQuestStep > 17 || s.questFlags.bunker_entered },
+        { text: 'Подавить автоматические турели охранного контура', done: s.mainQuestStep > 17 || s.questFlags.turrets_neutralized },
+        { text: 'Доложить Бате о прорыве обороны бункера', done: s.mainQuestStep > 17 }
+      ]
+    },
+    {
+      step: 18,
+      act: 'Акт IV: Спуск в Бездну',
+      actNum: 4,
+      title: '19. Предотвращение «Каскада-2»',
+      giver: '🎖️ Батя (Штаб)',
+      desc: 'Реактор термоядерного распада комплекса выходит на критический режим. Прорвитесь к центральному пульту, заглушите стержни, извлеките дискету с архивами и образец «Нектар-7».',
+      hint: 'Спуститесь в Реакторный зал Бункера «Сфера», запустите аварийное глушение, заберите архив и доложите Бате.',
+      checklist: (s) => [
+        { text: 'Пробиться к пульту управления аварийного реактора', done: s.mainQuestStep > 18 || s.questFlags.reactor_reached || s.questFlags.reactor_shutdown },
+        { text: 'Запустить аварийное глушение реактора', done: s.mainQuestStep > 18 || s.questFlags.reactor_shutdown },
+        { text: 'Извлечь дискету с архивом и биостабилизатор «Нектар-7»', done: s.mainQuestStep > 18 || getItemCount('floppy_disk') > 0 },
+        { text: 'Доложить Бате об устранении угрозы взрыва', done: s.mainQuestStep > 18 }
+      ]
+    },
+    {
+      step: 19,
+      act: 'Акт IV: Спуск в Бездну',
+      actNum: 4,
+      title: '20. Новый рассвет «Зари»',
+      giver: '🎖️ Батя / Община',
+      desc: 'Угроза второго Каскада предотвращена навсегда! Передайте Бате научный архив проекта «Каскад», примите участие в триумфальном собрании у костра лагеря «Заря».',
+      hint: 'Поговорите с Батей в штабе лагеря, передайте дискету с архивом и отпразднуйте победу!',
+      checklist: (s) => [
+        { text: 'Передать архивные дискеты Бате в штабе', done: s.mainQuestStep >= 20 || s.questFlags.bunker_completed },
+        { text: 'Принять высшую награду общины и звание «Легенда тайги»', done: s.mainQuestStep >= 20 }
+      ]
+    }
+  ];
+
   function renderQuests() {
     const area = document.getElementById('questContentArea');
+    if (!area) return;
     area.innerHTML = '';
 
     if (!state.questFlags) {
-      state.questFlags = {
-        met_batya: false,
-        met_anna: false,
-        met_egor: false,
-        met_prokhor: false,
-        has_membrane: false,
-        pump_repaired: false,
-        radio_repaired: false,
-        bunker_completed: false
-      };
+      state.questFlags = JSON.parse(JSON.stringify(INITIAL_STATE.questFlags));
     }
 
     if (state.questView === 'main') {
-      const quests = [
-        {
-          step: 0,
-          title: '1. Прибытие в лагерь «Заря»',
-          desc: 'Поговорите с майором Дмитрием (Батей) в штабе лагеря, чтобы узнать порядки общины и получить стартовое снаряжение.',
-          checklist: [
-            { text: 'Поговорить с Батей в штабе', done: state.mainQuestStep > 0 || state.questFlags.met_batya }
-          ]
-        },
-        {
-          step: 1,
-          title: '2. Знакомство с общиной',
-          desc: 'Батя поручил познакомиться с фельдшером Анной и охотником Егором перед получением боевых задач.',
-          checklist: [
-            { text: 'Познакомиться с фельдшером Анной в лазарете', done: state.mainQuestStep > 1 || state.questFlags.met_anna },
-            { text: 'Познакомиться с охотником Егором на реке', done: state.mainQuestStep > 1 || state.questFlags.met_egor },
-            { text: 'Доложить Бате об осмотре лагеря', done: state.mainQuestStep > 1 }
-          ]
-        },
-        {
-          step: 2,
-          title: '3. Кризис чистой воды',
-          desc: 'Фильтр главного колодца вышел из строя. Найдите керамическую мембрану в цехе Насосной станции №4 на карте.',
-          checklist: [
-            { text: 'Обыскать Насосную станцию №4 на карте', done: state.mainQuestStep > 2 || state.questFlags.has_membrane || getItemCount('filter_membrane') > 0 },
-            { text: 'Сдать керамическую мембрану Бате', done: state.mainQuestStep > 2 || state.questFlags.pump_repaired }
-          ]
-        },
-        {
-          step: 3,
-          title: '4. Эхо в эфире',
-          desc: 'Восстановите антенну на Радиовышке (нужно: Металлолом 3 шт., Проволока 2 шт.), чтобы поймать радиосигнал выживших.',
-          checklist: [
-            { text: 'Собрать материалы (Металлолом 3 шт., Проволока 2 шт.)', done: state.questFlags.radio_repaired || (getItemCount('scrap') >= 3 && getItemCount('wire') >= 2) },
-            { text: 'Починить антенну на Радиовышке на карте', done: state.mainQuestStep > 3 || state.questFlags.radio_repaired },
-            { text: 'Доложить Бате о перехваченном сигнале', done: state.mainQuestStep > 3 }
-          ]
-        },
-        {
-          step: 4,
-          title: '5. Секрет Бункера «Сфера»',
-          desc: 'Финальный прорыв в запечатанный подземный научный комплекс НИИ «Сфера», ставший источником Каскада.',
-          checklist: [
-            { text: 'Спуститься в Бункер НИИ «Сфера» на карте', done: state.questFlags.bunker_completed },
-            { text: 'Вскрыть гермоблок и спасти данные проекта «Каскад»', done: state.questFlags.bunker_completed },
-            { text: 'Вернуться героем в лагерь «Заря»', done: state.mainQuestStep >= 5 }
-          ]
-        }
-      ];
+      const completedCount = MAIN_QUESTS.filter(q => state.mainQuestStep > q.step || (q.step === 19 && state.mainQuestStep >= 20)).length;
+      const progressPct = Math.round((completedCount / MAIN_QUESTS.length) * 100);
 
-      quests.forEach(q => {
-        const isDone = state.mainQuestStep > q.step;
+      const headerDiv = document.createElement('div');
+      headerDiv.className = 'quest-campaign-header';
+      headerDiv.style.cssText = 'background:var(--bg-card); border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; margin-bottom:12px;';
+      headerDiv.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-weight:700; font-size:13px; color:var(--accent-gold);">📜 Основной сюжет: Спасение «Зари»</span>
+          <span style="font-weight:700; font-size:12px; color:var(--text-main);">${completedCount} / ${MAIN_QUESTS.length} (${progressPct}%)</span>
+        </div>
+        <div style="background:rgba(0,0,0,0.4); border-radius:4px; height:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.08);">
+          <div style="background:linear-gradient(90deg, var(--accent-gold), var(--accent-green)); height:100%; width:${progressPct}%; transition:width 0.3s ease;"></div>
+        </div>
+        ${state.mainQuestStep >= 20 ? '<div style="margin-top:6px; font-size:11.5px; color:var(--accent-green); font-weight:700; text-align:center;">🏆 Вся сага из 20 квестов завершена! Вы — Легенда тайги.</div>' : ''}
+      `;
+      area.appendChild(headerDiv);
+
+      let currentAct = 0;
+
+      MAIN_QUESTS.forEach(q => {
+        const isDone = state.mainQuestStep > q.step || (q.step === 19 && state.mainQuestStep >= 20);
         const isCurrent = state.mainQuestStep === q.step;
         const isLocked = state.mainQuestStep < q.step;
+
+        if (q.actNum !== currentAct) {
+          currentAct = q.actNum;
+          const actHeader = document.createElement('div');
+          actHeader.className = 'quest-act-header';
+          actHeader.style.cssText = 'margin:14px 0 6px; font-weight:700; font-size:11.5px; letter-spacing:0.5px; text-transform:uppercase; color:var(--accent-gold); display:flex; align-items:center; gap:8px;';
+          actHeader.innerHTML = `
+            <span>${q.act}</span>
+            <span style="flex:1; height:1px; background:var(--border-color); opacity:0.6;"></span>
+          `;
+          area.appendChild(actHeader);
+        }
 
         const card = document.createElement('div');
         card.className = `quest-item-card ${isDone ? 'completed' : (isCurrent ? 'active-quest' : '')}`;
 
         let checklistHtml = '';
         if (!isLocked) {
+          const items = q.checklist(state);
           checklistHtml = `
             <div class="quest-checklist" style="margin-top:8px; font-size:12px; display:flex; flex-direction:column; gap:4px;">
-              ${q.checklist.map(item => `
+              ${items.map(item => `
                 <div style="color:${item.done ? 'var(--accent-green)' : 'var(--text-main)'}; display:flex; align-items:center; gap:6px;">
                   <span>${item.done ? '☑' : '☐'}</span>
-                  <span style="${item.done ? 'text-decoration:line-through; opacity:0.8;' : ''}">${item.text}</span>
+                  <span style="${item.done ? 'text-decoration:line-through; opacity:0.8;' : 'font-weight:500;'}">${item.text}</span>
                 </div>
               `).join('')}
+            </div>
+          `;
+        }
+
+        let hintHtml = '';
+        if (isCurrent && q.hint) {
+          hintHtml = `
+            <div style="margin-top:8px; padding:6px 8px; background:rgba(217, 119, 6, 0.15); border-left:3px solid var(--accent-gold); border-radius:4px; font-size:11.5px; color:var(--accent-gold);">
+              <strong>💡 Задачи:</strong> ${q.hint}
             </div>
           `;
         }
@@ -1813,36 +3035,50 @@ const Game = (() => {
               ${isDone ? '✓ Выполнено' : (isCurrent ? '● В процессе' : '🔒 Закрыто')}
             </span>
           </div>
-          <p class="quest-desc" style="margin-top:4px;">${isLocked ? 'Станет доступно по мере развития истории.' : q.desc}</p>
+          <div style="font-size:11px; color:var(--text-dim); margin-bottom:4px;">Поручитель: <b style="color:var(--text-main);">${q.giver}</b></div>
+          <p class="quest-desc" style="margin-top:2px;">${isLocked ? 'Станет доступно по мере развития сюжетной цепочки.' : q.desc}</p>
           ${checklistHtml}
+          ${hintHtml}
         `;
         area.appendChild(card);
       });
     } else if (state.questView === 'daily') {
-      state.dailyQuests.forEach(q => {
-        const card = document.createElement('div');
-        card.className = `quest-item-card ${q.completed ? 'completed' : ''}`;
-        card.innerHTML = `
-          <div class="quest-title-row">
-            <span>${q.title}</span>
-            <span style="font-size:11px; color:${q.completed ? 'var(--accent-green)' : 'var(--accent-gold)'}">
-              ${q.completed ? '✓ Награда получена' : `${q.current} / ${q.goal}`}
-            </span>
+      if (!state.dailyQuests || state.dailyQuests.length === 0) {
+        area.innerHTML = `
+          <div class="quest-item-card" style="text-align:center; padding:16px;">
+            <p class="quest-desc">Нет активных ежедневных поручений. Дождитесь следующего утра или проверьте доску объявлений у костра.</p>
           </div>
-          <p class="quest-desc">${q.desc}</p>
-          <div class="quest-progress-bar">Награда: +${q.rewardRep} репутации, +${q.rewardAmmo} патрона</div>
         `;
-        area.appendChild(card);
-      });
+      } else {
+        state.dailyQuests.forEach(q => {
+          const card = document.createElement('div');
+          card.className = `quest-item-card ${q.completed ? 'completed' : ''}`;
+          card.innerHTML = `
+            <div class="quest-title-row">
+              <span>${q.title}</span>
+              <span style="font-size:11px; color:${q.completed ? 'var(--accent-green)' : 'var(--accent-gold)'}">
+                ${q.completed ? '✓ Награда получена' : `${q.current} / ${q.goal}`}
+              </span>
+            </div>
+            <p class="quest-desc">${q.desc}</p>
+            <div class="quest-progress-bar">Награда: +${q.rewardRep} репутации, +${q.rewardAmmo} патрона</div>
+          `;
+          area.appendChild(card);
+        });
+      }
     } else if (state.questView === 'lore') {
       area.innerHTML = `
         <div class="quest-item-card">
           <div class="quest-title-row"><span>📻 История Катастрофы («Каскад»)</span></div>
-          <p class="quest-desc">В 1989 году в результате сбоя системы охлаждения на химкомбинате «Сфера» произошёл выброс аномальных реагентов. Дамба на реке была разрушена, а близлежащие города эвакуированы.</p>
+          <p class="quest-desc">В конце 1980-х годов в закрытом исследовательском комплексе НИИ «Сфера» произошла аномальная авария реактора синтеза. Заражённые токсичные воды и радиоактивный смог накрыли прилегающую тайгу. Жилые посёлки были эвакуированы, а оставшиеся превратились в изолированные очаги выживания.</p>
         </div>
         <div class="quest-item-card">
           <div class="quest-title-row"><span>🏕️ Основание лагеря «Заря»</span></div>
-          <p class="quest-desc">Майор Дмитрий собрал уцелевших рабочих и семьи у старой лесопилки. Благодаря возвышенности лагерь не затопило ядовитыми осадками.</p>
+          <p class="quest-desc">Майор Дмитрий («Батя») собрал уцелевших рабочих, егерей и семьи на холме у старой лесопилки. Благодаря возвышенности и бьющим родникам лагерь выстоял. Сегодня «Заря» — единственный оплот надежды посреди отравленной сибирской тайги.</p>
+        </div>
+        <div class="quest-item-card">
+          <div class="quest-title-row"><span>🧪 Тайна профессора Воронова</span></div>
+          <p class="quest-desc">Главный научный руководитель проекта профессор Воронов остался в зоне бедствия, пытаясь разработать биостабилизатор «Нектар-7» для нейтрализации мутаций и распада. Его дневники и записи хранят ключ к спасению края от второго, окончательного взрыва реактора.</p>
         </div>
       `;
     }
@@ -2026,32 +3262,58 @@ const Game = (() => {
       const saved = localStorage.getItem('camp_zarya_save');
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (!parsed.questFlags) {
-          parsed.questFlags = {
-            met_batya: false,
-            met_anna: false,
-            met_egor: false,
-            met_prokhor: false,
-            has_membrane: false,
-            pump_repaired: false,
-            radio_repaired: false,
-            bunker_completed: false
-          };
-        }
+        parsed.questFlags = Object.assign({}, INITIAL_STATE.questFlags, parsed.questFlags || {});
+
+        // Автоматическая нормализация флагов для старых сохранений
         if (parsed.mainQuestStep >= 1) parsed.questFlags.met_batya = true;
         if (parsed.mainQuestStep >= 2) {
           parsed.questFlags.met_anna = true;
           parsed.questFlags.met_egor = true;
           parsed.questFlags.met_prokhor = true;
         }
-        if (parsed.mainQuestStep >= 3) {
+        if (parsed.mainQuestStep >= 5) {
+          parsed.questFlags.dogs_defeated = true;
+        }
+        if (parsed.mainQuestStep >= 6) {
+          parsed.questFlags.water_sample_given = true;
+        }
+        if (parsed.mainQuestStep >= 7) {
+          parsed.questFlags.swamp_explored = true;
+        }
+        if (parsed.mainQuestStep >= 9) {
+          parsed.questFlags.pump_cleared = true;
+        }
+        if (parsed.mainQuestStep >= 10) {
           parsed.questFlags.has_membrane = true;
           parsed.questFlags.pump_repaired = true;
         }
-        if (parsed.mainQuestStep >= 4) {
+        if (parsed.mainQuestStep >= 12) {
+          parsed.questFlags.met_prokhor_radio = true;
           parsed.questFlags.radio_repaired = true;
         }
-        if (parsed.mainQuestStep >= 5) {
+        if (parsed.mainQuestStep >= 13) {
+          parsed.questFlags.tape_decoded = true;
+        }
+        if (parsed.mainQuestStep >= 14) {
+          parsed.questFlags.cordon_searched = true;
+        }
+        if (parsed.mainQuestStep >= 15) {
+          parsed.questFlags.talked_bear = true;
+          parsed.questFlags.bear_defeated = true;
+        }
+        if (parsed.mainQuestStep >= 17) {
+          parsed.questFlags.suit_crafted = true;
+        }
+        if (parsed.mainQuestStep >= 18) {
+          parsed.questFlags.respirator_crafted = true;
+          parsed.questFlags.bunker_entered = true;
+        }
+        if (parsed.mainQuestStep >= 19) {
+          parsed.questFlags.turrets_neutralized = true;
+          parsed.questFlags.reactor_reached = true;
+        }
+        if (parsed.mainQuestStep >= 20) {
+          parsed.questFlags.reactor_shutdown = true;
           parsed.questFlags.bunker_completed = true;
         }
         if (parsed.introSeen === undefined) {
