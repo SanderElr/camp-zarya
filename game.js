@@ -915,6 +915,14 @@ met_spiridon: false,
     const npc = NPCS[npcId];
     if (!npc) return;
 
+    // Switch view to Camp tab in case player clicked from Quest tab
+    document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+    const campTab = document.getElementById('tabCamp');
+    if (campTab) campTab.classList.add('active');
+    const navButtons = document.querySelectorAll('.nav-btn');
+    if (navButtons[0]) navButtons[0].classList.add('active');
+
     if (!state.questFlags) {
       state.questFlags = {
         met_batya: false,
@@ -1641,6 +1649,20 @@ met_spiridon: false,
       }
     }
 
+    // Ежедневное поручение: Дрова для костра
+    const dailyWoodBatya = (state.dailyQuests || []).find(q => q.id === 'daily_wood' && !q.completed && q.current >= q.goal);
+    if (dailyWoodBatya) {
+      body += `<p style="color:var(--accent-gold);"><b>[ЕЖЕДНЕВНОЕ ПОРУЧЕНИЕ: ДРОВА ДЛЯ КОСТРА]:</b> <i>«Вижу, сушняк для общего костра заготовлен. Молодец, дисциплина в лагере превыше всего. Получи довольствие.»</i></p>`;
+      actions.push({
+        text: `🪵 «Батя, доложить о заготовке дров (+${dailyWoodBatya.rewardRep} реп, +${dailyWoodBatya.rewardAmmo} патр)»`,
+        action: () => {
+          turnInDailyQuest('daily_wood');
+          talkBatya();
+        },
+        primary: true
+      });
+    }
+
     // Жетоны разведгруппы «Север» (сержанта Гурова)
     if (state.questFlags.brdm_searched && !state.questFlags.brdm_reported) {
       actions.push({
@@ -1855,6 +1877,20 @@ met_spiridon: false,
 
     
     // --- ДОПОЛНИТЕЛЬНЫЕ ЗАДАНИЯ АННЫ ---
+    // Ежедневное поручение: Аптечный сбор
+    const dailyHerbs = (state.dailyQuests || []).find(q => q.id === 'daily_herbs' && !q.completed && q.current >= q.goal);
+    if (dailyHerbs) {
+      body += `<p style="color:var(--accent-gold);"><b>[ЕЖЕДНЕВНОЕ ПОРУЧЕНИЕ: АПТЕЧНЫЙ СБОР]:</b> <i>«Полынь и целебные травы... Именно то, что нужно для лазарета, раненым дозорным повязки менять. Спасибо за помощь, держи патроны из нашего фонда.»</i></p>`;
+      actions.push({
+        text: `🌿 «Анна Павловна, сдать целебные травы (+${dailyHerbs.rewardRep} реп, +${dailyHerbs.rewardAmmo} патр)»`,
+        action: () => {
+          turnInDailyQuest('daily_herbs');
+          talkAnna();
+        },
+        primary: true
+      });
+    }
+
     // «Дрова для лазарета»
     if (!state.sideQuests?.sq_wood_anna?.status && state.mainQuestStep >= 1) {
       actions.push({
@@ -2114,6 +2150,20 @@ met_spiridon: false,
 
     
     // --- ДОПОЛНИТЕЛЬНЫЕ ЗАДАНИЯ ПРОХОРА ---
+    // Ежедневное поручение: Дрова для костра
+    const dailyWood = (state.dailyQuests || []).find(q => q.id === 'daily_wood' && !q.completed && q.current >= q.goal);
+    if (dailyWood) {
+      body += `<p style="color:var(--accent-gold);"><b>[ЕЖЕДНЕВНОЕ ПОРУЧЕНИЕ: ДРОВА ДЛЯ КОСТРА]:</b> <i>«Хороший сушняк приволок, смолистый! Теперь костёр до утра не затухнет, зверьё к частоколу не сунется. Держи довольствие от лагеря.»</i></p>`;
+      actions.push({
+        text: `🪵 «Кузьмич, сдать 2 охапки сухих дров для костра (+${dailyWood.rewardRep} реп, +${dailyWood.rewardAmmo} патр)»`,
+        action: () => {
+          turnInDailyQuest('daily_wood');
+          talkProkhor();
+        },
+        primary: true
+      });
+    }
+
     // «Уголь для горна»
     if (!state.sideQuests?.sq_coal_prokhor?.status && state.mainQuestStep >= 3) {
       actions.push({
@@ -2369,6 +2419,20 @@ met_spiridon: false,
 
     
     // --- ДОПОЛНИТЕЛЬНЫЕ ЗАДАНИЯ ЕГОРА ---
+    // Ежедневное поручение: Рыбный день
+    const dailyFish = (state.dailyQuests || []).find(q => q.id === 'daily_fish' && !q.completed && q.current >= q.goal);
+    if (dailyFish) {
+      body += `<p style="color:var(--accent-gold);"><b>[ЕЖЕДНЕВНОЕ ПОРУЧЕНИЕ: РЫБНЫЙ ДЕНЬ]:</b> <i>«Ого, знатная рыбалка выдалась! Быстрянка сегодня расщедрилась. Давай сюда улов на коптильню, община сыта будет. Держи патроны за труды.»</i></p>`;
+      actions.push({
+        text: `🐟 «Егор, сдать свежий улов по поручению (+${dailyFish.rewardRep} реп, +${dailyFish.rewardAmmo} патр)»`,
+        action: () => {
+          turnInDailyQuest('daily_fish');
+          talkEgor();
+        },
+        primary: true
+      });
+    }
+
     // «Копчёная щука»
     if (!state.sideQuests?.sq_fish_egor?.status && state.mainQuestStep >= 3) {
       actions.push({
@@ -4048,13 +4112,27 @@ met_spiridon: false,
   }
 
   // --- СИСТЕМА КВЕСТОВ И ЕЖЕДНЕВНЫХ ЗАДАНИЙ ---
+  const DAILY_GIVER_MAP = {
+    daily_fish: { giver: 'Егор Лесник', giverId: 'egor' },
+    daily_wood: { giver: 'Прохор Кузьмич', giverId: 'prokhor' },
+    daily_herbs: { giver: 'Анна Павловна', giverId: 'anna' }
+  };
+
   function generateDailyQuestsIfNeeded(force = false) {
-    if (state.dailyQuests.length > 0 && !force) return;
+    if (state.dailyQuests.length > 0 && !force) {
+      state.dailyQuests.forEach(q => {
+        if (!q.giver && DAILY_GIVER_MAP[q.id]) {
+          q.giver = DAILY_GIVER_MAP[q.id].giver;
+          q.giverId = DAILY_GIVER_MAP[q.id].giverId;
+        }
+      });
+      return;
+    }
 
     state.dailyQuests = [
-      { id: 'daily_fish', type: 'fish', title: 'Рыбный день', desc: 'Поймать 2 рыбы на реке Быстрянке.', goal: 2, current: 0, rewardRep: 15, rewardAmmo: 2, completed: false },
-      { id: 'daily_wood', type: 'wood', title: 'Дрова для костра', desc: 'Заготовить 2 охапки сухих дров.', goal: 2, current: 0, rewardRep: 10, rewardAmmo: 1, completed: false },
-      { id: 'daily_herbs', type: 'herbs', title: 'Аптечный сбор', desc: 'Собрать 2 пучка полыни для лазарета Анны.', goal: 2, current: 0, rewardRep: 15, rewardAmmo: 2, completed: false }
+      { id: 'daily_fish', type: 'fish', title: 'Рыбный день', giver: 'Егор Лесник', giverId: 'egor', desc: 'Поймать 2 рыбы на реке Быстрянке.', goal: 2, current: 0, rewardRep: 15, rewardAmmo: 2, completed: false, notifiedReady: false },
+      { id: 'daily_wood', type: 'wood', title: 'Дрова для костра', giver: 'Прохор Кузьмич', giverId: 'prokhor', desc: 'Заготовить 2 охапки сухих дров.', goal: 2, current: 0, rewardRep: 10, rewardAmmo: 1, completed: false, notifiedReady: false },
+      { id: 'daily_herbs', type: 'herbs', title: 'Аптечный сбор', giver: 'Анна Павловна', giverId: 'anna', desc: 'Собрать 2 пучка полыни для лазарета Анны.', goal: 2, current: 0, rewardRep: 15, rewardAmmo: 2, completed: false, notifiedReady: false }
     ];
   }
 
@@ -4063,16 +4141,31 @@ met_spiridon: false,
       if (!q.completed && q.type === type) {
         q.current += amount;
         if (q.current >= q.goal) {
-          q.completed = true;
-          state.reputation += q.rewardRep;
-          addItem('ammo', q.rewardAmmo);
-          toast(`📅 Ежедневное поручение выполнено: «${q.title}» (+${q.rewardRep} репутации, +${q.rewardAmmo} патрона)!`, 'success');
-          sfx.playSuccess();
-          updateHUD();
+          if (!q.notifiedReady) {
+            q.notifiedReady = true;
+            const giverInfo = q.giver ? ` Сдайте его ${q.giver} в лагере.` : ' Сдайте его в лагере.';
+            toast(`📋 Поручение «${q.title}» готово к сдаче (${Math.min(q.current, q.goal)}/${q.goal})!${giverInfo}`);
+            sfx.playSuccess();
+          }
         }
       }
     });
     renderQuests();
+  }
+
+  function turnInDailyQuest(questId) {
+    const q = (state.dailyQuests || []).find(x => x.id === questId);
+    if (!q || q.completed || q.current < q.goal) return false;
+
+    q.completed = true;
+    state.reputation += q.rewardRep;
+    addItem('ammo', q.rewardAmmo);
+    toast(`🎖️ Поручение «${q.title}» успешно сдано! Получено: +${q.rewardRep} репутации, +${q.rewardAmmo} патрона.`, 'success');
+    sfx.playSuccess();
+    updateHUD();
+    renderQuests();
+    saveState();
+    return true;
   }
 
   function switchQuestView(view) {
@@ -4633,17 +4726,46 @@ met_spiridon: false,
         `;
       } else {
         state.dailyQuests.forEach(q => {
+          if (!q.giver && DAILY_GIVER_MAP[q.id]) {
+            q.giver = DAILY_GIVER_MAP[q.id].giver;
+            q.giverId = DAILY_GIVER_MAP[q.id].giverId;
+          }
+          const isDone = !!q.completed;
+          const isReady = !isDone && q.current >= q.goal;
+
+          let statusBadge = isDone ? '✓ Сдано (Награда получена)' : (isReady ? '🟢 Готово к сдаче!' : `● В процессе (${q.current} / ${q.goal})`);
+          let statusColor = isDone ? 'var(--accent-green)' : (isReady ? 'var(--accent-green)' : 'var(--accent-gold)');
+          let borderStyle = isDone ? 'var(--accent-green)' : (isReady ? 'var(--accent-green)' : 'var(--border-color)');
+
           const card = document.createElement('div');
-          card.className = `quest-item-card ${q.completed ? 'completed' : ''}`;
+          card.className = `quest-item-card ${isDone ? 'completed' : (isReady ? 'active-quest' : '')}`;
+          card.style.cssText = `border-left: 3px solid ${borderStyle}; margin-bottom: 8px;`;
+
+          let readyHtml = '';
+          if (isReady) {
+            readyHtml = `
+              <div style="font-size:11.5px; color:var(--accent-green); margin:6px 0; font-weight:700;">
+                🟢 Условия выполнены (${q.current}/${q.goal})! Вернитесь в лагерь и сдайте поручение лично: <b>${q.giver}</b>.
+              </div>
+              <button class="modal-btn primary" style="font-size:11.5px; padding:5px 12px; margin-top:4px;" onclick="Game.talkToNPC('${q.giverId}')">
+                💬 Подойти к ${q.giver} для сдачи
+              </button>
+            `;
+          }
+
           card.innerHTML = `
-            <div class="quest-title-row">
-              <span>${q.title}</span>
-              <span style="font-size:11px; color:${q.completed ? 'var(--accent-green)' : 'var(--accent-gold)'}">
-                ${q.completed ? '✓ Награда получена' : `${q.current} / ${q.goal}`}
+            <div class="quest-title-row" style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:700;">${q.title}</span>
+              <span style="font-size:11px; font-weight:700; color:${statusColor}">
+                ${statusBadge}
               </span>
             </div>
-            <p class="quest-desc">${q.desc}</p>
-            <div class="quest-progress-bar">Награда: +${q.rewardRep} репутации, +${q.rewardAmmo} патрона</div>
+            <div style="font-size:11px; color:var(--accent-blue); margin:2px 0 4px;">Поручитель: <b>${q.giver || 'Жители лагеря'}</b></div>
+            <p class="quest-desc" style="margin-bottom:6px;">${q.desc}</p>
+            ${readyHtml}
+            <div style="font-size:11px; color:var(--accent-gold); background:rgba(0,0,0,0.25); padding:4px 8px; border-radius:4px; margin-top:4px;">
+              🎁 Награда: +${q.rewardRep} репутации, +${q.rewardAmmo} патрона (выдаётся при личной сдаче)
+            </div>
           `;
           area.appendChild(card);
         });
@@ -5020,7 +5142,9 @@ met_spiridon: false,
     showIntroScreen,
     hideIntroScreen,
     setMusicFromIntro,
-    startGameFromIntro
+    startGameFromIntro,
+    talkToNPC,
+    turnInDailyQuest
   };
 
 })();
