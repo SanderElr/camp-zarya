@@ -1,60 +1,50 @@
 @echo off
 chcp 65001 >nul
-title Сохранение игры Лагерь «Заря» на GitHub
-
-echo ========================================================
-echo   СОХРАНЕНИЕ И СИНХРОНИЗАЦИЯ С GITHUB (camp-zarya)
-echo ========================================================
-echo.
-
+title Camp Zarya - Save to GitHub
 cd /d "%~dp0"
 
-echo [1/3] Подготовка файлов к сохранению...
+echo ========================================================
+echo   CAMP ZARYA: SYNC WITH GITHUB
+echo ========================================================
+echo.
+
+echo [1/3] Adding files...
 git add .
 
-set /p commit_msg="Введите описание изменений (или Enter для авто-сохранения): "
-if "%commit_msg%"=="" set commit_msg=Обновление: %date% %time%
+set "commit_msg=Game update: %date% %time%"
+echo [2/3] Local commit...
+git commit -m "%commit_msg%"
 
 echo.
-echo [2/3] Локальное сохранение...
-git commit -m "%commit_msg%" 2>nul
-if %ERRORLEVEL% NEQ 0 (
-    echo (Локально все файлы уже были зафиксированы)
-)
-
-echo.
-echo [3/3] Отправка на GitHub (vetka main)...
+echo [3/3] Sending to GitHub...
 git push -u origin main
+if %ERRORLEVEL% EQU 0 goto :success
 
-if %ERRORLEVEL% EQU 0 (
-    echo.
-    echo ========================================================
-    echo   [УСПЕХ] Игра сохранена на ПК и обновлена на GitHub!
-    echo ========================================================
-) else (
-    echo.
-    echo --------------------------------------------------------
-    echo Требуется однократный вход в GitHub.
-    echo Сейчас откроется окно браузера для подтверждения...
-    echo --------------------------------------------------------
-    echo.
-    git credential-manager github login
-    echo.
-    echo Повторная отправка файлов...
-    git push -u origin main
-    if %ERRORLEVEL% EQU 0 (
-        echo.
-        echo ========================================================
-        echo   [УСПЕХ] Вход выполнен! Файлы успешно на GitHub!
-        echo ========================================================
-    ) else (
-        echo.
-        echo ========================================================
-        echo   [ОШИБКА] Отправка не удалась. Обратите внимание на
-        echo   сообщения об ошибках выше.
-        echo ========================================================
-    )
-)
+echo.
+echo ========================================================
+echo   GitHub authorization required!
+echo   Opening browser for login...
+echo ========================================================
+echo.
+git credential-manager github login
 
+echo.
+echo Retrying push to GitHub...
+git push -u origin main
+if %ERRORLEVEL% EQU 0 goto :success
+
+echo.
+echo ========================================================
+echo   [ERROR] Push failed.
+echo ========================================================
+goto :end
+
+:success
+echo.
+echo ========================================================
+echo   [SUCCESS] Game saved on PC and uploaded to GitHub!
+echo ========================================================
+
+:end
 echo.
 pause
