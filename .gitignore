@@ -1,0 +1,7 @@
+.DS_Store
+Thumbs.db
+node_modules/
+*.log
+# Большой WAV (38 МБ) остаётся на диске ПК, в Git идёт только mp3 (4.4 МБ) для скорости
+Fate2.wav
+

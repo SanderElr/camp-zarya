@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Лагерь Заря">
+  <meta name="theme-color" content="#121417">
+  <title>Лагерь Заря — Текстовая RPG-выживание</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="game-container">
+    
+    <!-- ВЕРХНИЙ СТАТУС-БАР ВЫЖИВАНИЯ (HUD) -->
+    <header class="hud-header">
+      <div class="hud-time-badge">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span class="hud-camp-title">🏕️ ЛАГЕРЬ «ЗАРЯ»</span>
+          <span class="hud-time-val" id="hudTime">День 1, Утро</span>
+        </div>
+        <div class="hud-actions">
+          <button id="btnMusic" class="hud-btn" onclick="Game.toggleMusic()" title="Музыка">
+            <span id="musicIcon">🎵</span>
+          </button>
+          <button id="btnMenu" class="hud-btn" onclick="Game.openSystemMenu()" title="Меню">
+            ⚙️ Меню
+          </button>
+        </div>
+      </div>
+
+      <div class="hud-stats-grid">
+        <!-- Здоровье -->
+        <div class="stat-pill" title="Здоровье">
+          <span class="stat-icon">❤️</span>
+          <span class="stat-num" id="statHp">100</span>
+          <div class="stat-bar-mini"><div class="stat-bar-fill hp" id="barHp" style="width: 100%;"></div></div>
+        </div>
+
+        <!-- Сытость (Еда) -->
+        <div class="stat-pill" title="Сытость">
+          <span class="stat-icon">🍖</span>
+          <span class="stat-num" id="statHunger">85%</span>
+          <div class="stat-bar-mini"><div class="stat-bar-fill hunger" id="barHunger" style="width: 85%;"></div></div>
+        </div>
+
+        <!-- Жажда (Вода) -->
+        <div class="stat-pill" title="Жажда">
+          <span class="stat-icon">💧</span>
+          <span class="stat-num" id="statThirst">80%</span>
+          <div class="stat-bar-mini"><div class="stat-bar-fill thirst" id="barThirst" style="width: 80%;"></div></div>
+        </div>
+
+        <!-- Радиация -->
+        <div class="stat-pill" title="Радиация">
+          <span class="stat-icon">☢️</span>
+          <span class="stat-num" id="statRad">0 Р</span>
+          <div class="stat-bar-mini"><div class="stat-bar-fill rad" id="barRad" style="width: 0%;"></div></div>
+        </div>
+
+        <!-- Энергия -->
+        <div class="stat-pill" title="Бодрость / Энергия">
+          <span class="stat-icon">⚡</span>
+          <span class="stat-num" id="statEnergy">100%</span>
+          <div class="stat-bar-mini"><div class="stat-bar-fill energy" id="barEnergy" style="width: 100%;"></div></div>
+        </div>
+
+        <!-- Репутация -->
+        <div class="stat-pill rep-pill" title="Репутация в лагере">
+          <span class="stat-icon">🎖️</span>
+          <span class="stat-num" id="statRep">Чужак (10)</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ОСНОВНАЯ КОНТЕНТНАЯ ОБЛАСТЬ (ТАБЫ) -->
+    <main class="main-content" id="mainContent">
+      
+      <!-- ВКЛАДКА 1: ЛАГЕРЬ -->
+      <section class="tab-pane active" id="tabCamp">
+        <div class="location-card">
+          <div class="location-banner">
+            <img src="assets/images/cabin.png" class="loc-img pixel-art" alt="Лагерь">
+            <div class="loc-banner-info">
+              <h2>Центр лагеря «Заря»</h2>
+              <p>Островок безопасности среди мёртвой тайги. Потрескивает костёр, пахнет хвоей и дымом.</p>
+            </div>
+          </div>
+
+          <!-- Быстрые действия лагеря -->
+          <div class="action-grid">
+            <button class="act-btn" onclick="Game.restAtCamp()">
+              <span class="btn-icon">🛏️</span>
+              <div class="btn-info">
+                <strong>Отдохнуть в бараке</strong>
+                <small>+50% энергии, проходит время</small>
+              </div>
+            </button>
+
+            <button class="act-btn" onclick="Game.openCampFire()">
+              <span class="btn-icon">🔥</span>
+              <div class="btn-info">
+                <strong>Лагерный костёр</strong>
+                <small>Погреться, приготовить еду</small>
+              </div>
+            </button>
+          </div>
+
+          <!-- Жители лагеря (НПС) -->
+          <h3 class="section-title">Жители лагеря</h3>
+          <div class="npc-list" id="npcList">
+            <!-- Динамически рендерится через JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ВКЛАДКА 2: ВЫЛАЗКА (КАРТА ЛОКАЦИЙ) -->
+      <section class="tab-pane" id="tabMap">
+        <div class="map-container">
+          <h2 class="section-title">Окрестности лагеря</h2>
+          <p class="section-subtitle">Исследуйте зоны, добывайте припасы и открывайте новые тайники.</p>
+          <div class="locations-grid" id="locationsGrid">
+            <!-- Локации рендерятся через JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ВКЛАДКА 3: РЮКЗАК (ИНВЕНТАРЬ) -->
+      <section class="tab-pane" id="tabInventory">
+        <div class="inventory-container">
+          <div class="inv-header-bar">
+            <h2>Вещмешок</h2>
+            <div class="weight-badge" id="weightBadge">Вес: 0.0 / 25.0 кг</div>
+          </div>
+
+          <!-- Фильтры категорий -->
+          <div class="cat-filter-bar">
+            <button class="filter-btn active" onclick="Game.filterInv('all')">Все</button>
+            <button class="filter-btn" onclick="Game.filterInv('food')">Еда/Вода</button>
+            <button class="filter-btn" onclick="Game.filterInv('resource')">Ресурсы</button>
+            <button class="filter-btn" onclick="Game.filterInv('tool')">Снаряжение</button>
+            <button class="filter-btn" onclick="Game.filterInv('lore')">Записки</button>
+          </div>
+
+          <div class="inv-grid" id="inventoryGrid">
+            <!-- Предметы рендерятся через JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ВКЛАДКА 4: КРАФТ И КУЛИНАРИЯ -->
+      <section class="tab-pane" id="tabCraft">
+        <div class="craft-container">
+          <div class="craft-header-bar">
+            <h2>Рецепты и Изготовление</h2>
+            <div class="craft-tabs">
+              <button class="craft-tab-btn active" onclick="Game.switchCraftStation('fire')">🔥 Костёр</button>
+              <button class="craft-tab-btn" onclick="Game.switchCraftStation('bench')">🔨 Верстак</button>
+            </div>
+          </div>
+
+          <div class="recipes-list" id="recipesList">
+            <!-- Рецепты рендерятся через JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ВКЛАДКА 5: ЖУРНАЛ КВЕСТОВ И ЛОР -->
+      <section class="tab-pane" id="tabQuests">
+        <div class="quests-container">
+          <div class="quest-subtabs">
+            <button class="quest-subtab active" onclick="Game.switchQuestView('main')">⭐ Сюжетные квесты</button>
+            <button class="quest-subtab" onclick="Game.switchQuestView('daily')">📅 Ежедневные поручения</button>
+            <button class="quest-subtab" onclick="Game.switchQuestView('lore')">📻 Дневник и Лор</button>
+          </div>
+
+          <div class="quest-content-area" id="questContentArea">
+            <!-- Список квестов или записок -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ЛОГ ДЕЙСТВИЙ И УВЕДОМЛЕНИЙ -->
+    <div class="toast-log" id="toastLog"></div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ДИАЛОГОВ И АКТИВНОСТЕЙ -->
+    <div class="modal-overlay" id="modalOverlay">
+      <div class="modal-window">
+        <div class="modal-header">
+          <div class="modal-avatar-box">
+            <img src="assets/images/batya.png" id="modalAvatar" class="pixel-art" alt="">
+          </div>
+          <div class="modal-title-box">
+            <h3 id="modalTitle">Диалог</h3>
+            <span id="modalSubtitle">Статус</span>
+          </div>
+          <button class="modal-close-btn" onclick="Game.closeModal()">✕</button>
+        </div>
+        <div class="modal-body" id="modalBody">
+          <!-- Контент активности (рыбалка, диалог, торговля) -->
+        </div>
+        <div class="modal-footer" id="modalFooter">
+          <!-- Кнопки выборов -->
+        </div>
+      </div>
+    </div>
+
+    <!-- НИЖНЯЯ НАВИГАЦИОННАЯ ПАНЕЛЬ (МОБИЛЬНЫЕ ТАБЫ) -->
+    <nav class="bottom-nav">
+      <button class="nav-btn active" onclick="Game.switchTab('tabCamp')">
+        <span class="nav-icon">🏕️</span>
+        <span class="nav-label">Лагерь</span>
+      </button>
+
+      <button class="nav-btn" onclick="Game.switchTab('tabMap')">
+        <span class="nav-icon">🗺️</span>
+        <span class="nav-label">Вылазка</span>
+      </button>
+
+      <button class="nav-btn" onclick="Game.switchTab('tabInventory')">
+        <span class="nav-icon">🎒</span>
+        <span class="nav-label">Рюкзак</span>
+        <span class="nav-badge" id="invBadge" style="display:none;">0</span>
+      </button>
+
+      <button class="nav-btn" onclick="Game.switchTab('tabCraft')">
+        <span class="nav-icon">🔨</span>
+        <span class="nav-label">Крафт</span>
+      </button>
+
+      <button class="nav-btn" onclick="Game.switchTab('tabQuests')">
+        <span class="nav-icon">📜</span>
+        <span class="nav-label">Задания</span>
+        <span class="nav-badge" id="questBadge" style="display:none;">!</span>
+      </button>
+    </nav>
+
+  </div>
+
+  <!-- СТАРТОВЫЙ ЭКРАН (ИНТРО / ПРОЛОГ) -->
+  <div class="intro-screen" id="introScreen">
+    <div class="intro-modal">
+      
+      <!-- ШАПКА -->
+      <div class="intro-badge">☢️ СИБИРЬ • 1989 ГОД ☢️</div>
+      <h1 class="intro-title">ЛАГЕРЬ «ЗАРЯ»</h1>
+      <div class="intro-subtitle">ТАЁЖНЫЙ КАСКАД • ВЫЖИВАНИЕ</div>
+
+      <!-- АТМОСФЕРНЫЙ ПИКСЕЛЬ-АРТ КОЛЛАЖ -->
+      <div class="intro-collage">
+        <div class="collage-sky"></div>
+        
+        <!-- Задний план: Радиовышка и тайга -->
+        <img src="assets/images/tower.png" class="collage-sprite tower pixel-art" alt="Радиовышка">
+        <img src="assets/images/forest.png" class="collage-sprite forest-bg pixel-art" alt="Тайга">
+
+        <!-- Средний план: Частокол, УАЗ и штабной сруб -->
+        <img src="assets/images/palisade.png" class="collage-sprite palisade-left pixel-art" alt="Частокол">
+        <img src="assets/images/uaz.png" class="collage-sprite uaz pixel-art" alt="УАЗ-469">
+        <img src="assets/images/cabin.png" class="collage-sprite cabin pixel-art" alt="Штаб Зари">
+        <img src="assets/images/palisade.png" class="collage-sprite palisade-right pixel-art" alt="Частокол">
+
+        <!-- Передний план: Костёр с мерцанием, знак радиации и Выживший -->
+        <div class="bonfire-wrap">
+          <img src="assets/images/bonfire.png" class="collage-sprite bonfire pixel-art" alt="Костёр">
+          <div class="fire-glow"></div>
+        </div>
+        <img src="assets/images/rad_icon.png" class="collage-sprite rad-sign pixel-art" alt="Радиация">
+        <img src="assets/images/hero.png" class="collage-sprite hero pixel-art" alt="Выживший">
+
+        <div class="collage-ground-line"></div>
+      </div>
+
+      <!-- ПРОЛОГ И ЛОР -->
+      <div class="intro-prologue">
+        <div class="prologue-heading">📻 СВОДКА ВЫЖИВШЕГО:</div>
+        <p>После аварийного взрыва на химкомбинате <b>НИИ «Сфера»</b> ядовитая волна «Каскада» разрушила дамбу на реке Быстрянке. Радиация и токсичные споры выжгли города, а глухую сибирскую тайгу заполонили дикие мутанты.</p>
+        <p>Неделями вы пробивались сквозь гиблые топи, теряя припасы и товарищей. Но сквозь ночную мглу забрезжил огонь костра — старая лесопилка на возвышенности, ставшая лагерем <b>«Заря»</b> под началом коменданта майора Дмитрия (Бати).</p>
+      </div>
+
+      <!-- ПАМЯТКА ВЫЖИВАЛЬЩИКА -->
+      <div class="intro-rules-grid">
+        <div class="intro-rule-card">
+          <span class="intro-rule-icon">💧</span>
+          <div><b>Опасность воды и еды:</b> Не пейте сырую речную воду и не ешьте сырую рыбу! Кипятите воду и запекайте улов на костре, чтобы не погибнуть от радиации.</div>
+        </div>
+        <div class="intro-rule-card">
+          <span class="intro-rule-icon">🌲</span>
+          <div><b>Таёжный промысел:</b> Копайте червей у берега, мастерите удочки и капканы на верстаке, заготавливайте сухой хворост и целебные травы.</div>
+        </div>
+        <div class="intro-rule-card">
+          <span class="intro-rule-icon">🎖️</span>
+          <div><b>Жизнь общины:</b> Познакомьтесь с жителями, выполняйте ежедневные контракты, заслужите доверие Бати и разгадайте секрет запечатанного Бункера.</div>
+        </div>
+      </div>
+
+      <!-- АУДИО НАСТРОЙКА -->
+      <div class="intro-audio-row">
+        <label class="intro-audio-label">
+          <input type="checkbox" id="introMusicCheckbox" checked onchange="Game.setMusicFromIntro(this.checked)">
+          <span>🎵 Фоновое аудио сопровождение («Fate 2»)</span>
+        </label>
+      </div>
+
+      <!-- КНОПКА СТАРТА -->
+      <button class="intro-start-btn" onclick="Game.startGameFromIntro()">
+        🔥 НАЧАТЬ ВЫЖИВАНИЕ (ВСТУПИТЬ В ЛАГЕРЬ)
+      </button>
+
+    </div>
+  </div>
+
+  <!-- ФОНОВАЯ МУЗЫКА -->
+  <audio id="bgMusic" loop preload="auto">
+    <source src="assets/audio/fate2.mp3" type="audio/mpeg">
+    <source src="Fate2.wav" type="audio/wav">
+  </audio>
+
+  <script src="game.js"></script>
+</body>
+</html>
