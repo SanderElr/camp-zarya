@@ -31,6 +31,10 @@
   - Фирменные шрифты `Russo One` и `FreeMono`.
   - Автосохранение в `localStorage`.
 
-## 🚀 Как запустить игру
-Просто откройте файл в браузере:
-`file:///d:/down/ag/camp/index.html`
+## 🚀 Как играть
+
+- **🌐 Онлайн в браузере (на телефоне и ПК без установки):**
+  👉 **[https://sanderelr.github.io/camp-zarya/](https://sanderelr.github.io/camp-zarya/)**
+
+- **💻 Локально на ПК:**
+  Дважды кликните `index.html` или запустите локальный сервер через `node server.js`.
