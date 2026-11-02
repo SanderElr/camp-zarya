@@ -107,7 +107,7 @@ const Game = (() => {
     },
     {
       id: 'craft_bandage', station: 'bench', name: 'Скрутить стерильный бинт', icon: 'assets/images/medicine.png',
-      cost: { herbs: 1, wire: 0 }, result: { bandage: 1 }, energy: 5, timeMin: 10,
+      cost: { herbs: 2 }, result: { bandage: 1 }, energy: 5, timeMin: 10,
       desc: 'Травяная повязка для остановки кровотечений.'
     },
     {
@@ -221,6 +221,7 @@ const Game = (() => {
       met_anna: false,
       met_egor: false,
       met_prokhor: false,
+      egor_starter_worms: false,
       dogs_defeated: false,
       water_sample_given: false,
       swamp_explored: false,
@@ -530,7 +531,10 @@ const Game = (() => {
     if (!ITEMS[itemId]) return;
     state.inventory[itemId] = (state.inventory[itemId] || 0) + count;
     renderInventory();
+    renderRecipes();
+    renderQuests();
     updateHUD();
+    saveState();
   }
 
   function removeItem(itemId, count = 1) {
@@ -541,7 +545,10 @@ const Game = (() => {
       delete state.inventory[itemId];
     }
     renderInventory();
+    renderRecipes();
+    renderQuests();
     updateHUD();
+    saveState();
     return true;
   }
 
@@ -661,8 +668,10 @@ const Game = (() => {
     sfx.init();
     sfx.playClick();
     state.invFilter = type;
-    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      const match = btn.getAttribute('onclick')?.includes(`'${type}'`);
+      btn.classList.toggle('active', !!match);
+    });
     renderInventory();
   }
 
@@ -1627,9 +1636,10 @@ const Game = (() => {
           if (getItemCount('ammo') >= 2) {
             removeItem('ammo', 2);
             addItem('wire', 1);
-            toast('Куплена проволока');
+            toast('Куплен моток сталистой проволоки');
             sfx.playSuccess();
-            closeModal();
+            saveState();
+            talkProkhor();
           } else {
             toast('Недостаточно патронов.');
           }
@@ -1740,17 +1750,40 @@ const Game = (() => {
       });
     }
 
+    // Стартовая наживка (выдаётся Егором только 1 раз!)
+    if (!state.questFlags.egor_starter_worms) {
+      actions.push({
+        text: '🪱 Взять стартовую наживку (3 червя бесплатно от Егора)',
+        action: () => {
+          state.questFlags.egor_starter_worms = true;
+          addItem('worms', 3);
+          toast('Егор отсыпал 3 червя: «Вот на первое время. А дальше сам на реке копай!»');
+          sfx.playSuccess();
+          saveState();
+          talkEgor();
+        },
+        primary: true
+      });
+    } else {
+      actions.push({
+        text: '🪱 Купить банку отборных червей (5 шт. за 1 патрон)',
+        action: () => {
+          if (getItemCount('ammo') >= 1) {
+            removeItem('ammo', 1);
+            addItem('worms', 5);
+            toast('Егор отсыпал банку жирных червей.');
+            sfx.playSuccess();
+            saveState();
+            talkEgor();
+          } else {
+            toast('Не хватает патронов. Накопайте червей бесплатно на берегу реки Быстрянки!');
+          }
+        }
+      });
+    }
+
     // Стандартные услуги Егора
     actions.push(
-      {
-        text: '🪱 Взять горсть червей для рыбалки (бесплатно)',
-        action: () => {
-          addItem('worms', 3);
-          toast('Егор отсыпал 3 червя для наживки.');
-          sfx.playSuccess();
-          closeModal();
-        }
-      },
       {
         text: '🐟 Сдать 2 сырые рыбы в общий котёл (+10 репутации, +2 патрона)',
         action: () => {
@@ -2539,24 +2572,29 @@ const Game = (() => {
     sfx.init();
     sfx.playClick();
     state.craftStation = station;
-    document.querySelectorAll('.craft-tab-btn').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
+    document.querySelectorAll('.craft-tab-btn').forEach(b => {
+      const isFire = b.getAttribute('onclick')?.includes('fire') || b.textContent.includes('Костёр');
+      b.classList.toggle('active', station === 'fire' ? isFire : !isFire);
+    });
     renderRecipes();
   }
 
   function renderRecipes() {
     const list = document.getElementById('recipesList');
+    if (!list) return;
     list.innerHTML = '';
 
     const currentRecipes = RECIPES.filter(r => r.station === state.craftStation);
     currentRecipes.forEach(r => {
       let canCraft = true;
-      let costText = [];
+      let costBadges = [];
       for (const [resId, reqCount] of Object.entries(r.cost)) {
+        if (reqCount <= 0) continue;
         const have = getItemCount(resId);
         const resName = ITEMS[resId]?.name || resId;
-        costText.push(`${resName}: ${have}/${reqCount}`);
-        if (have < reqCount) canCraft = false;
+        const isEnough = have >= reqCount;
+        if (!isEnough) canCraft = false;
+        costBadges.push(`<span class="ingredient-pill ${isEnough ? 'pill-ok' : 'pill-missing'}">${isEnough ? '✓' : '✗'} ${resName}: ${have}/${reqCount}</span>`);
       }
 
       const card = document.createElement('div');
@@ -2566,10 +2604,10 @@ const Game = (() => {
           <img src="${r.icon}" class="recipe-icon pixel-art" alt="">
           <div>
             <div class="recipe-title">${r.name}</div>
-            <div class="recipe-ingredients">${costText.join(' • ')}</div>
+            <div class="recipe-ingredients">${costBadges.join('')}</div>
           </div>
         </div>
-        <p style="font-size:11px; color:var(--text-dim);">${r.desc}</p>
+        <p style="font-size:11px; color:var(--text-dim); margin:4px 0 0 0;">${r.desc}</p>
         <button class="recipe-btn ${canCraft ? 'can-craft' : ''}" onclick="Game.craftRecipe('${r.id}')" ${!canCraft ? 'disabled style="opacity:0.4;"' : ''}>
           ${canCraft ? 'Изготовить' : 'Не хватает сырья'}
         </button>
@@ -2644,8 +2682,10 @@ const Game = (() => {
     sfx.init();
     sfx.playClick();
     state.questView = view;
-    document.querySelectorAll('.quest-subtab').forEach(b => b.classList.remove('active'));
-    event.target.classList.add('active');
+    document.querySelectorAll('.quest-subtab').forEach(b => {
+      const match = b.getAttribute('onclick')?.includes(`'${view}'`);
+      b.classList.toggle('active', !!match);
+    });
     renderQuests();
   }
 
@@ -3079,6 +3119,13 @@ const Game = (() => {
     const btnIndex = ['tabCamp', 'tabMap', 'tabInventory', 'tabCraft', 'tabQuests'].indexOf(tabId);
     const navButtons = document.querySelectorAll('.nav-btn');
     if (navButtons[btnIndex]) navButtons[btnIndex].classList.add('active');
+
+    // Всегда обновляем активную вкладку свежими данными
+    if (tabId === 'tabInventory') renderInventory();
+    else if (tabId === 'tabCraft') renderRecipes();
+    else if (tabId === 'tabQuests') renderQuests();
+    else if (tabId === 'tabMap') renderLocations();
+    else if (tabId === 'tabCamp') renderNPCs();
   }
 
   // --- МОДАЛЬНОЕ ОКНО ---
@@ -3252,6 +3299,9 @@ const Game = (() => {
           parsed.questFlags.met_anna = true;
           parsed.questFlags.met_egor = true;
           parsed.questFlags.met_prokhor = true;
+        }
+        if (parsed.mainQuestStep >= 4) {
+          parsed.questFlags.egor_starter_worms = true;
         }
         if (parsed.mainQuestStep >= 5) {
           parsed.questFlags.dogs_defeated = true;

@@ -588,23 +588,50 @@ html, body {
 }
 .recipe-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 10px;
+}
+.recipe-header > div {
+  flex: 1;
+  min-width: 0;
 }
 .recipe-icon {
   width: 32px;
   height: 32px;
   object-fit: contain;
   flex-shrink: 0;
+  margin-top: 2px;
 }
 .recipe-title {
   font-family: 'Russo One', sans-serif;
   font-size: 13px;
   color: #fff;
+  margin-bottom: 4px;
 }
 .recipe-ingredients {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
   font-size: 11px;
-  color: var(--text-dim);
+}
+.ingredient-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-dim);
+  white-space: nowrap;
+}
+.ingredient-pill.pill-ok {
+  color: #55efc4;
+  border-color: rgba(85, 239, 196, 0.4);
+}
+.ingredient-pill.pill-missing {
+  color: #ff7675;
+  border-color: rgba(255, 118, 117, 0.4);
 }
 .recipe-btn {
   align-self: flex-end;
