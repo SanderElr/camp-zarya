@@ -102,7 +102,9 @@ const Game = (() => {
     {
       id: 'craft_rod', station: 'bench', name: 'Собрать удочку', icon: 'assets/images/fishing_rod.png',
       cost: { firewood: 2, wire: 1 }, result: { rod: 1 }, energy: 15, timeMin: 30,
-      desc: 'Простая удочка для ловли рыбы на реке Быстрянке.'
+      desc: 'Простая удочка для ловли рыбы на реке Быстрянке.',
+      oneTime: true,
+      isCrafted: (s) => getItemCount('rod') > 0 || !!s.questFlags?.rod_crafted || s.mainQuestStep > 3
     },
     {
       id: 'craft_torch', station: 'bench', name: 'Связать смоляной факел', icon: 'assets/images/torch.png',
@@ -112,7 +114,17 @@ const Game = (() => {
     {
       id: 'craft_spear', station: 'bench', name: 'Собрать охотничье копьё', icon: 'assets/images/iron_spear.png',
       cost: { knife: 1, firewood: 2, wire: 1 }, result: { spear: 1 }, energy: 15, timeMin: 25,
-      desc: 'Надёжное оружие ближнего боя против хищников.'
+      desc: 'Надёжное оружие ближнего боя против хищников.',
+      oneTime: true,
+      isCrafted: (s) => getItemCount('spear') > 0 || !!s.questFlags?.spear_crafted
+    },
+    {
+      id: 'craft_doghouse', station: 'bench', name: 'Сколотить тёплую конуру для Бурана', icon: 'assets/images/cabin.png',
+      cost: { firewood: 3, wire: 1, leather: 1 }, result: {}, energy: 15, timeMin: 30,
+      desc: 'Тёплая конура из досок и шкур у лагерного костра. Буран вырастет верным боевым спутником (+25% к урону в боях и утренние подарки)!',
+      oneTime: true,
+      unlocked: (s) => !!s.questFlags?.pup_rescued && !s.hasDog && !s.questFlags?.dog_house_built,
+      isCrafted: (s) => !!s.hasDog || !!s.questFlags?.dog_house_built
     },
     {
       id: 'craft_trap', station: 'bench', name: 'Сколотить капкан', icon: 'assets/images/trapie.png',
@@ -128,13 +140,17 @@ const Game = (() => {
       id: 'craft_stalker_suit', station: 'bench', name: 'Сшить броню сталкера', icon: 'assets/images/combined_armor.png',
       cost: { bear_pelt: 1, scrap: 3, wire: 2 }, result: { stalker_suit: 1 }, energy: 25, timeMin: 60,
       desc: 'Укреплённый костюм. Навсегда увеличивает вместимость рюкзака до 30 кг.',
-      unlocked: (s) => s.mainQuestStep >= 15 || !!s.questFlags?.suit_crafted
+      oneTime: true,
+      unlocked: (s) => s.mainQuestStep >= 15 || !!s.questFlags?.suit_crafted,
+      isCrafted: (s) => !!s.questFlags?.suit_crafted || getItemCount('stalker_suit') > 0
     },
     {
       id: 'craft_respirator', station: 'bench', name: 'Собрать респиратор Р-2', icon: 'assets/images/respirator.png',
       cost: { swamp_moss: 2, herbs: 1, wire: 1 }, result: { respirator: 1 }, energy: 15, timeMin: 30,
       desc: 'Защищает лёгкие от радиоактивного тумана и ядовитых газов Бункера.',
-      unlocked: (s) => s.mainQuestStep >= 16 || !!s.questFlags?.respirator_crafted
+      oneTime: true,
+      unlocked: (s) => s.mainQuestStep >= 16 || !!s.questFlags?.respirator_crafted,
+      isCrafted: (s) => !!s.questFlags?.respirator_crafted || getItemCount('respirator') > 0
     },
     {
       id: 'brew_spiridon_vodka', station: 'fire', name: 'Сварить настойку «Спиридоновка»', icon: 'assets/images/hw_potion.png',
@@ -158,13 +174,17 @@ const Game = (() => {
       id: 'craft_geiger', station: 'bench', name: 'Собрать Счётчик Гейгера ДП-5', icon: 'assets/images/geiger_counter.png',
       cost: { scrap: 2, wire: 2, batteryaaa: 1 }, result: { geiger_counter: 1 }, energy: 10, timeMin: 30,
       desc: 'Армейский дозиметр. Пассивно снижает накопление радиации на 30% во всех вылазках!',
-      unlocked: (s) => !!s.questFlags?.met_sasha
+      oneTime: true,
+      unlocked: (s) => !!s.questFlags?.met_sasha,
+      isCrafted: (s) => !!s.hasGeiger || getItemCount('geiger_counter') > 0 || !!s.questFlags?.geiger_crafted
     },
     {
       id: 'craft_electric_torch', station: 'bench', name: 'Собрать полевой электрофонарь', icon: 'assets/images/electric_torch.png?v=2.3',
       cost: { wire: 1, batteryaaa: 1, scrap: 1 }, result: { electric_torch: 1 }, energy: 5, timeMin: 15,
       desc: 'Электрический фонарь с вечным светодиодом. Освещает ночной путь без расхода дров.',
-      unlocked: (s) => !!s.questFlags?.met_sasha
+      oneTime: true,
+      unlocked: (s) => !!s.questFlags?.met_sasha,
+      isCrafted: (s) => !!s.hasElectricTorch || getItemCount('electric_torch') > 0 || !!s.questFlags?.electric_torch_crafted
     }
   ];
 
@@ -2558,18 +2578,17 @@ met_spiridon: false,
 
     // Буран: сколотить конуру
     if (state.questFlags.pup_rescued && !state.hasDog) {
-      const canBuild = getItemCount('firewood') >= 3 && getItemCount('wire') >= 1 && getItemCount('leather') >= 1 && (getItemCount('cooked_meat') > 0 || getItemCount('cooked_fish') > 0);
-      body += `<p style="color:var(--accent-gold);"><b>[ЩЕНОК БУРАН]:</b> Егор гладит щенка за ухом: <i>«Лайка чистейших кровей! Сколоти ему тёплую конуру у костра (3 дров, 1 проволока, 1 кожа) и накорми жареным мясом — лучшего друга в тайге не найдёшь!»</i></p>`;
+      const canBuild = getItemCount('firewood') >= 3 && getItemCount('wire') >= 1 && getItemCount('leather') >= 1;
+      body += `<p style="color:var(--accent-gold);"><b>[ЩЕНОК БУРАН]:</b> Егор гладит щенка за ухом: <i>«Лайка чистейших кровей! Сколоти ему тёплую конуру на верстаке или прямо сейчас (3 дров, 1 проволока, 1 кожа) — лучшего друга в тайге не найдёшь!»</i></p>`;
       if (canBuild) {
         actions.push({
-          text: '🐕 Сколотить тёплую конуру для Бурана (3 дров, 1 проволока, 1 кожа, мясо)',
+          text: '🐕 Сколотить тёплую конуру для Бурана (3 дров, 1 проволока, 1 кожа)',
           action: () => {
             removeItem('firewood', 3);
             removeItem('wire', 1);
             removeItem('leather', 1);
-            if (getItemCount('cooked_meat') > 0) removeItem('cooked_meat', 1);
-            else removeItem('cooked_fish', 1);
             state.hasDog = true;
+            state.questFlags.dog_house_built = true;
             state.reputation += 35;
             toast('🐶 БУРАН ВЫРОС И СТАЛ ВАШИМ ВЕРНЫМ СПУТНИКОМ! (+25% урона в боях, +35 репутации)!');
             sfx.playSuccess();
@@ -2577,11 +2596,23 @@ met_spiridon: false,
             saveState();
             renderNPCs();
             renderQuests();
+            renderRecipes();
             interactWithDog();
           },
           primary: true
         });
+      } else {
+        actions.push({
+          text: '🔨 Перейти к верстаку (рецепт конуры)',
+          action: () => {
+            closeModal();
+            switchTab('tabCraft');
+            switchCraftStation('bench');
+          }
+        });
       }
+    } else if (state.hasDog) {
+      body += `<p style="color:var(--accent-gold);"><b>[БУРАН]:</b> Егор с гордостью кивает на конуру: <i>«Ладная будка вышла! Пёс сыт, крепок и чует любого зверя за версту. Не забывай трепать его за ухом перед вылазкой!»</i></p>`;
     }
 
     checkStarterQuestProgress();
@@ -4072,7 +4103,25 @@ met_spiridon: false,
     if (!list) return;
     list.innerHTML = '';
 
-    const currentRecipes = RECIPES.filter(r => r.station === state.craftStation && (!r.unlocked || r.unlocked(state)));
+    const currentRecipes = RECIPES.filter(r => {
+      if (r.station !== state.craftStation) return false;
+      // Скрывать разовые уникальные рецепты после их изготовления
+      if (r.oneTime && r.isCrafted && r.isCrafted(state)) return false;
+      // Проверка условий открытия рецепта
+      if (r.unlocked && !r.unlocked(state)) return false;
+      return true;
+    });
+
+    if (currentRecipes.length === 0) {
+      list.innerHTML = `
+        <div style="text-align:center; padding:35px 15px; color:var(--text-dim); font-size:12px; background:rgba(0,0,0,0.25); border:1px dashed var(--border-dim); border-radius:8px;">
+          <p style="font-weight:bold; color:var(--text-main); margin-bottom:4px;">В этой категории пока нет доступных рецептов</p>
+          <p style="font-size:11px;">Все уникальные чертежи изготовлены, либо требуются новые знания от жителей лагеря.</p>
+        </div>
+      `;
+      return;
+    }
+
     currentRecipes.forEach(r => {
       let canCraft = true;
       let costBadges = [];
@@ -4090,8 +4139,11 @@ met_spiridon: false,
       card.innerHTML = `
         <div class="recipe-header">
           <img src="${r.icon}" class="recipe-icon pixel-art" alt="">
-          <div>
-            <div class="recipe-title">${r.name}</div>
+          <div style="flex:1;">
+            <div class="recipe-title" style="display:flex; justify-content:space-between; align-items:center;">
+              <span>${r.name}</span>
+              ${r.oneTime ? '<span style="font-size:9.5px; color:var(--accent-gold); font-weight:normal; border:1px solid rgba(255,190,34,0.4); border-radius:3px; padding:1px 5px;">РАЗОВО</span>' : ''}
+            </div>
             <div class="recipe-ingredients">${costBadges.join('')}</div>
           </div>
         </div>
@@ -4114,6 +4166,11 @@ met_spiridon: false,
       return;
     }
 
+    if (r.oneTime && r.isCrafted && r.isCrafted(state)) {
+      toast('Этот уникальный чертёж уже изготовлен!');
+      return;
+    }
+
     // Проверка ингредиентов
     for (const [resId, reqCount] of Object.entries(r.cost)) {
       if (getItemCount(resId) < reqCount) {
@@ -4127,7 +4184,7 @@ met_spiridon: false,
       removeItem(resId, reqCount);
     }
     // Выдача
-    for (const [resId, addCount] of Object.entries(r.result)) {
+    for (const [resId, addCount] of Object.entries(r.result || {})) {
       addItem(resId, addCount);
     }
 
@@ -4135,8 +4192,29 @@ met_spiridon: false,
     passTime(0.5);
 
     if (!state.questFlags) state.questFlags = {};
-    if (r.id === 'craft_stalker_suit') state.questFlags.suit_crafted = true;
+    if (r.id === 'craft_rod') state.questFlags.rod_crafted = true;
+    if (r.id === 'craft_spear') state.questFlags.spear_crafted = true;
+    if (r.id === 'craft_stalker_suit') {
+      state.questFlags.suit_crafted = true;
+      state.maxWeight = Math.max(state.maxWeight, 30.0);
+    }
     if (r.id === 'craft_respirator') state.questFlags.respirator_crafted = true;
+    if (r.id === 'craft_geiger') {
+      state.hasGeiger = true;
+      state.questFlags.geiger_crafted = true;
+    }
+    if (r.id === 'craft_electric_torch') {
+      state.hasElectricTorch = true;
+      state.questFlags.electric_torch_crafted = true;
+    }
+    if (r.id === 'craft_doghouse') {
+      state.hasDog = true;
+      state.questFlags.dog_house_built = true;
+      state.reputation += 35;
+      toast('🐶 БУРАН ОБРЕЛ ТЁПЛЫЙ ДОМ! Лайка стала вашим верным спутником (+25% к урону в боях, +35 репутации)!');
+      renderNPCs();
+      renderQuests();
+    }
 
     sfx.playSuccess();
     toast(`🔨 Изготовлено: ${r.name}`);
@@ -5121,10 +5199,14 @@ met_spiridon: false,
         parsed.maxEnergy = parsed.maxEnergy || 100;
         parsed.sideQuests = Object.assign({}, INITIAL_STATE.sideQuests, parsed.sideQuests || {});
         if (parsed.hasDog === undefined) parsed.hasDog = false;
+        if (parsed.hasDog) parsed.questFlags.dog_house_built = true;
+        if (parsed.questFlags.dog_house_built) parsed.hasDog = true;
         if (parsed.pumpWaterActive === undefined) parsed.pumpWaterActive = false;
         if (parsed.hasGeoCompass === undefined) parsed.hasGeoCompass = false;
         if (parsed.hasGeiger === undefined) parsed.hasGeiger = false;
+        if (parsed.hasGeiger) parsed.questFlags.geiger_crafted = true;
         if (parsed.hasElectricTorch === undefined) parsed.hasElectricTorch = false;
+        if (parsed.hasElectricTorch) parsed.questFlags.electric_torch_crafted = true;
         if (parsed.hasTozScope === undefined) parsed.hasTozScope = false;
         if (parsed.introSeen === undefined) {
           parsed.introSeen = (parsed.mainQuestStep > 0 || parsed.day > 1);
