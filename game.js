@@ -3343,7 +3343,44 @@ met_spiridon: false,
     sfx.init();
     sfx.playClick();
     let body = `<p>${loc.desc}</p>`;
-    body += `<p style="font-size:11px; color:var(--text-dim); margin-top:6px;">Радиационный фон: ${loc.rad} Р/ч | Затраты сил: ${loc.energyCost}%</p>`;
+
+    const isLowEnergy = state.energy < loc.energyCost;
+    const isHighRad = state.rad >= 30;
+    const isLowHp = state.hp <= 35;
+    const timeName = getTimeName(state.timeOfDay);
+
+    body += `
+      <div class="loc-modal-stats">
+        <div class="loc-stat-badge energy ${isLowEnergy ? 'low' : ''}" title="Текущая энергия и расход сил за вылазку">
+          <span class="stat-icon">⚡</span>
+          <div class="stat-info">
+            <div class="stat-label">Энергия</div>
+            <div class="stat-val">${state.energy}% <span class="stat-delta">(-${loc.energyCost}%)</span></div>
+          </div>
+        </div>
+        <div class="loc-stat-badge rad ${isHighRad ? 'high' : ''}" title="Текущий уровень радиации и доза в локации">
+          <span class="stat-icon">☢️</span>
+          <div class="stat-info">
+            <div class="stat-label">Радиация</div>
+            <div class="stat-val">${state.rad} Р <span class="stat-delta">(+${loc.rad})</span></div>
+          </div>
+        </div>
+        <div class="loc-stat-badge hp ${isLowHp ? 'low' : ''}" title="Здоровье выжившего">
+          <span class="stat-icon">❤️</span>
+          <div class="stat-info">
+            <div class="stat-label">HP</div>
+            <div class="stat-val">${state.hp} <span class="stat-delta">/ 100</span></div>
+          </div>
+        </div>
+        <div class="loc-stat-badge time" title="Текущее время суток">
+          <span class="stat-icon">⏳</span>
+          <div class="stat-info">
+            <div class="stat-label">Время</div>
+            <div class="stat-val">${timeName}</div>
+          </div>
+        </div>
+      </div>
+    `;
 
     const actions = [];
 
