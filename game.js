@@ -343,6 +343,16 @@ met_spiridon: false,
 
   const TIME_NAMES = ['Утро', 'День', 'Вечер', 'Ночь'];
 
+  function getTimeName(time = state?.timeOfDay) {
+    const idx = Math.floor(Number(time) || 0) % 4;
+    return TIME_NAMES[(idx + 4) % 4] || 'Утро';
+  }
+
+  function isNightTime(time = state?.timeOfDay) {
+    const idx = Math.floor(Number(time) || 0) % 4;
+    return ((idx + 4) % 4) === 3;
+  }
+
   // --- АУДИОСИСТЕМА (МУЗЫКА И ЗВУКИ) ---
   let bgMusicEl = null;
   let musicEnabled = true;
@@ -549,7 +559,7 @@ met_spiridon: false,
     document.getElementById('statRad').textContent = Math.round(state.rad) + ' Р';
     document.getElementById('statEnergy').textContent = Math.round(state.energy) + '%';
     document.getElementById('statRep').textContent = getReputationTitle(state.reputation);
-    document.getElementById('hudTime').textContent = `День ${state.day}, ${TIME_NAMES[state.timeOfDay]}`;
+    document.getElementById('hudTime').textContent = `День ${state.day}, ${getTimeName(state.timeOfDay)}`;
 
     // Прогресс-бары
     document.getElementById('barHp').style.width = Math.max(0, state.hp) + '%';
@@ -581,12 +591,14 @@ met_spiridon: false,
 
   // Переход времени и естественная трата ресурсов
   function passTime(steps = 1, hungerCost = 5, thirstCost = 8) {
-    state.timeOfDay += steps;
+    const numSteps = (typeof steps === 'number' && !isNaN(steps)) ? steps : 1;
+    state.timeOfDay = (Number(state.timeOfDay) || 0) + numSteps;
     while (state.timeOfDay >= 4) {
       state.timeOfDay -= 4;
-      state.day += 1;
+      state.day = (Number(state.day) || 1) + 1;
       onNewDay();
     }
+    state.timeOfDay = Math.round(state.timeOfDay * 10) / 10;
 
     state.hunger = Math.max(0, state.hunger - hungerCost * steps);
     state.thirst = Math.max(0, state.thirst - thirstCost * steps);
@@ -1636,7 +1648,7 @@ met_spiridon: false,
         }
       });
     } else if (state.sideQuests?.sq_watch_batya?.status === 'active') {
-      const isNight = state.timeOfDay === 3;
+      const isNight = isNightTime(state.timeOfDay);
       const hasTorch = getItemCount('torch') > 0 || getItemCount('electric_torch') > 0;
       body += `<p style="color:var(--accent-gold);"><b>[НОЧНОЙ ДОЗОР]:</b> <i>«В темноте твари жмутся к частоколу. Бери факел и заступай на вышку у ворот, покуда луна стоит.»</i></p>`;
       if (isNight && hasTorch) {
@@ -3364,7 +3376,7 @@ met_spiridon: false,
           action: () => doSearchBrdm(loc)
         });
       }
-      if (state.timeOfDay === 3 && !state.questFlags.glowing_moss_found) {
+      if (isNightTime(state.timeOfDay) && !state.questFlags.glowing_moss_found) {
         actions.push({
           text: '✨ Собрать светящийся сфагнум (Ночное свечение топи)',
           action: () => doGatherGlowingMoss(loc),
@@ -4693,7 +4705,7 @@ met_spiridon: false,
               ready = b >= 2 && h >= 1;
               info = `Бинты: ${b}/2, Травы: ${h}/1`;
             } else if (q.id === 'sq_watch_batya') {
-              const isNight = state.timeOfDay === 3;
+              const isNight = isNightTime(state.timeOfDay);
               const hasTorch = getItemCount('torch') > 0 || getItemCount('electric_torch') > 0;
               ready = isNight && hasTorch;
               info = isNight ? 'Ночь наступила!' : 'Ждите ночи';
@@ -4897,7 +4909,7 @@ met_spiridon: false,
         <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.06); border-radius:6px; padding:8px 10px; font-size:11.5px; color:var(--text-dim); line-height:1.6;">
           <div>🏕️ <b>Лагерь «Заря»</b> v1.2</div>
           <div>👤 Репутация: <b>${state.reputation}</b> (${getReputationTitle(state.reputation)})</div>
-          <div>📅 День: <b>${state.day}</b> | Время: <b>${TIME_NAMES[state.timeOfDay]}</b></div>
+          <div>📅 День: <b>${state.day}</b> | Время: <b>${getTimeName(state.timeOfDay)}</b></div>
         </div>
       </div>
     `;
@@ -5116,6 +5128,14 @@ met_spiridon: false,
         if (parsed.hasTozScope === undefined) parsed.hasTozScope = false;
         if (parsed.introSeen === undefined) {
           parsed.introSeen = (parsed.mainQuestStep > 0 || parsed.day > 1);
+        }
+        if (typeof parsed.timeOfDay !== 'number' || isNaN(parsed.timeOfDay)) {
+          parsed.timeOfDay = 0;
+        } else {
+          parsed.timeOfDay = Math.max(0, parsed.timeOfDay % 4);
+        }
+        if (typeof parsed.day !== 'number' || isNaN(parsed.day) || parsed.day < 1) {
+          parsed.day = 1;
         }
         state = Object.assign(state, parsed);
       }
