@@ -1,0 +1,21 @@
+{
+  "name": "camp-zarya",
+  "version": "4.1.0",
+  "description": "Текстовая RPG выживание «Лагерь Заря» в постапокалиптической советской тайге",
+  "main": "game.js",
+  "scripts": {
+    "build": "node build.js",
+    "watch": "node build.js --watch",
+    "test": "node scratch/test_expansion_v4_full.js && node scratch/test_side_quests.js && node scratch/test_20_quests.js",
+    "test:all": "node scratch/test_expansion_v4_full.js && node scratch/test_side_quests.js && node scratch/test_sortie_modal_and_pup.js && node scratch/test_triangulation_unlock.js && node scratch/test_20_quests.js"
+  },
+  "keywords": [
+    "rpg",
+    "survival",
+    "post-apocalyptic",
+    "soviet",
+    "game"
+  ],
+  "author": "SanderElr",
+  "license": "MIT"
+}

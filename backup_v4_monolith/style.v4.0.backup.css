@@ -1,0 +1,1835 @@
+/* ==========================================================================
+   ПОСТАПОКАЛИПТИЧЕСКАЯ ТЕМА: ЛАГЕРЬ «ЗАРЯ»
+   ШРИФТЫ: Russo One + FreeMono
+   ========================================================================== */
+
+@font-face {
+  font-family: 'Russo One';
+  src: url('assets/fonts/russo_one.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'FreeMono';
+  src: url('assets/fonts/freemono.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --bg-deep: #121513;
+  --bg-panel: #1b201d;
+  --bg-card: rgba(36, 43, 38, 0.85);
+  --bg-card-hover: rgba(46, 55, 49, 0.92);
+
+  --border-dim: #344037;
+  --border-focus: #556c5c;
+  --border-accent: #7fa188;
+
+  --text-main: #d8e2da;
+  --text-dim: #8b9d90;
+  --text-highlight: #ffffff;
+
+  --accent-ember: #ff7722;
+  --accent-gold: #ffbe22;
+  --accent-green: #3cd070;
+  --accent-blue: #38bdf8;
+  --accent-rad: #facc15;
+  --accent-danger: #ef4444;
+
+  --nav-height: 56px;
+  --hud-height: 70px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  background-color: var(--bg-deep);
+  color: var(--text-main);
+  font-family: 'FreeMono', monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  height: 100%;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  transition: background 0.3s ease;
+}
+
+/* ==========================================================================
+   АТМОСФЕРНЫЕ ФОНЫ И ТЕКСТУРЫ (ПОСТАПОКАЛИПТИЧЕСКАЯ ТАЙГА)
+   ========================================================================== */
+
+/* Тема по умолчанию: 🏕️ Лагерь «Заря» */
+body, body[data-bg-theme="camp"] {
+  background: radial-gradient(circle at center, rgba(14, 18, 15, 0.35) 0%, rgba(6, 8, 7, 0.82) 100%),
+              url('assets/images/backgrounds/camp_main.jpg') center/cover no-repeat fixed;
+}
+.game-container,
+body[data-bg-theme="camp"] .game-container {
+  background: linear-gradient(180deg, rgba(18, 23, 20, 0.72) 0%, rgba(13, 17, 15, 0.84) 100%),
+              url('assets/images/backgrounds/camp_alt.jpg') center/cover no-repeat;
+}
+
+/* Тема: 🌲 Таёжный туман */
+body[data-bg-theme="fog"] {
+  background: radial-gradient(circle at center, rgba(14, 18, 15, 0.35) 0%, rgba(6, 8, 7, 0.82) 100%),
+              url('assets/images/backgrounds/taiga_fog.jpg') center/cover no-repeat fixed;
+}
+body[data-bg-theme="fog"] .game-container {
+  background: linear-gradient(180deg, rgba(18, 23, 20, 0.72) 0%, rgba(13, 17, 15, 0.84) 100%),
+              url('assets/images/backgrounds/taiga_fog.jpg') center/cover no-repeat;
+}
+
+/* Тема: ❄️ Зимняя тайга */
+body[data-bg-theme="winter"] {
+  background: radial-gradient(circle at center, rgba(14, 18, 16, 0.35) 0%, rgba(6, 9, 8, 0.82) 100%),
+              url('assets/images/backgrounds/taiga_winter.jpg') center/cover no-repeat fixed;
+}
+body[data-bg-theme="winter"] .game-container {
+  background: linear-gradient(180deg, rgba(18, 23, 20, 0.72) 0%, rgba(13, 17, 15, 0.84) 100%),
+              url('assets/images/backgrounds/taiga_winter.jpg') center/cover no-repeat;
+}
+
+/* Тема: 🗺️ Топографическая карта Зоны */
+body[data-bg-theme="map"] {
+  background: radial-gradient(circle at center, rgba(14, 18, 16, 0.35) 0%, rgba(6, 8, 7, 0.82) 100%),
+              url('assets/images/backgrounds/map_topo.jpg') center/cover no-repeat fixed;
+}
+body[data-bg-theme="map"] .game-container {
+  background: linear-gradient(180deg, rgba(18, 23, 20, 0.72) 0%, rgba(13, 17, 15, 0.84) 100%),
+              url('assets/images/backgrounds/map_topo.jpg') center/cover no-repeat;
+}
+
+/* Тема: ⬛ Строгий тёмный (без текстур) */
+body[data-bg-theme="none"] {
+  background: var(--bg-deep) !important;
+}
+body[data-bg-theme="none"] .game-container {
+  background: var(--bg-panel) !important;
+}
+
+.pixel-art {
+  image-rendering: auto;
+}
+
+/* Контейнер приложения */
+.game-container {
+  width: 100%;
+  max-width: 600px;
+  height: 100%;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--border-dim);
+  border-right: 1px solid var(--border-dim);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 45px rgba(0,0,0,0.85);
+}
+
+/* ==========================================================================
+   ВЕРХНИЙ HUD (СТАТУС-БАР ВЫЖИВАНИЯ)
+   ========================================================================== */
+.hud-header {
+  background: linear-gradient(180deg, #181d1a 0%, #131714 100%);
+  border-bottom: 2px solid var(--border-dim);
+  padding: 6px 10px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 150;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.85);
+}
+
+.hud-time-badge {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+.hud-camp-title {
+  font-family: 'Russo One', sans-serif;
+  color: var(--accent-ember);
+  letter-spacing: 0.5px;
+}
+.hud-time-val {
+  color: var(--text-dim);
+}
+.hud-actions {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.hud-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-accent);
+  color: var(--text-main);
+  border-radius: 4px;
+  padding: 3px 8px;
+  font-size: 11px;
+  font-family: 'Russo One', sans-serif;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+.hud-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+.hud-btn.active {
+  border-color: var(--accent-gold);
+  color: var(--accent-gold);
+}
+
+.hud-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+}
+
+.stat-pill {
+  background: rgba(0,0,0,0.4);
+  border: 1px solid var(--border-dim);
+  border-radius: 4px;
+  padding: 3px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.stat-pill-header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.stat-icon-img {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.rep-pill {
+  grid-column: span 1;
+}
+
+.stat-pill > div:first-child,
+.stat-pill {
+  font-size: 11px;
+}
+.stat-icon {
+  margin-right: 3px;
+}
+.stat-num {
+  font-family: 'Russo One', sans-serif;
+  font-size: 11px;
+  color: #fff;
+}
+
+.stat-bar-mini {
+  width: 100%;
+  height: 3px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.stat-bar-fill {
+  height: 100%;
+  transition: width 0.3s ease;
+}
+.stat-bar-fill.hp { background: var(--accent-danger); }
+.stat-bar-fill.hunger { background: var(--accent-ember); }
+.stat-bar-fill.thirst { background: var(--accent-blue); }
+.stat-bar-fill.rad { background: var(--accent-rad); }
+.stat-bar-fill.energy { background: var(--accent-green); }
+
+/* ==========================================================================
+   ОСНОВНОЙ КОНТЕНТ (СКРОЛЛИРУЕМАЯ ОБЛАСТЬ)
+   ========================================================================== */
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 10px;
+  padding-bottom: 20px;
+}
+.main-content::-webkit-scrollbar {
+  width: 4px;
+}
+.main-content::-webkit-scrollbar-thumb {
+  background: var(--border-dim);
+  border-radius: 2px;
+}
+
+.tab-pane {
+  display: none;
+}
+.tab-pane.active {
+  display: block;
+  animation: fadeIn 0.15s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.section-title {
+  font-family: 'Russo One', sans-serif;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  color: var(--text-highlight);
+  margin: 12px 0 6px 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.section-subtitle {
+  font-size: 11.5px;
+  color: var(--text-dim);
+  margin-bottom: 10px;
+}
+
+/* ==========================================================================
+   ВКЛАДКА 1: ЛАГЕРЬ И НПС
+   ========================================================================== */
+.location-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.location-banner {
+  background: linear-gradient(180deg, rgba(25, 31, 27, 0.72) 0%, rgba(17, 21, 18, 0.92) 100%),
+              url('assets/images/backgrounds/camp_main.jpg') center/cover no-repeat;
+  border: 1px solid var(--border-accent);
+  border-radius: 8px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+.loc-img {
+  width: 56px;
+  height: 56px;
+  border-radius: 6px;
+  background: #000;
+  border: 1px solid var(--border-focus);
+  padding: 4px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.loc-banner-info h2 {
+  font-family: 'Russo One', sans-serif;
+  font-size: 15px;
+  color: var(--accent-gold);
+  margin-bottom: 2px;
+}
+.loc-banner-info p {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.4;
+}
+
+.action-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.act-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  color: var(--text-main);
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  transition: all 0.15s;
+}
+.act-btn:hover, .act-btn:active {
+  background: var(--bg-card-hover);
+  border-color: var(--accent-ember);
+}
+.act-btn .btn-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.act-btn strong {
+  display: block;
+  font-size: 12px;
+  font-family: 'Russo One', sans-serif;
+  color: #fff;
+}
+.act-btn small {
+  font-size: 10px;
+  color: var(--text-dim);
+  display: block;
+}
+
+/* Список НПС */
+.npc-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.npc-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.npc-card:hover, .npc-card:active {
+  border-color: var(--border-accent);
+  background: var(--bg-card-hover);
+}
+.npc-avatar {
+  width: 44px;
+  height: 44px;
+  background: #000;
+  border: 1px solid var(--border-focus);
+  border-radius: 6px;
+  padding: 2px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.npc-info {
+  flex: 1;
+}
+.npc-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.npc-name {
+  font-family: 'Russo One', sans-serif;
+  font-size: 13px;
+  color: #fff;
+}
+.npc-role {
+  font-size: 10.5px;
+  color: var(--accent-ember);
+}
+.npc-desc {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+.npc-badge {
+  background: rgba(255,187,0,0.15);
+  border: 1px solid var(--accent-gold);
+  color: var(--accent-gold);
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'Russo One', sans-serif;
+}
+
+/* ==========================================================================
+   ВКЛАДКА 2: ВЫЛАЗКА (КАРТА ЛОКАЦИЙ)
+   ========================================================================== */
+.map-header-banner {
+  background: linear-gradient(180deg, rgba(22, 28, 24, 0.65) 0%, rgba(14, 18, 15, 0.88) 100%),
+              url('assets/images/backgrounds/map_topo.jpg') center/cover no-repeat;
+  border: 1px solid var(--border-accent);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+.map-header-banner h2 {
+  font-family: 'Russo One', sans-serif;
+  font-size: 15px;
+  color: var(--accent-gold);
+  margin-bottom: 3px;
+}
+.map-header-banner .section-subtitle {
+  margin-bottom: 0;
+  color: var(--text-dim);
+}
+
+.locations-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.location-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  transition: all 0.15s;
+}
+.location-item.unlocked {
+  cursor: pointer;
+}
+.location-item.unlocked:hover, .location-item.unlocked:active {
+  border-color: var(--accent-green);
+  background: var(--bg-card-hover);
+}
+.location-item.locked {
+  opacity: 0.55;
+  filter: grayscale(80%);
+}
+.loc-icon-box {
+  width: 48px;
+  height: 48px;
+  background: #000;
+  border: 1px solid var(--border-focus);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  flex-shrink: 0;
+}
+.loc-icon-box img {
+  max-width: 100%;
+  max-height: 100%;
+}
+.loc-details {
+  flex: 1;
+}
+.loc-title {
+  font-family: 'Russo One', sans-serif;
+  font-size: 13px;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+}
+.loc-rad-tag {
+  font-size: 10px;
+  color: var(--accent-rad);
+}
+.loc-desc {
+  font-size: 11px;
+  color: var(--text-dim);
+  margin: 2px 0 4px 0;
+}
+.loc-features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.feat-pill {
+  font-size: 9.5px;
+  background: rgba(0,0,0,0.4);
+  padding: 2px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border-dim);
+  color: var(--accent-blue);
+}
+
+/* ==========================================================================
+   ВКЛАДКА 3: РЮКЗАК (ИНВЕНТАРЬ)
+   ========================================================================== */
+.inv-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  background: linear-gradient(180deg, rgba(25, 31, 27, 0.70) 0%, rgba(16, 21, 18, 0.90) 100%),
+              url('assets/images/backgrounds/camp_alt.jpg') center/cover no-repeat;
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+.inv-header-bar h2 {
+  font-family: 'Russo One', sans-serif;
+  font-size: 15px;
+  color: var(--accent-gold);
+  margin: 0;
+}
+.weight-badge {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.cat-filter-bar {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  margin-bottom: 8px;
+}
+.cat-filter-bar::-webkit-scrollbar { display: none; }
+.filter-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  color: var(--text-dim);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.filter-btn.active {
+  background: var(--accent-ember);
+  color: #fff;
+  border-color: var(--accent-ember);
+  font-family: 'Russo One', sans-serif;
+}
+
+.inv-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 6px;
+}
+.inv-item-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.inv-item-card:hover, .inv-item-card:active {
+  border-color: var(--border-accent);
+  background: var(--bg-card-hover);
+}
+.inv-item-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+}
+.inv-item-name {
+  font-size: 11px;
+  font-weight: bold;
+  color: #fff;
+  line-height: 1.2;
+}
+.inv-item-count {
+  font-size: 10px;
+  color: var(--accent-gold);
+  font-family: 'Russo One', sans-serif;
+}
+
+/* ==========================================================================
+   ВКЛАДКА 4: КРАФТ
+   ========================================================================== */
+.craft-header-bar {
+  margin-bottom: 10px;
+  background: linear-gradient(180deg, rgba(30, 24, 20, 0.78) 0%, rgba(18, 15, 13, 0.94) 100%),
+              url('assets/images/backgrounds/workshop.jpg') center/cover no-repeat;
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  padding: 10px 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+.craft-header-bar h2 {
+  font-family: 'Russo One', sans-serif;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+.craft-tabs {
+  display: flex;
+  gap: 6px;
+}
+.craft-tab-btn {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  color: var(--text-main);
+  padding: 6px;
+  border-radius: 4px;
+  font-family: 'Russo One', sans-serif;
+  font-size: 12px;
+  cursor: pointer;
+}
+.craft-tab-btn.active {
+  background: var(--accent-ember);
+  color: #fff;
+  border-color: var(--accent-ember);
+}
+
+.recipes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.recipe-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.recipe-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.recipe-header > div {
+  flex: 1;
+  min-width: 0;
+}
+.recipe-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.recipe-title {
+  font-family: 'Russo One', sans-serif;
+  font-size: 13px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.recipe-ingredients {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+  font-size: 11px;
+}
+.ingredient-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-dim);
+  white-space: nowrap;
+}
+.ingredient-pill.pill-ok {
+  color: #55efc4;
+  border-color: rgba(85, 239, 196, 0.4);
+}
+.ingredient-pill.pill-missing {
+  color: #ff7675;
+  border-color: rgba(255, 118, 117, 0.4);
+}
+.recipe-btn {
+  align-self: flex-end;
+  background: var(--border-dim);
+  border: 1px solid var(--border-focus);
+  color: #fff;
+  padding: 5px 12px;
+  font-size: 11px;
+  font-family: 'Russo One', sans-serif;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.recipe-btn.can-craft {
+  background: var(--accent-green);
+  border-color: var(--accent-green);
+  color: #000;
+}
+
+/* ==========================================================================
+   ВКЛАДКА 5: КВЕСТЫ И ЛОР
+   ========================================================================== */
+.quests-header-bar {
+  margin-bottom: 12px;
+  background: linear-gradient(180deg, rgba(20, 26, 24, 0.68) 0%, rgba(13, 17, 15, 0.88) 100%),
+              url('assets/images/backgrounds/taiga_winter.jpg') center/cover no-repeat;
+  border: 1px solid var(--border-accent);
+  border-radius: 8px;
+  padding: 12px 14px 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+.quests-header-bar h2 {
+  font-family: 'Russo One', sans-serif;
+  font-size: 15px;
+  color: var(--accent-gold);
+  margin-bottom: 8px;
+}
+.quest-subtabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+.quest-subtab {
+  flex: 1;
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  color: var(--text-dim);
+  padding: 6px 4px;
+  font-size: 10.5px;
+  font-family: 'Russo One', sans-serif;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+.quest-subtab.active {
+  background: var(--accent-blue);
+  color: #000;
+  border-color: var(--accent-blue);
+}
+
+.quest-item-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-left: 3px solid var(--accent-gold);
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 8px;
+}
+.quest-item-card.completed {
+  border-left-color: var(--accent-green);
+  opacity: 0.7;
+}
+.quest-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-family: 'Russo One', sans-serif;
+  font-size: 13px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+.quest-desc {
+  font-size: 11.5px;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+}
+.quest-progress-bar {
+  font-size: 11px;
+  color: var(--accent-ember);
+  font-weight: bold;
+}
+
+/* ==========================================================================
+   МОДАЛЬНОЕ ОКНО ДИАЛОГОВ И АКТИВНОСТЕЙ
+   ========================================================================== */
+.modal-overlay {
+  display: none;
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  bottom: var(--nav-height); /* Не закрывает нижнюю панель вкладок! */
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(2px);
+  z-index: 100;
+  align-items: flex-end; /* Мобильный стиль bottom-sheet */
+  justify-content: center;
+}
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-window {
+  width: 100%;
+  max-width: 600px;
+  background: linear-gradient(180deg, rgba(27, 33, 29, 0.82) 0%, rgba(18, 22, 19, 0.92) 100%),
+              url('assets/images/backgrounds/camp_alt.jpg') center/cover no-repeat;
+  border-top: 2px solid var(--border-accent);
+  border-left: 1px solid var(--border-dim);
+  border-right: 1px solid var(--border-dim);
+  border-radius: 12px 12px 0 0;
+  padding: 14px;
+  max-height: calc(100vh - 120px);
+  max-height: calc(100dvh - 120px);
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.2s ease-out;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 -8px 30px rgba(0,0,0,0.85);
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px dashed var(--border-dim);
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  position: relative;
+}
+.modal-avatar-box {
+  width: 44px;
+  height: 44px;
+  background: #000;
+  border: 1px solid var(--border-focus);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  flex-shrink: 0;
+}
+.modal-avatar-box img {
+  max-width: 100%;
+  max-height: 100%;
+}
+.modal-title-box h3 {
+  font-family: 'Russo One', sans-serif;
+  font-size: 14px;
+  color: #fff;
+}
+.modal-title-box span {
+  font-size: 10.5px;
+  color: var(--accent-ember);
+}
+.modal-close-btn {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.modal-body {
+  flex: 1;
+  overflow-y: auto;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-main);
+  margin-bottom: 12px;
+  padding-right: 4px;
+}
+.modal-body p {
+  margin-bottom: 8px;
+}
+
+.modal-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.modal-btn {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  color: var(--text-main);
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-family: 'FreeMono', monospace;
+  font-size: 12.5px;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.12s;
+  min-height: 42px;
+}
+.modal-btn:hover, .modal-btn:active {
+  background: var(--bg-card-hover);
+  border-color: var(--border-accent);
+}
+.modal-btn.primary {
+  background: rgba(255,119,34,0.15);
+  border-color: var(--accent-ember);
+  color: #fff;
+  font-weight: bold;
+}
+.modal-btn.danger {
+  background: rgba(220, 53, 69, 0.15);
+  border-color: var(--accent-danger);
+  color: #ff8585;
+  font-weight: bold;
+}
+.modal-btn.danger:hover {
+  background: rgba(220, 53, 69, 0.3);
+  color: #fff;
+}
+
+/* ==========================================================================
+   ПАНЕЛЬ ПАРАМЕТРОВ ВЫЖИВАНИЯ В ОКНЕ ВЫЛАЗКИ
+   ========================================================================== */
+.loc-modal-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  padding: 7px 8px;
+  margin: 8px 0 10px 0;
+}
+.loc-stat-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 6px;
+  padding: 4px 6px;
+  min-width: 0;
+}
+.loc-stat-badge .stat-icon {
+  font-size: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.loc-stat-badge .stat-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+.loc-stat-badge .stat-label {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  line-height: 1.1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.loc-stat-badge .stat-val {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  line-height: 1.2;
+}
+.loc-stat-badge .stat-delta {
+  font-size: 9.5px;
+  font-weight: normal;
+}
+
+.loc-stat-badge.energy .stat-val { color: var(--accent-green); }
+.loc-stat-badge.energy .stat-delta { color: #88c057; }
+.loc-stat-badge.energy.low {
+  border-color: rgba(231, 76, 60, 0.6);
+  background: rgba(231, 76, 60, 0.18);
+}
+.loc-stat-badge.energy.low .stat-val { color: #ff6b6b; }
+
+.loc-stat-badge.rad .stat-val { color: var(--accent-rad); }
+.loc-stat-badge.rad .stat-delta { color: #c084fc; }
+.loc-stat-badge.rad.high {
+  border-color: rgba(168, 85, 247, 0.6);
+  background: rgba(168, 85, 247, 0.22);
+}
+
+.loc-stat-badge.hp .stat-val { color: #2ecc71; }
+.loc-stat-badge.hp.low {
+  border-color: rgba(231, 76, 60, 0.6);
+  background: rgba(231, 76, 60, 0.18);
+}
+.loc-stat-badge.hp.low .stat-val { color: #ff6b6b; }
+
+.loc-stat-badge.time .stat-val { color: var(--accent-gold); }
+
+@media (max-width: 380px) {
+  .loc-modal-stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 5px;
+    padding: 6px;
+  }
+}
+
+/* ==========================================================================
+   ТОСТ-ЛОГ УВЕДОМЛЕНИЙ (ПОВЕРХ ВСЕХ МЕНЮ И МОДАЛЬНЫХ ОКОН)
+   ========================================================================== */
+.toast-log {
+  position: absolute;
+  top: 80px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  pointer-events: none;
+  z-index: 99999;
+}
+.toast-msg {
+  background: rgba(18, 22, 20, 0.96);
+  border: 1px solid var(--border-accent);
+  color: #fff;
+  font-family: 'FreeMono', monospace;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 8px 14px;
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85), 0 0 10px rgba(0, 0, 0, 0.5);
+  animation: toastSlideDown 2.8s forwards;
+  max-width: 95%;
+  text-align: center;
+  line-height: 1.4;
+  backdrop-filter: blur(6px);
+  pointer-events: auto;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+.toast-msg:active {
+  transform: scale(0.97);
+}
+.toast-msg.toast-warning {
+  background: rgba(45, 18, 18, 0.98);
+  border: 1.5px solid var(--accent-danger);
+  color: #ffc4c4;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9), 0 0 16px rgba(239, 68, 68, 0.45);
+}
+.toast-msg.toast-success {
+  background: rgba(16, 38, 22, 0.98);
+  border: 1.5px solid var(--accent-green);
+  color: #c7f9cc;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9), 0 0 16px rgba(60, 208, 112, 0.4);
+}
+@keyframes toastSlideDown {
+  0% { opacity: 0; transform: translateY(-14px) scale(0.96); }
+  10% { opacity: 1; transform: translateY(0) scale(1); }
+  85% { opacity: 1; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-8px) scale(0.96); }
+}
+
+/* ==========================================================================
+   НИЖНЯЯ НАВИГАЦИОННАЯ ПАНЕЛЬ (ТАБЫ)
+   ========================================================================== */
+.bottom-nav {
+  position: relative;
+  flex-shrink: 0;
+  height: var(--nav-height);
+  background: #141815;
+  border-top: 1px solid var(--border-dim);
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  padding: 0;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  z-index: 120;
+  box-shadow: 0 -3px 12px rgba(0,0,0,0.6);
+  width: 100%;
+}
+
+.nav-btn {
+  flex: 1 1 0;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 4px 1px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.12s;
+}
+.nav-btn:hover, .nav-btn:active {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.04);
+}
+.nav-btn.active {
+  color: var(--accent-ember);
+  background: rgba(255, 119, 34, 0.08);
+}
+.nav-icon {
+  font-size: 17px;
+  line-height: 1;
+}
+.nav-label {
+  font-family: 'Russo One', sans-serif;
+  font-size: 9.5px;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+.nav-badge {
+  position: absolute;
+  top: 3px;
+  right: calc(50% - 15px);
+  background: var(--accent-danger);
+  color: #fff;
+  font-size: 8.5px;
+  font-family: 'Russo One', sans-serif;
+  padding: 1px 4px;
+  border-radius: 8px;
+  line-height: 1;
+}
+
+.quest-item-card.active-quest {
+  border-color: rgba(229, 161, 0, 0.4);
+  box-shadow: 0 0 10px rgba(229, 161, 0, 0.08);
+  background: linear-gradient(135deg, rgba(35, 30, 20, 0.8) 0%, rgba(20, 22, 24, 0.9) 100%);
+}
+.quest-checklist {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  padding: 6px 8px;
+}
+
+/* ==========================================================================
+   СТАРТОВЫЙ ЭКРАН (ИНТРО / ПРОЛОГ)
+   ========================================================================== */
+.intro-screen {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at center, rgba(16, 22, 18, 0.50) 0%, rgba(8, 10, 9, 0.85) 100%),
+              url('assets/images/backgrounds/intro_bg.jpg') center/cover no-repeat fixed;
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  overflow-y: auto;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.intro-screen.active {
+  display: flex;
+  opacity: 1;
+}
+
+.intro-modal {
+  width: 100%;
+  max-width: 580px;
+  background: linear-gradient(180deg, rgba(27, 33, 29, 0.82) 0%, rgba(16, 20, 17, 0.92) 100%),
+              url('assets/images/backgrounds/intro_bg.jpg') center/cover no-repeat;
+  border: 2px solid var(--border-accent);
+  border-radius: 10px;
+  padding: 16px 14px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.85), 0 0 20px rgba(229,161,0,0.2);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  max-height: 92vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.intro-badge {
+  text-align: center;
+  font-family: 'Russo One', sans-serif;
+  font-size: 10.5px;
+  color: var(--accent-ember);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.intro-title {
+  text-align: center;
+  font-family: 'Russo One', sans-serif;
+  font-size: 24px;
+  color: #fff;
+  letter-spacing: 1px;
+  margin: 2px 0;
+  text-shadow: 0 0 12px rgba(255,119,34,0.4);
+}
+.intro-subtitle {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-dim);
+  font-family: 'FreeMono', monospace;
+  letter-spacing: 0.5px;
+}
+
+/* КОЛЛАЖ ИЗ ИГРОВЫХ СПРАЙТОВ */
+.intro-collage {
+  position: relative;
+  width: 100%;
+  height: 170px;
+  background: radial-gradient(ellipse at 50% 90%, rgba(229,161,0,0.2) 0%, rgba(18,24,20,0.95) 70%), #0c110e;
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: inset 0 0 20px rgba(0,0,0,0.85);
+}
+
+.collage-sky {
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 60px;
+  background: linear-gradient(180deg, rgba(20,35,25,0.6) 0%, transparent 100%);
+}
+
+.collage-sprite {
+  position: absolute;
+  user-select: none;
+  pointer-events: none;
+}
+
+.collage-sprite.tower {
+  right: 12px;
+  bottom: 35px;
+  width: 58px;
+  opacity: 0.65;
+  filter: drop-shadow(0 0 6px rgba(0,255,120,0.25));
+}
+.collage-sprite.forest-bg {
+  right: 65px;
+  bottom: 22px;
+  width: 55px;
+  opacity: 0.55;
+}
+.collage-sprite.palisade-left {
+  left: 6px;
+  bottom: 18px;
+  width: 70px;
+  opacity: 0.85;
+}
+.collage-sprite.uaz {
+  left: 38px;
+  bottom: 12px;
+  width: 80px;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.85));
+}
+.collage-sprite.cabin {
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 28px;
+  width: 105px;
+  filter: drop-shadow(0 6px 14px rgba(0,0,0,0.95));
+}
+.collage-sprite.palisade-right {
+  right: 75px;
+  bottom: 18px;
+  width: 60px;
+  opacity: 0.7;
+}
+
+.bonfire-wrap {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 2px;
+  width: 48px;
+  height: 48px;
+  z-index: 5;
+}
+.collage-sprite.bonfire {
+  width: 48px;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 0 8px rgba(255,140,0,0.8));
+}
+.fire-glow {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90px;
+  height: 90px;
+  background: radial-gradient(circle, rgba(255,120,0,0.35) 0%, rgba(229,161,0,0.1) 50%, transparent 75%);
+  border-radius: 50%;
+  animation: fireFlicker 1.8s infinite ease-in-out;
+  pointer-events: none;
+}
+@keyframes fireFlicker {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+  50% { transform: translate(-50%, -50%) scale(1.15); opacity: 1; }
+}
+
+.collage-sprite.rad-sign {
+  right: 68px;
+  bottom: 6px;
+  width: 30px;
+  z-index: 6;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+}
+.collage-sprite.hero {
+  right: 18px;
+  bottom: 4px;
+  width: 48px;
+  z-index: 7;
+  filter: drop-shadow(0 4px 8px rgba(0,0,0,0.9));
+}
+
+.collage-ground-line {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 12px;
+  background: linear-gradient(180deg, rgba(20,22,20,0.2) 0%, rgba(12,15,13,0.9) 100%);
+  border-top: 1px solid rgba(80,95,80,0.3);
+  z-index: 4;
+}
+
+/* ПРОЛОГ */
+.intro-prologue {
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-left: 3px solid var(--accent-gold);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--text-main);
+}
+.prologue-heading {
+  font-family: 'Russo One', sans-serif;
+  font-size: 12px;
+  color: var(--accent-gold);
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.intro-prologue p {
+  margin-bottom: 6px;
+}
+.intro-prologue p:last-child {
+  margin-bottom: 0;
+}
+
+/* ПРАВИЛА ВЫЖИВАНИЯ */
+.intro-rules-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.intro-rule-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  background: rgba(0,0,0,0.25);
+  border: 1px solid var(--border-dim);
+  border-radius: 5px;
+  padding: 7px 10px;
+  font-size: 11.5px;
+  line-height: 1.4;
+}
+.intro-rule-icon {
+  font-size: 16px;
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* АУДИО НАСТРОЙКА */
+.intro-audio-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  padding: 8px 12px;
+}
+.intro-audio-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-main);
+  cursor: pointer;
+  user-select: none;
+}
+.intro-audio-label input {
+  accent-color: var(--accent-gold);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* КНОПКА СТАРТА */
+.intro-start-btn {
+  width: 100%;
+  background: linear-gradient(180deg, #ff8c2b 0%, #d45e0f 100%);
+  border: 1px solid #ffa34d;
+  color: #fff;
+  font-family: 'Russo One', sans-serif;
+  font-size: 14.5px;
+  letter-spacing: 0.8px;
+  padding: 13px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(255,119,34,0.35);
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+}
+.intro-start-btn:hover, .intro-start-btn:active {
+  background: linear-gradient(180deg, #ffa042 0%, #e06c1a 100%);
+  box-shadow: 0 6px 20px rgba(255,119,34,0.5);
+  transform: translateY(-1px);
+}
+
+
+
+/* ==========================================================================
+   РАСШИРЕНИЕ v4.0: ПОГОДА, СТАТУСЫ, ЖУРНАЛ, БАЗОСТРОЕНИЕ И СКЛАД
+   ========================================================================== */
+
+/* Бейдж погоды в верхнем статус-баре */
+.hud-weather-badge {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-dim);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+  color: var(--accent-gold);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.hud-weather-badge:hover, .hud-weather-badge:active {
+  border-color: var(--accent-gold);
+  background: rgba(255, 190, 34, 0.12);
+}
+
+/* Бейджи активных статусов (баффы/дебаффы) */
+.hud-status-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+}
+.status-pill-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 0;
+}
+.status-pill-badge.buff {
+  background: rgba(46, 204, 113, 0.15);
+  border: 1px solid rgba(46, 204, 113, 0.4);
+  color: #2ecc71;
+}
+.status-pill-badge.debuff {
+  background: rgba(231, 76, 60, 0.18);
+  border: 1px solid rgba(231, 76, 60, 0.45);
+  color: #ff6b6b;
+}
+.status-pill-badge .status-pill-turns {
+  font-size: 9px;
+  opacity: 0.8;
+  margin-left: 2px;
+}
+
+/* ЖУРНАЛ ВЫЖИВШЕГО */
+.journal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.journal-nav {
+  display: flex;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 3px;
+  border-radius: 6px;
+  border: 1px solid var(--border-dim);
+}
+.journal-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-family: 'Russo One', sans-serif;
+  font-size: 11px;
+  padding: 6px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.12s;
+  text-align: center;
+}
+.journal-tab-btn.active {
+  background: var(--bg-card);
+  color: #fff;
+  border: 1px solid var(--border-accent);
+}
+.journal-body {
+  max-height: 52vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.journal-log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.journal-log-item {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-dim);
+  border-left: 3px solid var(--accent-ember);
+  border-radius: 4px;
+  padding: 6px 8px;
+}
+.journal-log-item.status { border-left-color: var(--accent-green); }
+.journal-log-item.sortie { border-left-color: #3498db; }
+.journal-log-item.story { border-left-color: var(--accent-gold); }
+.journal-log-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9.5px;
+  color: var(--text-dim);
+  margin-bottom: 2px;
+}
+.journal-log-text {
+  font-size: 12px;
+  color: var(--text-main);
+  line-height: 1.4;
+}
+
+.journal-lore-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.journal-lore-card {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+.journal-lore-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+  padding-bottom: 4px;
+}
+.journal-lore-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+.journal-lore-title {
+  font-family: 'Russo One', sans-serif;
+  font-size: 13px;
+  color: var(--accent-gold);
+}
+.journal-lore-type {
+  font-size: 10px;
+  color: var(--text-dim);
+}
+.journal-lore-content {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-main);
+}
+
+.journal-weather-card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: rgba(255, 190, 34, 0.08);
+  border: 1px solid rgba(255, 190, 34, 0.3);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.journal-status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.journal-status-card {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border-radius: 6px;
+  padding: 8px 10px;
+  border: 1px solid;
+}
+.journal-status-card.buff {
+  background: rgba(46, 204, 113, 0.08);
+  border-color: rgba(46, 204, 113, 0.3);
+}
+.journal-status-card.debuff {
+  background: rgba(231, 76, 60, 0.08);
+  border-color: rgba(231, 76, 60, 0.3);
+}
+.status-duration-badge {
+  font-size: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--accent-gold);
+}
+
+/* ОБУСТРОЙСТВО ЛАГЕРЯ */
+.camp-upgrades-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 52vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.camp-upg-card {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.camp-upg-card.built {
+  border-color: rgba(46, 204, 113, 0.4);
+  background: rgba(46, 204, 113, 0.05);
+}
+.camp-upg-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.camp-upg-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  background: rgba(0,0,0,0.3);
+  padding: 3px;
+  border-radius: 6px;
+  border: 1px solid var(--border-dim);
+}
+.camp-upg-title {
+  font-family: 'Russo One', sans-serif;
+  font-size: 13.5px;
+  color: #fff;
+}
+.camp-upg-status {
+  font-size: 10.5px;
+  color: var(--accent-ember);
+}
+.camp-upg-status.built {
+  color: var(--accent-green);
+  font-weight: bold;
+}
+.camp-upg-desc {
+  font-size: 11.5px;
+  color: var(--text-main);
+  line-height: 1.4;
+}
+.camp-upg-cost {
+  font-size: 11px;
+  color: var(--text-dim);
+  background: rgba(0, 0, 0, 0.25);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* СКЛАД ЛАГЕРЯ (СУНДУК) */
+.storage-modal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.storage-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  max-height: 50vh;
+}
+.storage-col {
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  padding: 8px;
+  min-height: 200px;
+}
+.storage-item-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.storage-item-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  padding: 3px 5px;
+}
+.storage-mini-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.storage-row-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.storage-row-name {
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #fff;
+}
+.storage-row-cnt {
+  font-size: 9.5px;
+  color: var(--text-dim);
+}
+.storage-transfer-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-dim);
+  color: #fff;
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.storage-transfer-btn:hover {
+  background: rgba(255, 119, 34, 0.3);
+  border-color: var(--accent-ember);
+}
+.storage-transfer-btn.all {
+  font-size: 9px;
+  padding: 2px 4px;
+}
+
+@media (max-width: 480px) {
+  .storage-columns {
+    grid-template-columns: 1fr;
+    max-height: 52vh;
+    overflow-y: auto;
+  }
+}
