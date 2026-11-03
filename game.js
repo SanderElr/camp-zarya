@@ -2576,6 +2576,13 @@ met_spiridon: false,
       });
     }
 
+    // Подсказка Егора о волчьем логове и щенке
+    if (!state.questFlags.wolves_defeated) {
+      body += `<p style="color:var(--text-dim); font-size:12px;"><i>«В Ближнем лесу под корнями вывороченного кедра матерый волчище логово устроил. Стаю сколотил, никому проходу не даёт. Пока вожака оружием не осадишь — в чащу лучше не соваться.»</i></p>`;
+    } else if (state.questFlags.wolves_defeated && !state.questFlags.pup_rescued) {
+      body += `<p style="color:var(--accent-gold);"><i>«Слыхал, как ты вожака волчьего положил! Доброе дело сделал. Только вот охотники сказывали — в малиннике у логова вроде скулит кто-то жалобно... Сходи в лес, проверь, вдруг зверёныш какой в капкан попал? Возьми с собой бинт.»</i></p>`;
+    }
+
     // Буран: сколотить конуру
     if (state.questFlags.pup_rescued && !state.hasDog) {
       const canBuild = getItemCount('firewood') >= 3 && getItemCount('wire') >= 1 && getItemCount('leather') >= 1;
@@ -2943,7 +2950,7 @@ met_spiridon: false,
     sfx.playSuccess();
     updateHUD();
     saveState();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doFightWolves(loc) {
@@ -2969,7 +2976,7 @@ met_spiridon: false,
     sfx.playSuccess();
     updateHUD();
     saveState();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doRescuePup(loc) {
@@ -2987,7 +2994,7 @@ met_spiridon: false,
     sfx.playSuccess();
     updateHUD();
     saveState();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doVisitSpiridon(loc) {
@@ -3016,7 +3023,7 @@ met_spiridon: false,
     sfx.playSuccess();
     updateHUD();
     saveState();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doGatherGlowingMoss(loc) {
@@ -3033,7 +3040,7 @@ met_spiridon: false,
     sfx.playSuccess();
     updateHUD();
     saveState();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doClearDrainValve(loc) {
@@ -3054,7 +3061,7 @@ met_spiridon: false,
     toast('🚰 ДОННЫЙ ВЕНТИЛЬ ПОВЕРНУТ! Шлам сброшен! Теперь каждое утро лагерная колонка выдает +1 флягу чистой воды!');
     updateHUD();
     saveState();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doCrackEngineerSafe(loc) {
@@ -3074,7 +3081,7 @@ met_spiridon: false,
     toast('🔐 СЕЙФ ВЗЛОМАН! Найдены чертежи разгрузки Кузьмина (+2.5 кг к вместимости), 12 патронов и проволока!');
     updateHUD();
     saveState();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doSearchStove(loc) {
@@ -3094,7 +3101,7 @@ met_spiridon: false,
     sfx.playSuccess();
     updateHUD();
     saveState();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doRescueSasha(loc) {
@@ -3134,7 +3141,7 @@ met_spiridon: false,
     toast('📊 САМОПИСЕЦ ИЗВЛЕЧЕН! Архивные данные аварии и ценные радиодетали сняты со шпиля вышки (+50 репутации)!');
     updateHUD();
     saveState();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doHuntBoar(loc) {
@@ -3161,7 +3168,7 @@ met_spiridon: false,
     sfx.playSuccess();
     updateHUD();
     saveState();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doCrackBio4(loc) {
@@ -3180,7 +3187,7 @@ met_spiridon: false,
     toast('🧬 СПЕЦХРАН «БИО-4» ВСКРЫТ! Извлечен армейский биостимулятор «Стимулятор-М» (+25 постоянной максимальной энергии)!');
     updateHUD();
     saveState();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doSearchTriangulator(loc) {
@@ -3194,7 +3201,7 @@ met_spiridon: false,
     updateHUD();
     saveState();
     renderQuests();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doSearchBorehole(loc) {
@@ -3211,7 +3218,7 @@ met_spiridon: false,
     updateHUD();
     saveState();
     renderQuests();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doSearchCaravanFord(loc) {
@@ -3224,7 +3231,7 @@ met_spiridon: false,
     sfx.playSuccess();
     updateHUD();
     saveState();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doSearchCaravanMine(loc) {
@@ -3244,7 +3251,7 @@ met_spiridon: false,
     toast('🏴‍☠️ СХРОН МАРОДЕРОВ ВЗЯТ! Растяжка обезврежена! Найден коллиматорный прицел ТОЗ (+30% крит) и 25 патронов! Доложите Бате.');
     updateHUD();
     saveState();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doCollectRadioStash(loc) {
@@ -3259,7 +3266,7 @@ met_spiridon: false,
     toast('📦 ПАРАШЮТНЫЙ КОНТЕЙНЕР НАЙДЕН! Забрано: 2 банки тушёнки, 8 патронов и комплект батареек ААА (+20 репутации)!');
     updateHUD();
     saveState();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function restAtCamp() {
@@ -3324,6 +3331,12 @@ met_spiridon: false,
       }
       grid.appendChild(item);
     });
+  }
+
+  function refreshLocationModal(loc) {
+    if (!loc) return;
+    if (state.hp <= 0) return;
+    openLocationModal(loc);
   }
 
   function openLocationModal(loc) {
@@ -3401,7 +3414,7 @@ met_spiridon: false,
           action: () => doFightWolves(loc)
         });
       }
-      if (!state.questFlags.pup_rescued) {
+      if (state.questFlags.wolves_defeated && !state.questFlags.pup_rescued) {
         actions.push({
           text: '🐾 Пойти на жалобный скулёж в малиннике (Спасти щенка)',
           action: () => doRescuePup(loc),
@@ -3647,7 +3660,7 @@ met_spiridon: false,
     }
 
     checkDailyProgress('fish', 1);
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doGatherWater(loc) {
@@ -3661,7 +3674,7 @@ met_spiridon: false,
     addItem('raw_water', 1);
     toast('💧 Набрана фляга речной воды (требует кипячения!).');
     passTime(0.5);
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doGatherToxicWater(loc) {
@@ -3673,7 +3686,7 @@ met_spiridon: false,
     toast('🧪 Набрана проба токсичной желтоватой воды. Отнесите Анне в лагерь!');
     sfx.playSuccess();
     passTime(0.5);
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doDigWorms(loc) {
@@ -3683,7 +3696,7 @@ met_spiridon: false,
     addItem('worms', 2);
     toast('🪱 Найдено 2 земляных червя.');
     passTime(0.5);
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doGatherWood(loc) {
@@ -3699,7 +3712,7 @@ met_spiridon: false,
     toast('🪵 Заготовлено 2 охапки сушняка для костра.');
     passTime(1);
     checkDailyProgress('wood', 2);
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doGatherHerbs(loc) {
@@ -3716,7 +3729,7 @@ met_spiridon: false,
     toast('🌿 Нарвано 2 пучка целебных трав и горсть брусники.');
     passTime(1);
     checkDailyProgress('herbs', 2);
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doPlaceSnare(loc) {
@@ -3730,7 +3743,7 @@ met_spiridon: false,
     state.trapsSet += 1;
     toast('🪤 Силок установлен в малиннике. Проверьте утром.');
     passTime(0.5);
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doFightDogs(loc) {
@@ -3750,7 +3763,7 @@ met_spiridon: false,
     updateHUD();
     saveState();
     renderQuests();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doGatherMoss(loc) {
@@ -3770,7 +3783,7 @@ met_spiridon: false,
     updateHUD();
     saveState();
     renderQuests();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doScavengeSwamp(loc) {
@@ -3796,7 +3809,7 @@ met_spiridon: false,
     updateHUD();
     saveState();
     renderQuests();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doClearPumpDebris(loc) {
@@ -3815,7 +3828,7 @@ met_spiridon: false,
     updateHUD();
     saveState();
     renderQuests();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doScavengeStation(loc) {
@@ -3850,7 +3863,7 @@ met_spiridon: false,
     updateHUD();
     saveState();
     renderQuests();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doSearchCordon(loc) {
@@ -3879,7 +3892,7 @@ met_spiridon: false,
     updateHUD();
     saveState();
     renderQuests();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doScavengeCordon(loc) {
@@ -3894,7 +3907,7 @@ met_spiridon: false,
     addItem('scrap', 2);
     if (Math.random() > 0.5) addItem('canned_food', 1);
     toast('В сарае кордона найден металлолом.');
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doHuntBear(loc) {
@@ -3919,7 +3932,7 @@ met_spiridon: false,
     updateHUD();
     saveState();
     renderQuests();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doSetBigTrap(loc) {
@@ -3933,7 +3946,7 @@ met_spiridon: false,
     state.trapsSet += 2;
     toast('Стальной капкан взведен на звериной тропе.');
     passTime(1);
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doActiveHunt(loc) {
@@ -3963,7 +3976,7 @@ met_spiridon: false,
       state.hp -= 15;
       toast('🐺 Нападение стаи диких собак! Вы отбились, но ранены (-15% HP).');
     }
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doRepairAntenna(loc) {
@@ -4000,7 +4013,7 @@ met_spiridon: false,
     updateHUD();
     saveState();
     renderQuests();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doLookoutRadioTower(loc) {
@@ -4013,7 +4026,7 @@ met_spiridon: false,
     state.energy -= 10;
     passTime(1);
     toast('🔭 С вышки виден дым костров «Зари», кордон лесничества и бетонный купол Бункера «Сфера».');
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doEnterBunker(loc) {
@@ -4050,7 +4063,7 @@ met_spiridon: false,
     updateHUD();
     saveState();
     renderQuests();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doShutdownReactor(loc) {
@@ -4072,7 +4085,7 @@ met_spiridon: false,
     updateHUD();
     saveState();
     renderQuests();
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function doScavengeBunker(loc) {
@@ -4089,7 +4102,7 @@ met_spiridon: false,
     if (Math.random() > 0.4) addItem('antirad', 1);
     if (Math.random() > 0.6) addItem('ammo', 3);
     toast('В Бункере найден металлолом, патроны и медикаменты.');
-    closeModal();
+    refreshLocationModal(loc);
   }
 
   function showVictoryScreen() {
@@ -4780,6 +4793,23 @@ met_spiridon: false,
             statusBadge = '✓ Выполнено (Сдано)';
             statusColor = 'var(--accent-green)';
             statusBorder = 'var(--accent-green)';
+          } else if (q.id === 'chain_dog') {
+            if (!state.questFlags?.wolves_defeated) {
+              statusBadge = '🔒 После победы над вожаком';
+              statusColor = 'var(--text-dim)';
+              statusBorder = 'rgba(255,255,255,0.15)';
+              progressDetail = `<div style="font-size:11.5px; color:var(--text-dim); margin:3px 0 5px;">🔒 Станет доступно после разгрома волчьего логова и победы над вожаком в Ближнем лесу.</div>`;
+            } else if (!state.questFlags?.pup_rescued) {
+              statusBadge = '● Спасти щенка';
+              statusColor = 'var(--accent-gold)';
+              statusBorder = 'var(--accent-gold)';
+              progressDetail = `<div style="font-size:11.5px; color:var(--accent-gold); margin:3px 0 5px;">🐾 В малиннике Ближнего леса раздаётся жалобный скулёж — освободите щенка из капкана (нужен бинт).</div>`;
+            } else if (!state.hasDog) {
+              statusBadge = '● Построить конуру';
+              statusColor = 'var(--accent-blue)';
+              statusBorder = 'var(--accent-blue)';
+              progressDetail = `<div style="font-size:11.5px; color:var(--accent-blue); margin:3px 0 5px;">🏠 Щенок в лагере! Сколотите тёплую будку для Бурана на верстаке (3 дров, 1 проволока, 1 кожа).</div>`;
+            }
           } else if (q.id === 'chain_geo') {
             if (!state.questFlags?.met_spiridon) {
               statusBadge = '🔒 До встречи со Спиридоном';
