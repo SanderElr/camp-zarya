@@ -12,7 +12,7 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Лагерь Заря — Текстовая RPG-выживание</title>
-  <link rel="stylesheet" href="style.css?v=3.8">
+  <link rel="stylesheet" href="style.css?v=4.0">
 </head>
 <body data-bg-theme="camp">
 
@@ -21,11 +21,15 @@
     <!-- ВЕРХНИЙ СТАТУС-БАР ВЫЖИВАНИЯ (HUD) -->
     <header class="hud-header">
       <div class="hud-time-badge">
-        <div style="display:flex; align-items:center; gap:8px;">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
           <span class="hud-camp-title">🏕️ ЛАГЕРЬ «ЗАРЯ»</span>
           <span class="hud-time-val" id="hudTime">День 1, Утро</span>
+          <span class="hud-weather-badge" id="hudWeather" onclick="Game.openJournal('weather')" title="Текущая погода. Нажмите для метеосводки">☀️ Ясно</span>
         </div>
         <div class="hud-actions">
+          <button id="btnJournal" class="hud-btn" onclick="Game.openJournal('log')" title="Журнал и хроника">
+            📜 <span class="hud-btn-text">Журнал</span>
+          </button>
           <button id="btnMusic" class="hud-btn" onclick="Game.toggleMusic()" title="Музыка">
             <span id="musicIcon">🎵</span>
           </button>
@@ -89,6 +93,9 @@
           </div>
         </div>
       </div>
+
+      <!-- АКТИВНЫЕ БАФФЫ И ДЕБАФФЫ ВЫЖИВШЕГО -->
+      <div class="hud-status-pills" id="hudStatusPills" style="display:none;"></div>
     </header>
 
     <!-- ОСНОВНАЯ КОНТЕНТНАЯ ОБЛАСТЬ (ТАБЫ) -->
@@ -120,6 +127,22 @@
               <div class="btn-info">
                 <strong>Лагерный костёр</strong>
                 <small>Погреться, приготовить еду</small>
+              </div>
+            </button>
+
+            <button class="act-btn" onclick="Game.openCampUpgrades()">
+              <span class="btn-icon">🏗️</span>
+              <div class="btn-info">
+                <strong>Обустройство лагеря</strong>
+                <small>Постройки, сушилка, водосборник</small>
+              </div>
+            </button>
+
+            <button class="act-btn" id="btnCampStorage" onclick="Game.openCampStorage()">
+              <span class="btn-icon">📦</span>
+              <div class="btn-info">
+                <strong>Лагерный сундук</strong>
+                <small id="campStorageSubtitle">Склад припасов лагеря</small>
               </div>
             </button>
           </div>
@@ -342,6 +365,6 @@
     <source src="Fate2.wav" type="audio/wav">
   </audio>
 
-  <script src="game.js?v=3.8"></script>
+  <script src="game.js?v=4.0"></script>
 </body>
 </html>

@@ -1484,3 +1484,352 @@ body[data-bg-theme="none"] .game-container {
 }
 
 
+
+/* ==========================================================================
+   РАСШИРЕНИЕ v4.0: ПОГОДА, СТАТУСЫ, ЖУРНАЛ, БАЗОСТРОЕНИЕ И СКЛАД
+   ========================================================================== */
+
+/* Бейдж погоды в верхнем статус-баре */
+.hud-weather-badge {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-dim);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 11px;
+  color: var(--accent-gold);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+.hud-weather-badge:hover, .hud-weather-badge:active {
+  border-color: var(--accent-gold);
+  background: rgba(255, 190, 34, 0.12);
+}
+
+/* Бейджи активных статусов (баффы/дебаффы) */
+.hud-status-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 6px;
+  padding-top: 4px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.08);
+}
+.status-pill-badge {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  min-width: 0;
+}
+.status-pill-badge.buff {
+  background: rgba(46, 204, 113, 0.15);
+  border: 1px solid rgba(46, 204, 113, 0.4);
+  color: #2ecc71;
+}
+.status-pill-badge.debuff {
+  background: rgba(231, 76, 60, 0.18);
+  border: 1px solid rgba(231, 76, 60, 0.45);
+  color: #ff6b6b;
+}
+.status-pill-badge .status-pill-turns {
+  font-size: 9px;
+  opacity: 0.8;
+  margin-left: 2px;
+}
+
+/* ЖУРНАЛ ВЫЖИВШЕГО */
+.journal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.journal-nav {
+  display: flex;
+  gap: 4px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 3px;
+  border-radius: 6px;
+  border: 1px solid var(--border-dim);
+}
+.journal-tab-btn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-family: 'Russo One', sans-serif;
+  font-size: 11px;
+  padding: 6px 4px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.12s;
+  text-align: center;
+}
+.journal-tab-btn.active {
+  background: var(--bg-card);
+  color: #fff;
+  border: 1px solid var(--border-accent);
+}
+.journal-body {
+  max-height: 52vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.journal-log-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.journal-log-item {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-dim);
+  border-left: 3px solid var(--accent-ember);
+  border-radius: 4px;
+  padding: 6px 8px;
+}
+.journal-log-item.status { border-left-color: var(--accent-green); }
+.journal-log-item.sortie { border-left-color: #3498db; }
+.journal-log-item.story { border-left-color: var(--accent-gold); }
+.journal-log-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9.5px;
+  color: var(--text-dim);
+  margin-bottom: 2px;
+}
+.journal-log-text {
+  font-size: 12px;
+  color: var(--text-main);
+  line-height: 1.4;
+}
+
+.journal-lore-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.journal-lore-card {
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  padding: 8px 10px;
+}
+.journal-lore-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+  padding-bottom: 4px;
+}
+.journal-lore-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+.journal-lore-title {
+  font-family: 'Russo One', sans-serif;
+  font-size: 13px;
+  color: var(--accent-gold);
+}
+.journal-lore-type {
+  font-size: 10px;
+  color: var(--text-dim);
+}
+.journal-lore-content {
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-main);
+}
+
+.journal-weather-card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  background: rgba(255, 190, 34, 0.08);
+  border: 1px solid rgba(255, 190, 34, 0.3);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+.journal-status-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.journal-status-card {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  border-radius: 6px;
+  padding: 8px 10px;
+  border: 1px solid;
+}
+.journal-status-card.buff {
+  background: rgba(46, 204, 113, 0.08);
+  border-color: rgba(46, 204, 113, 0.3);
+}
+.journal-status-card.debuff {
+  background: rgba(231, 76, 60, 0.08);
+  border-color: rgba(231, 76, 60, 0.3);
+}
+.status-duration-badge {
+  font-size: 10px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--accent-gold);
+}
+
+/* ОБУСТРОЙСТВО ЛАГЕРЯ */
+.camp-upgrades-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 52vh;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+.camp-upg-card {
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.camp-upg-card.built {
+  border-color: rgba(46, 204, 113, 0.4);
+  background: rgba(46, 204, 113, 0.05);
+}
+.camp-upg-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.camp-upg-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  background: rgba(0,0,0,0.3);
+  padding: 3px;
+  border-radius: 6px;
+  border: 1px solid var(--border-dim);
+}
+.camp-upg-title {
+  font-family: 'Russo One', sans-serif;
+  font-size: 13.5px;
+  color: #fff;
+}
+.camp-upg-status {
+  font-size: 10.5px;
+  color: var(--accent-ember);
+}
+.camp-upg-status.built {
+  color: var(--accent-green);
+  font-weight: bold;
+}
+.camp-upg-desc {
+  font-size: 11.5px;
+  color: var(--text-main);
+  line-height: 1.4;
+}
+.camp-upg-cost {
+  font-size: 11px;
+  color: var(--text-dim);
+  background: rgba(0, 0, 0, 0.25);
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* СКЛАД ЛАГЕРЯ (СУНДУК) */
+.storage-modal-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.storage-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  max-height: 50vh;
+}
+.storage-col {
+  display: flex;
+  flex-direction: column;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  padding: 8px;
+  min-height: 200px;
+}
+.storage-item-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.storage-item-row {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  padding: 3px 5px;
+}
+.storage-mini-icon {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.storage-row-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.storage-row-name {
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #fff;
+}
+.storage-row-cnt {
+  font-size: 9.5px;
+  color: var(--text-dim);
+}
+.storage-transfer-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border-dim);
+  color: #fff;
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 10px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.storage-transfer-btn:hover {
+  background: rgba(255, 119, 34, 0.3);
+  border-color: var(--accent-ember);
+}
+.storage-transfer-btn.all {
+  font-size: 9px;
+  padding: 2px 4px;
+}
+
+@media (max-width: 480px) {
+  .storage-columns {
+    grid-template-columns: 1fr;
+    max-height: 52vh;
+    overflow-y: auto;
+  }
+}

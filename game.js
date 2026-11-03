@@ -64,11 +64,39 @@ const Game = (() => {
     toz_scope: { id: 'toz_scope', name: 'Охотничий прицел ТОЗ', type: 'tool', icon: 'assets/images/handmade_tools.png', weight: 0.3, desc: 'Трофейный коллиматорный прицел мародёров (+30% к шансу критического выстрела на охоте).' },
     wolf_fang: { id: 'wolf_fang', name: 'Амулет «Волчий клык»', type: 'tool', icon: 'assets/images/wolf_tooth.png', weight: 0.1, desc: 'Клык вожака лесной стаи на сыромятном ремешке (+5 к урону в ближнем бою).' },
     glowing_moss: { id: 'glowing_moss', name: 'Светящийся сфагнум', type: 'resource', icon: 'assets/images/moss.png', weight: 0.2, desc: 'Редкий болотный мох, излучающий в темноте призрачное изумрудное сияние.' },
+    
+    // Новые предметы расширения v4.0: Погода, Статусы, Базостроение
+    charcoal: { id: 'charcoal', name: 'Берёзовый уголь', type: 'med', icon: 'assets/images/activated_carbon.png', weight: 0.1, desc: 'Пористый древесный уголь из костра. Отличный абсорбент: нейтрализует пищевое отравление (-токсины).' },
+    hot_tea: { id: 'hot_tea', name: 'Горячий таёжный чай', type: 'food', icon: 'assets/images/dandelion_tea.png', weight: 0.3, desc: 'Крепкий настой чабреца и брусники на кипятке. Снимает переохлаждение (+40 жажды, бафф «Таёжное тепло»).', thirst: 40, energy: 15 },
+    dried_fish: { id: 'dried_fish', name: 'Вяленая таёжная рыба', type: 'food', icon: 'assets/images/fried_fish.png', weight: 0.15, desc: 'Сушёная на ветру рыба длительного хранения (+35 сытости, бафф «Сытость»).', hunger: 35 },
+    dried_berries: { id: 'dried_berries', name: 'Сушёная брусника', type: 'food', icon: 'assets/images/cranberry.png', weight: 0.05, desc: 'Витаминный таёжный сухпаёк (+15 сытости, +10 жажды, бодрость).', hunger: 15, thirst: 10, energy: 10 },
+    smoked_meat: { id: 'smoked_meat', name: 'Копчёный таёжный окорок', type: 'food', icon: 'assets/images/fried_chopmeat.png', weight: 0.3, desc: 'Ароматный окорок холодного копчения. Дарует мощный бафф «Сытость» на 6 ходов (+65 сытости, +15 энергии).', hunger: 65, energy: 15 },
     stimulator_m: { id: 'stimulator_m', name: '«Стимулятор-М»', type: 'med', icon: 'assets/images/antirad.png', weight: 0.2, desc: 'Секретная разработка «Био-4». Навсегда увеличивает максимальный запас энергии на 25 единиц!', hp: 50, energy: 50 },
   };
 
   // --- РЕЦЕПТЫ КРАФТА ---
   const RECIPES = [
+    {
+      id: 'burn_charcoal', station: 'fire', name: 'Обжечь берёзовые угли', icon: 'assets/images/activated_carbon.png',
+      cost: { firewood: 1 }, result: { charcoal: 2 }, energy: 5, timeMin: 15,
+      desc: 'Получение чистого древесного угля от отравлений и для фильтрации.'
+    },
+    {
+      id: 'brew_hot_tea', station: 'fire', name: 'Заварить горячий таёжный чай', icon: 'assets/images/dandelion_tea.png',
+      cost: { clean_water: 1, herbs: 1, firewood: 1 }, result: { hot_tea: 1 }, energy: 5, timeMin: 10,
+      desc: 'Ароматный чай. Снимает переохлаждение и дарит таёжное тепло.'
+    },
+    {
+      id: 'cure_fish', station: 'fire', name: 'Завялить рыбу на углях', icon: 'assets/images/fried_fish.png',
+      cost: { raw_fish: 2, charcoal: 1 }, result: { dried_fish: 2 }, energy: 5, timeMin: 30,
+      desc: 'Питательная вяленая рыба длительного хранения. Дарует бафф «Сытость».'
+    },
+    {
+      id: 'smoke_meat', station: 'fire', name: 'Закоптить таёжный окорок', icon: 'assets/images/fried_chopmeat.png',
+      cost: { raw_meat: 1, firewood: 1, charcoal: 1 }, result: { smoked_meat: 1 }, energy: 10, timeMin: 45,
+      desc: 'Копчение на ольховом дыму. Дает долгий бафф сытости на 6 ходов.'
+    },
+
     {
       id: 'cook_fish', station: 'fire', name: 'Запечь рыбу на углях', icon: 'assets/images/fried_fish.png',
       cost: { raw_fish: 1, firewood: 1 }, result: { cooked_fish: 1 }, energy: 5, timeMin: 15,
@@ -268,6 +296,157 @@ spiridon: {
     }
   };
 
+  
+  // --- ДИНАМИЧЕСКАЯ ПОГОДА ---
+  const WEATHER_TYPES = {
+    clear: {
+      id: 'clear',
+      name: 'Ясно',
+      icon: '☀️',
+      desc: 'Чистое таёжное небо. Сил тратится меньше, сбор ягод и трав эффективнее.',
+      energyMod: -10,
+      radMod: 0
+    },
+    rain: {
+      id: 'rain',
+      name: 'Затяжной дождь',
+      icon: '🌧️',
+      desc: 'Осенний ливень хлещет по кронам. Клёв рыбы лучше, но сырость грозит простудой.',
+      energyMod: 15,
+      radMod: 0
+    },
+    fog: {
+      id: 'fog',
+      name: 'Радиоактивный туман',
+      icon: '☢️',
+      desc: 'Жёлтый едкий смог с низины у Бункера. Повышенный радиационный фон повсюду (+12 Р).',
+      energyMod: 0,
+      radMod: 12
+    },
+    freeze: {
+      id: 'freeze',
+      name: 'Северные заморозки',
+      icon: '❄️',
+      desc: 'Дыхание севера, лужи скованы льдом. Сил и тепла уходит гораздо больше (+20%).',
+      energyMod: 20,
+      radMod: 0
+    },
+    storm: {
+      id: 'storm',
+      name: 'Шквалистая буря',
+      icon: '⛈️',
+      desc: 'Ветер валит сухостой, река шумит. Добыча дров и плавника выше, но в тайге опасно.',
+      energyMod: 25,
+      radMod: 0
+    }
+  };
+
+  // --- КАТАЛОГ СТАТУСОВ (БАФФЫ И ДЕБАФФЫ) ---
+  const STATUS_EFFECTS_DEF = {
+    well_fed: {
+      id: 'well_fed',
+      name: 'Сытость',
+      icon: '🍲',
+      type: 'buff',
+      desc: 'Организм полон сил: восстанавливает +2 HP за каждый ход.'
+    },
+    spiridon_vigor: {
+      id: 'spiridon_vigor',
+      name: 'Тонус Спиридоновки',
+      icon: '🍄',
+      type: 'buff',
+      desc: 'Ядрёная настойка: снижение расхода энергии в вылазках на -15%.'
+    },
+    rad_shield: {
+      id: 'rad_shield',
+      name: 'Радиозащита',
+      icon: '🛡️',
+      type: 'buff',
+      desc: 'Травяной барьер: снижает всё накопление радиации на 50%.'
+    },
+    lynx_vision: {
+      id: 'lynx_vision',
+      name: 'Око рыси',
+      icon: '👁️',
+      type: 'buff',
+      desc: 'Обострённые чувства: ночные вылазки проходят без штрафов к энергии.'
+    },
+    body_warmth: {
+      id: 'body_warmth',
+      name: 'Таёжное тепло',
+      icon: '☕',
+      type: 'buff',
+      desc: 'Защита от простуды и дождя, комфорт в любую непогоду.'
+    },
+    bleeding: {
+      id: 'bleeding',
+      name: 'Рваная рана',
+      icon: '🩸',
+      type: 'debuff',
+      desc: 'Кровотечение: отнимает -4 HP за ход. Перевяжите бинтом или нанесите мазь!'
+    },
+    hypothermia: {
+      id: 'hypothermia',
+      name: 'Переохлаждение',
+      icon: '🥶',
+      type: 'debuff',
+      desc: 'Трясёт от холода: расход энергии +25%. Отогрейтесь у костра или выпейте горячий чай.'
+    },
+    poisoning: {
+      id: 'poisoning',
+      name: 'Отравление',
+      icon: '🤢',
+      type: 'debuff',
+      desc: 'Токсины в желудке: теряется -3 HP за ход. Примите берёзовый уголь!'
+    }
+  };
+
+  // --- УЛУЧШЕНИЯ ЛАГЕРЯ ---
+  const CAMP_UPGRADES = {
+    kennel: {
+      id: 'kennel',
+      name: 'Утеплённая конура Бурана',
+      icon: 'assets/images/wood_house.png',
+      cost: { firewood: 4, leather: 2, wire: 3 },
+      desc: 'Тёплый угол для верного пса. Буран охраняет лагерь, даёт +10 сил при ласке и помогает на охоте.'
+    },
+    drying_rack: {
+      id: 'drying_rack',
+      name: 'Таёжная сушилка рыбы и ягод',
+      icon: 'assets/images/cabin.png',
+      cost: { firewood: 5, wire: 3, swamp_moss: 2 },
+      desc: 'Ветвистые жерди с навесом. Каждое утро автоматически завяливает +1 рыбу или сушит порцию ягод.'
+    },
+    storage_chest: {
+      id: 'storage_chest',
+      name: 'Лагерный сундук (Склад)',
+      icon: 'assets/images/food_box.png',
+      cost: { firewood: 6, scrap: 3, wire: 4 },
+      desc: 'Вместительный армейский рундук. Позволяет разгрузить рюкзак и хранить тяжелые материалы в лагере.'
+    },
+    rain_collector: {
+      id: 'rain_collector',
+      name: 'Навес-водосборник',
+      icon: 'assets/images/barrel.png',
+      cost: { leather: 2, firewood: 3, scrap: 2 },
+      desc: 'Натянутый брезент и бочка. В дождливую погоду и туман каждое утро наполняет +2 фляги чистой воды.'
+    },
+    perimeter_alarm: {
+      id: 'perimeter_alarm',
+      name: 'Сигнальный периметр',
+      icon: 'assets/images/cable.png',
+      cost: { wire: 3, scrap: 3 },
+      desc: 'Растяжки из стальной проволоки и гильз вокруг лагеря. Защищает от ночных набегов зверей и воров.'
+    },
+    smokehouse: {
+      id: 'smokehouse',
+      name: 'Коптильня «Тайга»',
+      icon: 'assets/images/fireplace.png',
+      cost: { scrap: 4, firewood: 4 },
+      desc: 'Кирпичный очаг с дымоходом. Открывает рецепт копчёного окорока с долгим баффом «Сытость» на 6 ходов.'
+    }
+  };
+
   // --- ИГРОВОЕ СОСТОЯНИЕ (STATE) ---
   const INITIAL_STATE = {
     hp: 100,
@@ -354,6 +533,21 @@ met_spiridon: false,
     sashaRadioUsedToday: false,
     sideQuests: {},
     dailyQuests: [],
+    
+    weather: 'clear',
+    statusEffects: {},
+    campUpgrades: {
+      kennel: false,
+      drying_rack: false,
+      storage_chest: false,
+      rain_collector: false,
+      perimeter_alarm: false,
+      smokehouse: false
+    },
+    campStorage: {},
+    eventLog: [
+      { id: 1, day: 1, time: 0, text: 'Вы очнулись на окраине лагеря «Заря». Потрескивает костёр.', category: 'story' }
+    ],
     loreNotes: ['note_order'],
     unlockedLocations: ['river', 'forest'],
     introSeen: false
@@ -362,6 +556,49 @@ met_spiridon: false,
   let state = JSON.parse(JSON.stringify(INITIAL_STATE));
 
   const TIME_NAMES = ['Утро', 'День', 'Вечер', 'Ночь'];
+
+  // --- СИСТЕМА ЛОГИРОВАНИЯ И СТАТУСОВ ---
+  function logEvent(text, category = 'camp') {
+    state.eventLog = state.eventLog || [];
+    state.eventLog.unshift({
+      id: Date.now() + Math.random(),
+      day: Number(state.day) || 1,
+      time: Number(state.timeOfDay) || 0,
+      text: String(text),
+      category: String(category)
+    });
+    if (state.eventLog.length > 50) state.eventLog.pop();
+  }
+
+  function addStatusEffect(id, duration = 4) {
+    const def = STATUS_EFFECTS_DEF[id];
+    if (!def) return;
+    state.statusEffects = state.statusEffects || {};
+    state.statusEffects[id] = {
+      id: def.id,
+      name: def.name,
+      icon: def.icon,
+      type: def.type,
+      desc: def.desc,
+      duration: Number(duration) || 4
+    };
+    logEvent(`Получен статус: ${def.icon} ${def.name} (${duration}х)`, 'status');
+    updateHUD();
+  }
+
+  function removeStatusEffect(id) {
+    if (state.statusEffects && state.statusEffects[id]) {
+      const name = state.statusEffects[id].name;
+      delete state.statusEffects[id];
+      logEvent(`Статус «${name}» снят.`, 'status');
+      updateHUD();
+    }
+  }
+
+  function hasStatusEffect(id) {
+    return !!(state.statusEffects && state.statusEffects[id]);
+  }
+
 
   function getTimeName(time = state?.timeOfDay) {
     const idx = Math.floor(Number(time) || 0) % 4;
@@ -606,6 +843,47 @@ met_spiridon: false,
       }
     }
 
+    // Отображение погоды в HUD
+    const wInfo = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
+    const weatherEl = document.getElementById('hudWeather');
+    if (weatherEl) {
+      weatherEl.textContent = `${wInfo.icon} ${wInfo.name}`;
+      weatherEl.title = `Погода: ${wInfo.name}. ${wInfo.desc} (Кликните для метеосводки)`;
+    }
+
+    // Бейджи активных статусов под статус-баром
+    const pillsContainer = document.getElementById('hudStatusPills');
+    if (pillsContainer) {
+      const activeEffects = Object.entries(state.statusEffects || {});
+      if (activeEffects.length === 0) {
+        pillsContainer.style.display = 'none';
+        pillsContainer.innerHTML = '';
+      } else {
+        pillsContainer.style.display = 'flex';
+        pillsContainer.innerHTML = activeEffects.map(([id, eff]) => `
+          <div class="status-pill-badge ${eff.type}" onclick="Game.openJournal('weather')" title="${eff.name}: ${eff.desc} (Осталось ходов: ${Math.ceil(eff.duration)})">
+            <span class="status-pill-icon">${eff.icon}</span>
+            <span class="status-pill-name">${eff.name}</span>
+            <span class="status-pill-turns">${Math.ceil(eff.duration)}х</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    // Подзаголовок лагерного сундука
+    const storageSub = document.getElementById('campStorageSubtitle');
+    if (storageSub) {
+      if (state.campUpgrades?.storage_chest) {
+        let storageWeight = 0;
+        for (const [id, count] of Object.entries(state.campStorage || {})) {
+          if (count > 0 && ITEMS[id]) storageWeight += ITEMS[id].weight * count;
+        }
+        storageSub.textContent = `Загрузка: ${storageWeight.toFixed(1)} / 100 кг`;
+      } else {
+        storageSub.textContent = 'Склад (нужно построить)';
+      }
+    }
+
     saveState();
   }
 
@@ -622,6 +900,33 @@ met_spiridon: false,
 
     state.hunger = Math.max(0, state.hunger - hungerCost * steps);
     state.thirst = Math.max(0, state.thirst - thirstCost * steps);
+
+    // Обработка активных статусов
+    if (state.statusEffects) {
+      for (const [id, eff] of Object.entries(state.statusEffects)) {
+        if (id === 'well_fed') {
+          state.hp = Math.min(100, state.hp + 2 * numSteps);
+        } else if (id === 'bleeding') {
+          state.hp = Math.max(0, state.hp - 4 * numSteps);
+          toast(`🩸 Кровотечение отнимает -${4 * numSteps} HP! Перевяжите рану.`, 'warning');
+        } else if (id === 'poisoning') {
+          state.hp = Math.max(0, state.hp - 3 * numSteps);
+          state.hunger = Math.max(0, state.hunger - 3 * numSteps);
+          state.thirst = Math.max(0, state.thirst - 4 * numSteps);
+          toast(`🤢 Пищевое отравление истощает тело! Примите берёзовый уголь.`, 'warning');
+        } else if (id === 'hypothermia') {
+          state.energy = Math.max(0, state.energy - 5 * numSteps);
+          state.thirst = Math.max(0, state.thirst - 3 * numSteps);
+        }
+
+        eff.duration -= numSteps;
+        if (eff.duration <= 0) {
+          delete state.statusEffects[id];
+          toast(`⏳ Действие статуса «${eff.name}» закончилось.`);
+          logEvent(`Действие статуса «${eff.name}» закончилось`, 'status');
+        }
+      }
+    }
 
     // Урон от истощения или сильной радиации
     if (state.hunger === 0) {
@@ -647,7 +952,20 @@ met_spiridon: false,
   }
 
   function onNewDay() {
-    toast(`🌅 Наступил День ${state.day}. Лагерь просыпается.`);
+    // Генерация погоды на день
+    const weatherRoll = Math.random();
+    let newWeather = 'clear';
+    if (weatherRoll < 0.40) newWeather = 'clear';
+    else if (weatherRoll < 0.65) newWeather = 'rain';
+    else if (weatherRoll < 0.80) newWeather = 'fog';
+    else if (weatherRoll < 0.90) newWeather = 'freeze';
+    else newWeather = 'storm';
+    state.weather = newWeather;
+    const wInfo = WEATHER_TYPES[newWeather] || WEATHER_TYPES.clear;
+
+    toast(`🌅 Наступил День ${state.day}. Погода: ${wInfo.icon} ${wInfo.name}`);
+    logEvent(`🌅 Наступил День ${state.day}. Погода: ${wInfo.icon} ${wInfo.name}. ${wInfo.desc}`, 'camp');
+
     generateDailyQuestsIfNeeded(true);
     // Проверка ловушек
     if (state.trapsSet > 0) {
@@ -655,11 +973,32 @@ met_spiridon: false,
       addItem('raw_meat', caughtMeat);
       addItem('leather', Math.floor(caughtMeat / 2));
       toast(`🏹 В установленные капканы попалась дичь (+${caughtMeat} мяса)!`);
+      logEvent(`🏹 В капканы попалась дичь (+${caughtMeat} мяса)`, 'camp');
     }
     // Водозабор с насосной станции
     if (state.pumpWaterActive) {
       addItem('clean_water', 1);
       toast('🚰 Лагерная колонка накачала +1 флягу чистой воды из восстановленной системы станции.');
+    }
+    // Лагерный навес-водосборник (rain_collector)
+    if (state.campUpgrades?.rain_collector && (newWeather === 'rain' || newWeather === 'storm' || newWeather === 'fog')) {
+      addItem('clean_water', 2);
+      toast('🪣 Навес-водосборник наполнил +2 фляги чистой дождевой воды!');
+      logEvent('🪣 Навес-водосборник собрал +2 фляги чистой дождевой воды', 'camp');
+    }
+    // Лагерная таёжная сушилка (drying_rack)
+    if (state.campUpgrades?.drying_rack) {
+      if (getItemCount('raw_fish') >= 1) {
+        removeItem('raw_fish', 1);
+        addItem('dried_fish', 1);
+        toast('🐟 Таёжная сушилка завялила +1 рыбу!');
+        logEvent('🐟 Таёжная сушилка завялила +1 рыбу', 'camp');
+      } else if (getItemCount('herbs') >= 1) {
+        removeItem('herbs', 1);
+        addItem('dried_berries', 1);
+        toast('🫐 Таёжная сушилка высушила порцию лесных ягод!');
+        logEvent('🫐 Таёжная сушилка высушила порцию лесных ягод', 'camp');
+      }
     }
     // Сброс ежедневного сканирования радиоэфира
     state.sashaRadioUsedToday = false;
@@ -669,7 +1008,311 @@ met_spiridon: false,
       const gift = dogGifts[Math.floor(Math.random() * dogGifts.length)];
       addItem(gift, 1);
       toast(`🐕 Буран прибежал на рассвете и положил к ногам добычу: ${ITEMS[gift]?.name || gift}!`);
+      logEvent(`🐕 Буран принёс в лагерь добычу: ${ITEMS[gift]?.name || gift}`, 'camp');
     }
+  }
+
+
+  // ==========================================================================
+  // ЖУРНАЛ ВЫЖИВШЕГО (ХРОНИКА, АРХИВ ЛОРА, ПОГОДА И СТАТУСЫ)
+  // ==========================================================================
+  function openJournal(tab = 'log') {
+    sfx.init();
+    sfx.playClick();
+
+    const weather = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
+    const statusEntries = Object.entries(state.statusEffects || {});
+    const logs = state.eventLog || [];
+    const notes = state.loreNotes || [];
+
+    let body = `
+      <div class="journal-container">
+        <!-- Вкладки журнала -->
+        <div class="journal-nav">
+          <button class="journal-tab-btn ${tab === 'log' ? 'active' : ''}" onclick="Game.openJournal('log')">📝 Хроника (${logs.length})</button>
+          <button class="journal-tab-btn ${tab === 'lore' ? 'active' : ''}" onclick="Game.openJournal('lore')">📁 Архив лора (${notes.length})</button>
+          <button class="journal-tab-btn ${tab === 'weather' ? 'active' : ''}" onclick="Game.openJournal('weather')">🌤️ Погода и Статусы</button>
+        </div>
+
+        <div class="journal-body">
+    `;
+
+    if (tab === 'log') {
+      body += `
+        <div class="journal-log-list">
+          ${logs.length === 0 ? '<div style="color:var(--text-dim); text-align:center; padding:20px;">Хроника пока пуста</div>' : ''}
+          ${logs.map(l => `
+            <div class="journal-log-item ${l.category || ''}">
+              <div class="journal-log-meta">
+                <span class="journal-log-day">День ${l.day}, ${getTimeName(l.time)}</span>
+                <span class="journal-log-cat">${l.category === 'sortie' ? '🗺️ Вылазка' : l.category === 'story' ? '📜 Сюжет' : l.category === 'status' ? '⚡ Статус' : '🏕️ Лагерь'}</span>
+              </div>
+              <div class="journal-log-text">${l.text}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    } else if (tab === 'lore') {
+      body += `
+        <div class="journal-lore-list">
+          ${notes.length === 0 ? '<div style="color:var(--text-dim); text-align:center; padding:20px;">Вы ещё не нашли записок или документов</div>' : ''}
+          ${notes.map(noteId => {
+            const item = ITEMS[noteId];
+            if (!item) return '';
+            return `
+              <div class="journal-lore-card">
+                <div class="journal-lore-header">
+                  <img src="${item.icon}" class="journal-lore-icon pixel-art">
+                  <div>
+                    <h4 class="journal-lore-title">${item.name}</h4>
+                    <span class="journal-lore-type">Документ архива</span>
+                  </div>
+                </div>
+                <div class="journal-lore-content">${item.desc}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    } else if (tab === 'weather') {
+      body += `
+        <div class="journal-weather-view">
+          <!-- Карточка текущей погоды -->
+          <div class="journal-weather-card">
+            <div style="font-size:38px; line-height:1; flex-shrink:0;">${weather.icon}</div>
+            <div style="flex:1;">
+              <h3 style="font-family:'Russo One'; color:var(--accent-gold); margin-bottom:4px;">${weather.name}</h3>
+              <p style="font-size:12px; color:var(--text-main); margin-bottom:6px;">${weather.desc}</p>
+              <div style="font-size:11px; color:var(--text-dim);">
+                ${weather.energyMod ? `Трата сил: <strong style="color:${weather.energyMod > 0 ? '#e74c3c' : 'var(--accent-green)'}">${weather.energyMod > 0 ? '+' : ''}${weather.energyMod}%</strong> | ` : ''}
+                ${weather.radMod ? `Радиационный фон: <strong style="color:#c084fc;">+${weather.radMod} Р</strong> | ` : ''}
+                Метеосводка обновляется каждое утро на рассвете.
+              </div>
+            </div>
+          </div>
+
+          <!-- Активные баффы и дебаффы -->
+          <h4 style="font-family:'Russo One'; color:var(--accent-ember); margin:14px 0 6px 0; font-size:13px;">Текущие статусы выжившего</h4>
+          <div class="journal-status-list">
+            ${statusEntries.length === 0 ? '<div style="color:var(--text-dim); font-size:12px; padding:10px; background:rgba(0,0,0,0.3); border-radius:6px; border:1px solid var(--border-dim);">Организм в норме. Нет активных баффов или дебаффов.</div>' : ''}
+            ${statusEntries.map(([id, eff]) => `
+              <div class="journal-status-card ${eff.type}">
+                <span style="font-size:24px; flex-shrink:0;">${eff.icon}</span>
+                <div style="flex:1;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <strong style="color:#fff; font-size:12.5px;">${eff.name} (${eff.type === 'buff' ? 'Бафф' : 'Дебафф'})</strong>
+                    <span class="status-duration-badge">Осталось: ${Math.ceil(eff.duration)} ходов</span>
+                  </div>
+                  <div style="font-size:11px; color:var(--text-main); margin-top:3px;">${eff.desc}</div>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    body += `
+        </div>
+      </div>
+    `;
+
+    openModal('ЖУРНАЛ ВЫЖИВШЕГО', 'Хроника событий, архив лора и метеосводка', 'assets/images/book.png', body, [
+      { text: 'Закрыть', action: closeModal }
+    ]);
+  }
+
+  // ==========================================================================
+  // ОБУСТРОЙСТВО ЛАГЕРЯ (БАЗОСТРОЕНИЕ)
+  // ==========================================================================
+  function openCampUpgrades() {
+    sfx.init();
+    sfx.playClick();
+
+    let html = `
+      <div class="camp-upgrades-modal">
+        <p style="font-size:12px; color:var(--text-dim); margin-bottom:12px;">
+          Обустройство базы превращает привал в защищённый форпост. Постройки дают постоянные пассивные бонусы лагерю.
+        </p>
+        <div class="camp-upgrades-grid">
+    `;
+
+    for (const [key, upg] of Object.entries(CAMP_UPGRADES)) {
+      const isBuilt = !!state.campUpgrades?.[key];
+      let canAfford = true;
+      const costList = [];
+      for (const [matId, reqCount] of Object.entries(upg.cost)) {
+        const has = getItemCount(matId);
+        if (has < reqCount) canAfford = false;
+        const matName = ITEMS[matId]?.name || matId;
+        costList.push(`<span style="color:${has >= reqCount ? 'var(--accent-green)' : '#e74c3c'}">${matName}: ${has}/${reqCount}</span>`);
+      }
+
+      html += `
+        <div class="camp-upg-card ${isBuilt ? 'built' : ''}">
+          <div class="camp-upg-header">
+            <img src="${upg.icon}" class="camp-upg-icon pixel-art" alt="">
+            <div>
+              <div class="camp-upg-title">${upg.name}</div>
+              <div class="camp-upg-status ${isBuilt ? 'built' : ''}">${isBuilt ? '✅ Построено и функционирует' : '🔨 Доступно для строительства'}</div>
+            </div>
+          </div>
+          <div class="camp-upg-desc">${upg.desc}</div>
+          <div class="camp-upg-cost">${costList.join(' • ')}</div>
+          <div class="camp-upg-footer">
+            ${isBuilt 
+              ? `<button class="modal-btn" disabled style="opacity:0.6; cursor:default; min-height:36px; padding:6px 10px;">✔️ Функционирует</button>`
+              : `<button class="modal-btn ${canAfford ? 'primary' : ''}" onclick="Game.buildCampUpgrade('${key}')" ${canAfford ? '' : 'disabled'} style="min-height:36px; padding:6px 10px;">
+                   ${canAfford ? '🔨 Возвести постройку' : '⚠️ Не хватает материалов'}
+                 </button>`
+            }
+          </div>
+        </div>
+      `;
+    }
+
+    html += `
+        </div>
+      </div>
+    `;
+
+    openModal('ОБУСТРОЙСТВО ЛАГЕРЯ', 'Инфраструктура базы «Заря»', 'assets/images/cabin.png', html, [
+      { text: 'Закрыть', action: closeModal }
+    ]);
+  }
+
+  function buildCampUpgrade(key) {
+    const upg = CAMP_UPGRADES[key];
+    if (!upg) return;
+    state.campUpgrades = state.campUpgrades || {};
+    if (state.campUpgrades[key]) {
+      toast('Эта постройка уже возведена!');
+      return;
+    }
+    // Проверка ресурсов
+    for (const [matId, reqCount] of Object.entries(upg.cost)) {
+      if (getItemCount(matId) < reqCount) {
+        toast(`Не хватает: ${ITEMS[matId]?.name || matId}!`);
+        return;
+      }
+    }
+    // Списание
+    for (const [matId, reqCount] of Object.entries(upg.cost)) {
+      removeItem(matId, reqCount);
+    }
+    state.campUpgrades[key] = true;
+    if (key === 'kennel') {
+      state.questFlags.dog_house_built = true;
+      state.hasDog = true;
+    }
+    sfx.init();
+    sfx.playSuccess();
+    toast(`🎉 Возведено улучшение: ${upg.name}!`);
+    logEvent(`В лагере построено: ${upg.name}`, 'camp');
+    saveState();
+    updateHUD();
+    renderNPCs();
+    openCampUpgrades();
+  }
+
+  // ==========================================================================
+  // СКЛАД ЛАГЕРЯ (СУНДУК)
+  // ==========================================================================
+  function openCampStorage() {
+    if (!state.campUpgrades?.storage_chest) {
+      toast('Сначала постройте Лагерный сундук в обустройстве лагеря!', 'warning');
+      return;
+    }
+    sfx.init();
+    sfx.playClick();
+
+    state.campStorage = state.campStorage || {};
+
+    let storageWeight = 0;
+    for (const [id, count] of Object.entries(state.campStorage)) {
+      if (count > 0 && ITEMS[id]) storageWeight += ITEMS[id].weight * count;
+    }
+
+    let html = `
+      <div class="storage-modal-container">
+        <div style="font-size:12px; color:var(--text-dim); margin-bottom:10px;">
+          Склад лагеря хранит неограниченно тяжелые припасы. Текущая масса в сундуке: <strong>${storageWeight.toFixed(1)} / 100 кг</strong>.
+        </div>
+
+        <div class="storage-columns">
+          <!-- Рюкзак -->
+          <div class="storage-col">
+            <h4 style="font-family:'Russo One'; color:var(--accent-ember); margin-bottom:6px; font-size:12.5px;">🎒 В рюкзаке</h4>
+            <div class="storage-item-list">
+              ${Object.entries(state.inventory).filter(([id, c]) => c > 0).map(([id, c]) => `
+                <div class="storage-item-row">
+                  <img src="${ITEMS[id]?.icon}" class="storage-mini-icon pixel-art">
+                  <div class="storage-row-info">
+                    <span class="storage-row-name">${ITEMS[id]?.name || id}</span>
+                    <span class="storage-row-cnt">x${c} (${(ITEMS[id]?.weight * c).toFixed(1)} кг)</span>
+                  </div>
+                  <button class="storage-transfer-btn" onclick="Game.transferToStorage('${id}', 1)" title="Сложить 1 шт в сундук">➡️</button>
+                  ${c >= 5 ? `<button class="storage-transfer-btn all" onclick="Game.transferToStorage('${id}', ${c})" title="Сложить все">Все</button>` : ''}
+                </div>
+              `).join('') || '<div style="color:var(--text-dim); font-size:11px; padding:10px;">Рюкзак пуст</div>'}
+            </div>
+          </div>
+
+          <!-- Сундук -->
+          <div class="storage-col">
+            <h4 style="font-family:'Russo One'; color:var(--accent-gold); margin-bottom:6px; font-size:12.5px;">📦 В сундуке</h4>
+            <div class="storage-item-list">
+              ${Object.entries(state.campStorage).filter(([id, c]) => c > 0).map(([id, c]) => `
+                <div class="storage-item-row">
+                  <img src="${ITEMS[id]?.icon}" class="storage-mini-icon pixel-art">
+                  <div class="storage-row-info">
+                    <span class="storage-row-name">${ITEMS[id]?.name || id}</span>
+                    <span class="storage-row-cnt">x${c} (${(ITEMS[id]?.weight * c).toFixed(1)} кг)</span>
+                  </div>
+                  <button class="storage-transfer-btn" onclick="Game.transferFromStorage('${id}', 1)" title="Забрать 1 шт в рюкзак">⬅️</button>
+                  ${c >= 5 ? `<button class="storage-transfer-btn all" onclick="Game.transferFromStorage('${id}', ${c})" title="Забрать все">Все</button>` : ''}
+                </div>
+              `).join('') || '<div style="color:var(--text-dim); font-size:11px; padding:10px;">Сундук пуст</div>'}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    openModal('ЛАГЕРНЫЙ СУНДУК', 'Хранилище базы «Заря»', 'assets/images/food_box.png', html, [
+      { text: 'Закрыть', action: closeModal }
+    ]);
+  }
+
+  function transferToStorage(itemId, count = 1) {
+    const has = getItemCount(itemId);
+    if (has < 1) return;
+    const transferCount = Math.min(has, count);
+    removeItem(itemId, transferCount);
+    state.campStorage = state.campStorage || {};
+    state.campStorage[itemId] = (state.campStorage[itemId] || 0) + transferCount;
+    sfx.init();
+    sfx.playClick();
+    saveState();
+    updateHUD();
+    renderInventory();
+    openCampStorage();
+  }
+
+  function transferFromStorage(itemId, count = 1) {
+    state.campStorage = state.campStorage || {};
+    const inStorage = state.campStorage[itemId] || 0;
+    if (inStorage < 1) return;
+    const transferCount = Math.min(inStorage, count);
+    state.campStorage[itemId] -= transferCount;
+    if (state.campStorage[itemId] <= 0) delete state.campStorage[itemId];
+    addItem(itemId, transferCount);
+    sfx.init();
+    sfx.playClick();
+    saveState();
+    updateHUD();
+    renderInventory();
+    openCampStorage();
   }
 
   function showDeathModal() {
@@ -783,18 +1426,51 @@ met_spiridon: false,
       if (item.rad) state.rad = Math.max(0, state.rad + item.rad);
       if (item.energy) state.energy = Math.min(maxEng, state.energy + item.energy);
 
+      // Обработка баффов и статусов от предметов
       if (itemId === 'spiridon_vodka') {
-        toast('🧪 Огненная «Спиридоновка» обжигает горло! Усталость снята как рукой (+40% энергии)!');
+        addStatusEffect('spiridon_vigor', 4);
+        toast('🧪 Огненная «Спиридоновка» обжигает горло! Усталость снята как рукой (+40% энергии, бафф «Тонус»).');
       } else if (itemId === 'tar_salve') {
         state.spiridonBuff = 3;
-        toast('🍯 Дегтярный бальзам заживляет раны (+40 HP) и даёт защиту от зверей на 3 вылазки!');
+        removeStatusEffect('bleeding');
+        toast('🍯 Дегтярный бальзам заживляет раны (+40 HP) и останавливает кровотечение!');
       } else if (itemId === 'lynx_eye') {
         state.lynxEyeBuff = 4;
+        addStatusEffect('lynx_vision', 6);
         toast('👁️ Эликсир «Око рыси»: зрачки расширяются во тьме! Ночные вылазки проходят без штрафов к энергии.');
       } else if (itemId === 'stimulator_m') {
         state.maxEnergy = (state.maxEnergy || 100) + 25;
         state.energy = state.maxEnergy;
         toast('🧬 «Стимулятор-М» введён! Максимальный запас энергии повышен до ' + state.maxEnergy + '%!');
+      } else if (itemId === 'hot_tea') {
+        removeStatusEffect('hypothermia');
+        addStatusEffect('body_warmth', 4);
+        toast('☕ Горячий таёжный чай согревает изнутри! Переохлаждение снято.');
+      } else if (itemId === 'charcoal') {
+        removeStatusEffect('poisoning');
+        toast('🖤 Берёзовый уголь впитал яды. Пищевое отравление нейтрализовано!');
+      } else if (itemId === 'bandage') {
+        removeStatusEffect('bleeding');
+        toast('🩹 Стерильный бинт наложен. Кровотечение остановлено.');
+      } else if (itemId === 'herbal_salve') {
+        removeStatusEffect('bleeding');
+        toast('🌿 Целебная мазь затянула рваную рану.');
+      } else if (itemId === 'antirad' || itemId === 'herbal_tea') {
+        addStatusEffect('rad_shield', 4);
+        toast('🛡️ Организм защищён барьером от радиации на 4 хода!');
+      } else if (itemId === 'smoked_meat') {
+        addStatusEffect('well_fed', 6);
+        toast('🥩 Сытный копчёный окорок дарит сытость и регенерацию на 6 ходов!');
+      } else if (['cooked_fish', 'cooked_meat', 'fish_soup', 'canned_food', 'dried_fish'].includes(itemId)) {
+        addStatusEffect('well_fed', 4);
+        toast('🍲 Сытная горячая трапеза! Получен бафф «Сытость» (+2 HP за ход).');
+      } else if (['raw_fish', 'raw_meat', 'raw_water'].includes(itemId)) {
+        if (Math.random() < 0.45) {
+          addStatusEffect('poisoning', 4);
+          toast('🤢 В сырой пище были паразиты! Получен дебафф «Отравление».', 'warning');
+        } else {
+          toast(`Использовано: ${item.name}`);
+        }
       } else {
         toast(`Использовано: ${item.name}`);
       }
@@ -802,7 +1478,12 @@ met_spiridon: false,
       removeItem(itemId, 1);
       updateHUD();
       closeModal();
-    } else if (item.type === 'lore') {
+        } else if (item.type === 'lore') {
+      state.loreNotes = state.loreNotes || [];
+      if (!state.loreNotes.includes(itemId)) {
+        state.loreNotes.push(itemId);
+        logEvent(`В архив добавлен документ: ${item.name}`, 'story');
+      }
       openModal(item.name, 'Запись из прошлого', item.icon, `<p>${item.desc}</p>`);
     }
   }
@@ -3344,25 +4025,54 @@ met_spiridon: false,
     sfx.playClick();
     let body = `<p>${loc.desc}</p>`;
 
-    const isLowEnergy = state.energy < loc.energyCost;
+    const weather = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
+    let effectiveEnergyCost = loc.energyCost;
+    let effectiveRad = loc.rad;
+
+    // Модификаторы погоды
+    if (weather.energyMod) {
+      effectiveEnergyCost = Math.max(5, Math.round(effectiveEnergyCost * (1 + weather.energyMod / 100)));
+    }
+    if (weather.radMod) {
+      effectiveRad = effectiveRad + weather.radMod;
+    }
+
+    // Модификаторы статусов
+    if (hasStatusEffect('spiridon_vigor')) {
+      effectiveEnergyCost = Math.max(5, Math.round(effectiveEnergyCost * 0.85));
+    }
+    if (hasStatusEffect('hypothermia')) {
+      effectiveEnergyCost = Math.round(effectiveEnergyCost * 1.25);
+    }
+    if (hasStatusEffect('rad_shield') || state.hasGeiger) {
+      effectiveRad = Math.round(effectiveRad * 0.5);
+    }
+    if (state.hasGeoCompass) {
+      effectiveEnergyCost = Math.max(5, effectiveEnergyCost - 5);
+    }
+    if (isNightTime(state.timeOfDay) && !state.hasElectricTorch && !hasStatusEffect('lynx_vision')) {
+      effectiveEnergyCost += 10;
+    }
+
+    const isLowEnergy = state.energy < effectiveEnergyCost;
     const isHighRad = state.rad >= 30;
     const isLowHp = state.hp <= 35;
     const timeName = getTimeName(state.timeOfDay);
 
     body += `
       <div class="loc-modal-stats">
-        <div class="loc-stat-badge energy ${isLowEnergy ? 'low' : ''}" title="Текущая энергия и расход сил за вылазку">
+        <div class="loc-stat-badge energy ${isLowEnergy ? 'low' : ''}" title="Текущая энергия и расход сил с учётом погоды и баффов">
           <span class="stat-icon">⚡</span>
           <div class="stat-info">
             <div class="stat-label">Энергия</div>
-            <div class="stat-val">${state.energy}% <span class="stat-delta">(-${loc.energyCost}%)</span></div>
+            <div class="stat-val">${state.energy}% <span class="stat-delta">(-${effectiveEnergyCost}%)</span></div>
           </div>
         </div>
-        <div class="loc-stat-badge rad ${isHighRad ? 'high' : ''}" title="Текущий уровень радиации и доза в локации">
+        <div class="loc-stat-badge rad ${isHighRad ? 'high' : ''}" title="Текущий уровень радиации и доза в локации с учётом погоды">
           <span class="stat-icon">☢️</span>
           <div class="stat-info">
             <div class="stat-label">Радиация</div>
-            <div class="stat-val">${state.rad} Р <span class="stat-delta">(+${loc.rad})</span></div>
+            <div class="stat-val">${state.rad} Р <span class="stat-delta">(+${effectiveRad})</span></div>
           </div>
         </div>
         <div class="loc-stat-badge hp ${isLowHp ? 'low' : ''}" title="Здоровье выжившего">
@@ -3372,11 +4082,11 @@ met_spiridon: false,
             <div class="stat-val">${state.hp} <span class="stat-delta">/ 100</span></div>
           </div>
         </div>
-        <div class="loc-stat-badge time" title="Текущее время суток">
-          <span class="stat-icon">⏳</span>
+        <div class="loc-stat-badge weather" title="Погода: ${weather.name}. ${weather.desc}">
+          <span class="stat-icon">${weather.icon}</span>
           <div class="stat-info">
-            <div class="stat-label">Время</div>
-            <div class="stat-val">${timeName}</div>
+            <div class="stat-label">Погода</div>
+            <div class="stat-val">${weather.name}</div>
           </div>
         </div>
       </div>
@@ -5339,6 +6049,17 @@ met_spiridon: false,
         if (typeof parsed.day !== 'number' || isNaN(parsed.day) || parsed.day < 1) {
           parsed.day = 1;
         }
+        if (!parsed.weather) parsed.weather = 'clear';
+        parsed.statusEffects = parsed.statusEffects || {};
+        parsed.campUpgrades = Object.assign({}, INITIAL_STATE.campUpgrades, parsed.campUpgrades || {});
+        if (parsed.questFlags.dog_house_built || parsed.hasDog) {
+          parsed.campUpgrades.kennel = true;
+        }
+        parsed.campStorage = parsed.campStorage || {};
+        parsed.eventLog = Array.isArray(parsed.eventLog) ? parsed.eventLog : [];
+        if (parsed.eventLog.length === 0) {
+          parsed.eventLog.push({ id: 1, day: parsed.day || 1, time: parsed.timeOfDay || 0, text: 'Хроника лагеря начата.', category: 'story' });
+        }
         state = Object.assign(state, parsed);
       }
     } catch(e) {}
@@ -5423,7 +6144,13 @@ met_spiridon: false,
     talkToNPC,
     turnInDailyQuest,
     setBgTheme,
-    applyBgTheme
+    applyBgTheme,
+    openJournal,
+    openCampUpgrades,
+    buildCampUpgrade,
+    openCampStorage,
+    transferToStorage,
+    transferFromStorage
   };
 
 })();
