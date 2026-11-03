@@ -8,7 +8,7 @@ const Game = (() => {
   const ITEMS = {
     clean_water: { id: 'clean_water', name: 'Чистая вода', type: 'food', icon: 'assets/images/bottled_water.png', weight: 0.5, desc: 'Кипячёная чистая вода в армейской фляге.', thirst: 45, rad: 0 },
     raw_water: { id: 'raw_water', name: 'Речная вода', type: 'food', icon: 'assets/images/polluted_water.png', weight: 0.5, desc: 'Мутная вода из реки Быстрянки. Опасно пить сырой!', thirst: 30, rad: 12 },
-    raw_fish: { id: 'raw_fish', name: 'Сырая рыба', type: 'food', icon: 'assets/images/fresh_fish.png', weight: 0.4, desc: 'Свежепойманная речная рыба. Лучше зажарить на костре.', hunger: 15, rad: 8 },
+    raw_fish: { id: 'raw_fish', name: 'Сырая рыба', type: 'food', icon: 'assets/images/fresh_fish.png?v=3.2', weight: 0.4, desc: 'Свежепойманная речная рыба. Лучше зажарить на костре.', hunger: 15, rad: 8 },
     cooked_fish: { id: 'cooked_fish', name: 'Жареная рыба', type: 'food', icon: 'assets/images/fried_fish.png', weight: 0.3, desc: 'Аппетитная рыба с хрустящей корочкой, запечённая на углях.', hunger: 45, rad: 0 },
     fish_soup: { id: 'fish_soup', name: 'Уха таёжная', type: 'food', icon: 'assets/images/rich_soup.png', weight: 0.6, desc: 'Наваристая горячая уха с травами. Согревает и насыщает.', hunger: 60, thirst: 35, energy: 25 },
     raw_meat: { id: 'raw_meat', name: 'Сырое мясо', type: 'food', icon: 'assets/images/fresh_meat.png', weight: 0.6, desc: 'Свежая дичь. Сырой есть нельзя — риск паразитов.', hunger: 20, rad: 10 },
@@ -4950,11 +4950,11 @@ met_spiridon: false,
   }
 
   const BG_THEMES = [
-    { id: 'camp', name: '🏕️ Лагерь «Заря» (Атмосфера общины)', desc: 'Панорама лагеря выживших с бревенчатыми постройками и костром' },
-    { id: 'fog', name: '🌲 Таёжный туман (Утренняя мгла)', desc: 'Хвойная глухая тайга, скрытая радиационным туманом' },
-    { id: 'winter', name: '❄️ Зимняя тайга (Суровый мороз)', desc: 'Заснеженные сопки и ледяной сибирский бурелом' },
-    { id: 'map', name: '🗺️ Топографическая карта Зоны', desc: 'Военная топокарта с изолиниями и секторами катастрофы' },
-    { id: 'none', name: '⬛ Строгий тёмный (Без текстур)', desc: 'Классический минималистичный тёмный интерфейс' }
+    { id: 'camp', name: '🏕️ Лагерь «Заря» (Атмосфера общины)', desc: 'Панорама лагеря выживших с бревенчатыми постройками и костром', preview: 'assets/images/backgrounds/camp_alt.jpg' },
+    { id: 'fog', name: '🌲 Таёжный туман (Утренняя мгла)', desc: 'Хвойная глухая тайга, скрытая радиационным туманом', preview: 'assets/images/backgrounds/taiga_fog.jpg' },
+    { id: 'winter', name: '❄️ Зимняя тайга (Суровый мороз)', desc: 'Заснеженные сопки и ледяной сибирский бурелом', preview: 'assets/images/backgrounds/taiga_winter.jpg' },
+    { id: 'map', name: '🗺️ Топографическая карта Зоны', desc: 'Военная топокарта с изолиниями и секторами катастрофы', preview: 'assets/images/backgrounds/map_topo.jpg' },
+    { id: 'none', name: '⬛ Строгий тёмный (Без текстур)', desc: 'Классический минималистичный тёмный интерфейс', preview: '' }
   ];
 
   function applyBgTheme(themeId) {
@@ -4973,14 +4973,19 @@ met_spiridon: false,
       <p style="font-size:12px; color:var(--text-dim); margin-bottom:10px;">
         Выберите фоновую текстуру для погружения в атмосферу края:
       </p>
-      <div style="display:flex; flex-direction:column; gap:6px;">
+      <div style="display:flex; flex-direction:column; gap:8px;">
         ${BG_THEMES.map(t => `
-          <div style="background:${t.id === currentTheme ? 'rgba(255, 190, 34, 0.12)' : 'rgba(0,0,0,0.3)'}; border:1px solid ${t.id === currentTheme ? 'var(--accent-gold)' : 'var(--border-dim)'}; border-radius:6px; padding:8px 10px; cursor:pointer;" onclick="Game.setBgTheme('${t.id}')">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <span style="font-weight:bold; font-size:12px; color:${t.id === currentTheme ? 'var(--accent-gold)' : 'var(--text-main)'};">${t.name}</span>
-              ${t.id === currentTheme ? '<span style="font-size:11px; color:var(--accent-gold); font-weight:bold;">✓ Выбран</span>' : ''}
+          <div style="background:${t.id === currentTheme ? 'rgba(255, 190, 34, 0.15)' : 'rgba(0,0,0,0.35)'}; border:1px solid ${t.id === currentTheme ? 'var(--accent-gold)' : 'var(--border-dim)'}; border-radius:6px; padding:8px 10px; cursor:pointer;" onclick="Game.setBgTheme('${t.id}')">
+            <div style="display:flex; gap:10px; align-items:center;">
+              ${t.preview ? `<img src="${t.preview}" style="width:50px; height:38px; object-fit:cover; border-radius:4px; border:1px solid rgba(255,255,255,0.2); flex-shrink:0;">` : `<div style="width:50px; height:38px; background:#1b201d; border-radius:4px; border:1px solid rgba(255,255,255,0.1); display:flex; align-items:center; justify-content:center; font-size:14px; flex-shrink:0;">⬛</div>`}
+              <div style="flex:1;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span style="font-weight:bold; font-size:12px; color:${t.id === currentTheme ? 'var(--accent-gold)' : 'var(--text-main)'};">${t.name}</span>
+                  ${t.id === currentTheme ? '<span style="font-size:11px; color:var(--accent-gold); font-weight:bold;">✓ Выбран</span>' : ''}
+                </div>
+                <p style="font-size:11px; color:var(--text-dim); margin:2px 0 0;">${t.desc}</p>
+              </div>
             </div>
-            <p style="font-size:11px; color:var(--text-dim); margin:2px 0 0;">${t.desc}</p>
           </div>
         `).join('')}
       </div>

@@ -12,9 +12,9 @@
   <meta http-equiv="Pragma" content="no-cache">
   <meta http-equiv="Expires" content="0">
   <title>Лагерь Заря — Текстовая RPG-выживание</title>
-  <link rel="stylesheet" href="style.css?v=2.1">
+  <link rel="stylesheet" href="style.css?v=3.2">
 </head>
-<body>
+<body data-bg-theme="camp">
 
   <div class="game-container">
     
@@ -135,8 +135,10 @@
       <!-- ВКЛАДКА 2: ВЫЛАЗКА (КАРТА ЛОКАЦИЙ) -->
       <section class="tab-pane" id="tabMap">
         <div class="map-container">
-          <h2 class="section-title">Окрестности лагеря</h2>
-          <p class="section-subtitle">Исследуйте зоны, добывайте припасы и открывайте новые тайники.</p>
+          <div class="map-header-banner">
+            <h2>🗺️ Окрестности лагеря</h2>
+            <p class="section-subtitle">Исследуйте зоны, добывайте припасы и открывайте новые тайники.</p>
+          </div>
           <div class="locations-grid" id="locationsGrid">
             <!-- Локации рендерятся через JS -->
           </div>
@@ -186,11 +188,14 @@
       <!-- ВКЛАДКА 5: ЖУРНАЛ КВЕСТОВ И ЛОР -->
       <section class="tab-pane" id="tabQuests">
         <div class="quests-container">
-          <div class="quest-subtabs">
-            <button class="quest-subtab active" onclick="Game.switchQuestView('main')">⭐ Сюжетные квесты</button>
-            <button class="quest-subtab" onclick="Game.switchQuestView('side')">📜 Дополнительные квесты</button>
-            <button class="quest-subtab" onclick="Game.switchQuestView('daily')">📅 Ежедневные поручения</button>
-            <button class="quest-subtab" onclick="Game.switchQuestView('lore')">📻 Дневник и Лор</button>
+          <div class="quests-header-bar">
+            <h2>📜 Журнал выжившего</h2>
+            <div class="quest-subtabs">
+              <button class="quest-subtab active" onclick="Game.switchQuestView('main')">⭐ Сюжет</button>
+              <button class="quest-subtab" onclick="Game.switchQuestView('side')">📜 Дополнительные</button>
+              <button class="quest-subtab" onclick="Game.switchQuestView('daily')">📅 Ежедневные</button>
+              <button class="quest-subtab" onclick="Game.switchQuestView('lore')">📻 Записки</button>
+            </div>
           </div>
 
           <div class="quest-content-area" id="questContentArea">
@@ -337,6 +342,6 @@
     <source src="Fate2.wav" type="audio/wav">
   </audio>
 
-  <script src="game.js?v=2.1"></script>
+  <script src="game.js?v=3.2"></script>
 </body>
 </html>

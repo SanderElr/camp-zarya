@@ -22,8 +22,8 @@
 :root {
   --bg-deep: #121513;
   --bg-panel: #1b201d;
-  --bg-card: #242b26;
-  --bg-card-hover: #2e3731;
+  --bg-card: rgba(36, 43, 38, 0.85);
+  --bg-card-hover: rgba(46, 55, 49, 0.92);
 
   --border-dim: #344037;
   --border-focus: #556c5c;
@@ -75,41 +75,42 @@ html, body {
 
 /* Тема по умолчанию: 🏕️ Лагерь «Заря» */
 body, body[data-bg-theme="camp"] {
-  background: radial-gradient(circle at center, rgba(14, 18, 15, 0.72) 0%, rgba(6, 8, 7, 0.96) 100%),
+  background: radial-gradient(circle at center, rgba(14, 18, 15, 0.35) 0%, rgba(6, 8, 7, 0.82) 100%),
               url('assets/images/backgrounds/camp_main.jpg') center/cover no-repeat fixed;
 }
+.game-container,
 body[data-bg-theme="camp"] .game-container {
-  background: linear-gradient(180deg, rgba(20, 25, 22, 0.88) 0%, rgba(15, 18, 16, 0.95) 100%),
+  background: linear-gradient(180deg, rgba(18, 23, 20, 0.72) 0%, rgba(13, 17, 15, 0.84) 100%),
               url('assets/images/backgrounds/camp_alt.jpg') center/cover no-repeat;
 }
 
 /* Тема: 🌲 Таёжный туман */
 body[data-bg-theme="fog"] {
-  background: radial-gradient(circle at center, rgba(14, 18, 15, 0.72) 0%, rgba(6, 8, 7, 0.96) 100%),
+  background: radial-gradient(circle at center, rgba(14, 18, 15, 0.35) 0%, rgba(6, 8, 7, 0.82) 100%),
               url('assets/images/backgrounds/taiga_fog.jpg') center/cover no-repeat fixed;
 }
 body[data-bg-theme="fog"] .game-container {
-  background: linear-gradient(180deg, rgba(20, 25, 22, 0.88) 0%, rgba(15, 18, 16, 0.95) 100%),
+  background: linear-gradient(180deg, rgba(18, 23, 20, 0.72) 0%, rgba(13, 17, 15, 0.84) 100%),
               url('assets/images/backgrounds/taiga_fog.jpg') center/cover no-repeat;
 }
 
 /* Тема: ❄️ Зимняя тайга */
 body[data-bg-theme="winter"] {
-  background: radial-gradient(circle at center, rgba(14, 18, 16, 0.72) 0%, rgba(6, 9, 8, 0.96) 100%),
+  background: radial-gradient(circle at center, rgba(14, 18, 16, 0.35) 0%, rgba(6, 9, 8, 0.82) 100%),
               url('assets/images/backgrounds/taiga_winter.jpg') center/cover no-repeat fixed;
 }
 body[data-bg-theme="winter"] .game-container {
-  background: linear-gradient(180deg, rgba(20, 25, 22, 0.88) 0%, rgba(15, 18, 16, 0.95) 100%),
+  background: linear-gradient(180deg, rgba(18, 23, 20, 0.72) 0%, rgba(13, 17, 15, 0.84) 100%),
               url('assets/images/backgrounds/taiga_winter.jpg') center/cover no-repeat;
 }
 
 /* Тема: 🗺️ Топографическая карта Зоны */
 body[data-bg-theme="map"] {
-  background: radial-gradient(circle at center, rgba(14, 18, 16, 0.72) 0%, rgba(6, 8, 7, 0.96) 100%),
+  background: radial-gradient(circle at center, rgba(14, 18, 16, 0.35) 0%, rgba(6, 8, 7, 0.82) 100%),
               url('assets/images/backgrounds/map_topo.jpg') center/cover no-repeat fixed;
 }
 body[data-bg-theme="map"] .game-container {
-  background: linear-gradient(180deg, rgba(20, 25, 22, 0.90) 0%, rgba(15, 18, 16, 0.96) 100%),
+  background: linear-gradient(180deg, rgba(18, 23, 20, 0.72) 0%, rgba(13, 17, 15, 0.84) 100%),
               url('assets/images/backgrounds/map_topo.jpg') center/cover no-repeat;
 }
 
@@ -134,12 +135,11 @@ body[data-bg-theme="none"] .game-container {
   height: 100dvh;
   display: flex;
   flex-direction: column;
-  background-color: var(--bg-panel);
   border-left: 1px solid var(--border-dim);
   border-right: 1px solid var(--border-dim);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 0 35px rgba(0,0,0,0.8);
+  box-shadow: 0 0 45px rgba(0,0,0,0.85);
 }
 
 /* ==========================================================================
@@ -450,6 +450,26 @@ body[data-bg-theme="none"] .game-container {
 /* ==========================================================================
    ВКЛАДКА 2: ВЫЛАЗКА (КАРТА ЛОКАЦИЙ)
    ========================================================================== */
+.map-header-banner {
+  background: linear-gradient(180deg, rgba(22, 28, 24, 0.65) 0%, rgba(14, 18, 15, 0.88) 100%),
+              url('assets/images/backgrounds/map_topo.jpg') center/cover no-repeat;
+  border: 1px solid var(--border-accent);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+.map-header-banner h2 {
+  font-family: 'Russo One', sans-serif;
+  font-size: 15px;
+  color: var(--accent-gold);
+  margin-bottom: 3px;
+}
+.map-header-banner .section-subtitle {
+  margin-bottom: 0;
+  color: var(--text-dim);
+}
+
 .locations-grid {
   display: flex;
   flex-direction: column;
@@ -531,12 +551,20 @@ body[data-bg-theme="none"] .game-container {
 .inv-header-bar {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+  background: linear-gradient(180deg, rgba(25, 31, 27, 0.70) 0%, rgba(16, 21, 18, 0.90) 100%),
+              url('assets/images/backgrounds/camp_alt.jpg') center/cover no-repeat;
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  padding: 10px 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 .inv-header-bar h2 {
   font-family: 'Russo One', sans-serif;
   font-size: 15px;
+  color: var(--accent-gold);
+  margin: 0;
 }
 .weight-badge {
   font-size: 11px;
@@ -727,6 +755,21 @@ body[data-bg-theme="none"] .game-container {
 /* ==========================================================================
    ВКЛАДКА 5: КВЕСТЫ И ЛОР
    ========================================================================== */
+.quests-header-bar {
+  margin-bottom: 12px;
+  background: linear-gradient(180deg, rgba(20, 26, 24, 0.68) 0%, rgba(13, 17, 15, 0.88) 100%),
+              url('assets/images/backgrounds/taiga_winter.jpg') center/cover no-repeat;
+  border: 1px solid var(--border-accent);
+  border-radius: 8px;
+  padding: 12px 14px 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}
+.quests-header-bar h2 {
+  font-family: 'Russo One', sans-serif;
+  font-size: 15px;
+  color: var(--accent-gold);
+  margin-bottom: 8px;
+}
 .quest-subtabs {
   display: flex;
   gap: 4px;
@@ -803,16 +846,19 @@ body[data-bg-theme="none"] .game-container {
 .modal-window {
   width: 100%;
   max-width: 600px;
-  background: linear-gradient(180deg, rgba(27, 33, 29, 0.96) 0%, rgba(18, 22, 19, 0.98) 100%),
+  background: linear-gradient(180deg, rgba(27, 33, 29, 0.82) 0%, rgba(18, 22, 19, 0.92) 100%),
               url('assets/images/backgrounds/camp_alt.jpg') center/cover no-repeat;
   border-top: 2px solid var(--border-accent);
+  border-left: 1px solid var(--border-dim);
+  border-right: 1px solid var(--border-dim);
   border-radius: 12px 12px 0 0;
   padding: 14px;
   max-height: 85vh;
   display: flex;
   flex-direction: column;
   animation: slideUp 0.2s ease-out;
-  box-shadow: 0 -4px 25px rgba(0,0,0,0.8);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 -8px 30px rgba(0,0,0,0.85);
 }
 @keyframes slideUp {
   from { transform: translateY(100%); }
@@ -1062,8 +1108,8 @@ body[data-bg-theme="none"] .game-container {
   display: none;
   position: fixed;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(circle at center, rgba(16, 22, 18, 0.88) 0%, rgba(8, 10, 9, 0.98) 100%),
-              url('assets/images/backgrounds/intro_bg.jpg') center/cover no-repeat;
+  background: radial-gradient(circle at center, rgba(16, 22, 18, 0.50) 0%, rgba(8, 10, 9, 0.85) 100%),
+              url('assets/images/backgrounds/intro_bg.jpg') center/cover no-repeat fixed;
   backdrop-filter: blur(6px);
   z-index: 2000;
   justify-content: center;
@@ -1081,12 +1127,13 @@ body[data-bg-theme="none"] .game-container {
 .intro-modal {
   width: 100%;
   max-width: 580px;
-  background: linear-gradient(180deg, rgba(27, 33, 29, 0.96) 0%, rgba(16, 20, 17, 0.98) 100%),
+  background: linear-gradient(180deg, rgba(27, 33, 29, 0.82) 0%, rgba(16, 20, 17, 0.92) 100%),
               url('assets/images/backgrounds/intro_bg.jpg') center/cover no-repeat;
   border: 2px solid var(--border-accent);
   border-radius: 10px;
   padding: 16px 14px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(229,161,0,0.15);
+  box-shadow: 0 10px 40px rgba(0,0,0,0.85), 0 0 20px rgba(229,161,0,0.2);
+  backdrop-filter: blur(10px);
   display: flex;
   flex-direction: column;
   gap: 11px;
