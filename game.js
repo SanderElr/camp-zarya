@@ -2714,6 +2714,35 @@ met_spiridon: false,
       });
     }
 
+    // Сюжетная ветка: Геологоразведка «Енисей-3» (триангулятор на скале)
+    if (!state.questFlags.geo1_done) {
+      body += `<p style="color:var(--accent-gold);"><b>[ТАЙНА ТРИАНГУЛЯТОРА НА СОПКЕ]:</b> <i>«Ты в Ближнем лесу на скалу над сосняком глядел? До Каскада туда геологи городские с железными треногами лазали — триангуляцию ставили. Сказывали, секретную скважину бурили у Быстрянки, что-то аномальное из недр достать силились. На треноге на вершине скалы в металлическом тубусе их карты пластов до сих пор лежат... Сходи, поднимись на скалу в лесу, глянь тубус.»</i></p>`;
+      actions.push({
+        text: '📍 «Дед Спиридон, расскажи про партию геологов и триангулятор на скале»',
+        action: () => {
+          state.questFlags.spiridon_told_geo = true;
+          toast('📍 Дед Спиридон отметил скалу с триангулятором в Ближнем лесу!');
+          sfx.playClick();
+          saveState();
+          renderQuests();
+          openModal(
+            'Старовер о партии геологов «Енисей-3»',
+            'Заимка деда Спиридона • Тайны тайги',
+            'assets/images/npc_spiridon.png',
+            `<p><i>«Дело давнее, сынок. Года за два до аварии на вездеходах понаехали буровики из партии «Енисей-3». На сопке в лесу триангуляционную вышку из дюраля вбили, а в пойме Быстрянки шурф глубокий забурили — скважину номер семь. Говорили, гравитация там шалит и стрелка компаса кругом ходит.»</i></p>
+             <p><i>«Когда Каскад грянул, они всё побросали и ушли налегке. А тубус с картами пластов так на скале и прикручен к треноге. Поднимись на скалу в Ближнем лесу — с твоей солдатской сноровкой тубус снять пара пустяков. А по их карте и саму скважину у реки сыщешь.»</i></p>`,
+            [{ text: '«Спасибо за наводку, дедушка. Обязательно поднимусь на скалу.»', action: () => { closeModal(); talkSpiridon(); }, primary: true }]
+          );
+        }
+      });
+    } else if (state.questFlags.geo1_done && !state.questFlags.geo2_done) {
+      body += `<p style="color:var(--accent-blue);"><b>[ПОИСК СКВАЖИНЫ]:</b> <i>«Снял тубус с триангулятора? Добро. Теперь ищи скважину №7 в пойме Быстрянки — там шурф заилило, откачать надо, чтобы до черного керна добраться.»</i></p>`;
+    } else if (state.questFlags.geo2_done && !state.hasGeoCompass) {
+      body += `<p style="color:var(--accent-green);"><b>[АНОМАЛЬНЫЙ КЕРН]:</b> <i>«Черный минерал греет ладонь? То-то же. Неси его Прохору в лагерь — он мужик рукастый, вставит камень в латунный корпус, смастерит надежный геологический компас «Енисей».»</i></p>`;
+    } else if (state.hasGeoCompass) {
+      body += `<p style="color:var(--accent-green); font-size:12px;"><b>[КОМПАС ГЕОЛОГОВ]:</b> <i>«Вижу, компас «Енисей» у тебя на портупее поблескивает. Доброе дело сделали — ведовство геологов людям на пользу пошло.»</i></p>`;
+    }
+
     // Рецепты алхимии Спиридона (доступны только после завершения обучения и сдачи мухоморов)
     if (state.sideQuests?.spiridon_mushrooms?.status === 'completed') {
       body += `<p style="color:var(--accent-green); font-size:12px;"><b>[ТАЙНЫ СТАРОВЕРОВ]:</b> <i>«Теперь ты посвящен в знахарство. Можешь готовить снадобья прямо здесь или у костра в лагере.»</i></p>`;
@@ -3164,6 +3193,7 @@ met_spiridon: false,
     sfx.playSuccess();
     updateHUD();
     saveState();
+    renderQuests();
     closeModal();
   }
 
@@ -3180,6 +3210,7 @@ met_spiridon: false,
     toast('⛏️ СКВАЖИНА №7 РАСЧИЩЕНА! Со дна шурфа поднят запечатанный геологический керн с черным аномальным минералом! Покажите Прохору.');
     updateHUD();
     saveState();
+    renderQuests();
     closeModal();
   }
 
@@ -3377,9 +3408,9 @@ met_spiridon: false,
           primary: true
         });
       }
-      if (!state.questFlags.geo1_done) {
+      if (state.questFlags.met_spiridon && !state.questFlags.geo1_done) {
         actions.push({
-          text: '📍 Осмотреть геодезический триангулятор на скале (Квест геологов)',
+          text: '📍 Осмотреть геодезический триангулятор на скале (Наводка Спиридона)',
           action: () => doSearchTriangulator(loc)
         });
       }
@@ -4318,7 +4349,7 @@ met_spiridon: false,
 
     // Сюжетные цепочки и персонажи
     { id: 'chain_dog', category: 'story', title: 'Друг тайги — Лайка Буран', giver: 'Лес / Егор', desc: 'Спасти раненого щенка из капкана и вырастить боевого компаньона.', reward: 'Верный пёс Буран: +25% урона, утренние подарки', isDone: (s) => s.hasDog },
-    { id: 'chain_geo', category: 'story', title: 'Геологоразведка «Енисей-3»', giver: 'Триангулятор / Скважина №7', desc: 'Раскрыть тайну предвоенного бурения и найти аномальный минерал.', reward: 'Компас «Енисей»: -5 энергии на все вылазки', isDone: (s) => s.hasGeoCompass },
+    { id: 'chain_geo', category: 'story', title: 'Геологоразведка «Енисей-3»', giver: 'Дед Спиридон (Болота)', desc: 'По наводке знахаря Спиридона обследовать триангулятор на скале в лесу и вскрыть скважину №7 геологов.', reward: 'Компас «Енисей»: -5 энергии на все вылазки', isDone: (s) => s.hasGeoCompass },
     { id: 'chain_caravan', category: 'story', title: 'Эхо чёрного каравана', giver: 'Река / Штольня', desc: 'Выследить схрон мародёров «Хлыща» и вернуть украденное.', reward: 'Прицел ТОЗ (+30% крит), 25 патронов, +50 репутации', isDone: (s) => s.questFlags.caravan_completed },
     { id: 'spiridon_line', category: 'npc', title: 'Таёжное знахарство Спиридона', giver: 'Дед Спиридон (Болота)', desc: 'Освоить древние рецепты настоек староверов.', reward: 'Крафт «Спиридоновки», Дегтярного бальзама и Ока рыси', isDone: (s) => s.sideQuests?.spiridon_mushrooms?.status === 'completed' },
     { id: 'sasha_line', category: 'npc', title: 'Радиопост Саши Связиста', giver: 'Саша Связист (Вышка)', desc: 'Спасти радиста и восстановить приемник Р-326.', reward: 'Ежедневный радиопеленг контейнеров, крафт ДП-5 и фонаря', isDone: (s) => s.questFlags.met_sasha }
@@ -4749,6 +4780,28 @@ met_spiridon: false,
             statusBadge = '✓ Выполнено (Сдано)';
             statusColor = 'var(--accent-green)';
             statusBorder = 'var(--accent-green)';
+          } else if (q.id === 'chain_geo') {
+            if (!state.questFlags?.met_spiridon) {
+              statusBadge = '🔒 До встречи со Спиридоном';
+              statusColor = 'var(--text-dim)';
+              statusBorder = 'rgba(255,255,255,0.15)';
+              progressDetail = `<div style="font-size:11.5px; color:var(--text-dim); margin:3px 0 5px;">🔒 Станет доступно после встречи с дедом Спиридоном на заимке в Гнилой гати (Болота).</div>`;
+            } else if (!state.questFlags?.geo1_done) {
+              statusBadge = '● Шаг 1: Скала в лесу';
+              statusColor = 'var(--accent-gold)';
+              statusBorder = 'var(--accent-gold)';
+              progressDetail = `<div style="font-size:11.5px; color:var(--accent-gold); margin:3px 0 5px;">📍 По наводке Спиридона поднимитесь на скалу в Ближнем лесу и осмотрите геодезический триангулятор.</div>`;
+            } else if (!state.questFlags?.geo2_done) {
+              statusBadge = '● Шаг 2: Скважина №7';
+              statusColor = 'var(--accent-gold)';
+              statusBorder = 'var(--accent-gold)';
+              progressDetail = `<div style="font-size:11.5px; color:var(--accent-gold); margin:3px 0 5px;">⛏️ Отправляйтесь на Реку Быстрянку и отыщите заиленную скважину №7 по карте геологов.</div>`;
+            } else if (!state.hasGeoCompass) {
+              statusBadge = '● Шаг 3: Собрать компас';
+              statusColor = 'var(--accent-blue)';
+              statusBorder = 'var(--accent-blue)';
+              progressDetail = `<div style="font-size:11.5px; color:var(--accent-blue); margin:3px 0 5px;">🧭 Керн с аномальным минералом у вас! Поговорите с Прохором в лагере, чтобы собрать компас.</div>`;
+            }
           } else if (isActive) {
             let ready = false;
             let info = '';
