@@ -12,10 +12,22 @@
 
   // --- МОДАЛЬНОЕ ОКНО ---
   function openModal(title, subtitle, avatar, bodyHtml, actions = []) {
+    // Гарантируем актуальный расчет высоты верхнего HUD перед открытием модалки
+    if (typeof document !== 'undefined' && typeof document.querySelector === 'function' && document.documentElement) {
+      const hudHeader = document.querySelector('.hud-header');
+      if (hudHeader) {
+        document.documentElement.style.setProperty('--hud-height', hudHeader.offsetHeight + 'px');
+      }
+    }
+
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalSubtitle').textContent = subtitle;
     document.getElementById('modalAvatar').src = avatar || 'assets/images/cabin.png';
-    document.getElementById('modalBody').innerHTML = bodyHtml;
+    const bodyEl = document.getElementById('modalBody');
+    if (bodyEl) {
+      bodyEl.innerHTML = bodyHtml;
+      bodyEl.scrollTop = 0; // Всегда сбрасываем скролл на начало текста при открытии
+    }
 
     const footer = document.getElementById('modalFooter');
     footer.innerHTML = '';

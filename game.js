@@ -1,6 +1,6 @@
 /* ==========================================================================
    ИГРОВОЙ ДВИЖОК: ТЕКСТОВАЯ RPG «ЛАГЕРЬ ЗАРЯ»
-   Собрано автоматически из src/ (2026-11-04T09:11:45.742Z)
+   Собрано автоматически из src/ (2026-11-04T09:55:47.993Z)
    Не редактируйте этот файл вручную — вносите изменения в файлы src/
    ========================================================================== */
 
@@ -1387,7 +1387,7 @@ met_spiridon: false,
     }
   }
 
-  // >>> MODULE: ui/modals.js (78 строк)
+  // >>> MODULE: ui/modals.js (90 строк)
   function showDeathModal() {
     openModal(
       'СМЕРТЬ В ТАЙГЕ',
@@ -1402,10 +1402,22 @@ met_spiridon: false,
 
   // --- МОДАЛЬНОЕ ОКНО ---
   function openModal(title, subtitle, avatar, bodyHtml, actions = []) {
+    // Гарантируем актуальный расчет высоты верхнего HUD перед открытием модалки
+    if (typeof document !== 'undefined' && typeof document.querySelector === 'function' && document.documentElement) {
+      const hudHeader = document.querySelector('.hud-header');
+      if (hudHeader) {
+        document.documentElement.style.setProperty('--hud-height', hudHeader.offsetHeight + 'px');
+      }
+    }
+
     document.getElementById('modalTitle').textContent = title;
     document.getElementById('modalSubtitle').textContent = subtitle;
     document.getElementById('modalAvatar').src = avatar || 'assets/images/cabin.png';
-    document.getElementById('modalBody').innerHTML = bodyHtml;
+    const bodyEl = document.getElementById('modalBody');
+    if (bodyEl) {
+      bodyEl.innerHTML = bodyHtml;
+      bodyEl.scrollTop = 0; // Всегда сбрасываем скролл на начало текста при открытии
+    }
 
     const footer = document.getElementById('modalFooter');
     footer.innerHTML = '';
