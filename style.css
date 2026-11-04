@@ -1064,7 +1064,7 @@ body[data-bg-theme="none"] .game-container {
    ========================================================================== */
 .toast-log {
   position: absolute;
-  top: 80px;
+  top: max(115px, calc(var(--hud-height, 160px) + 8px));
   left: 12px;
   right: 12px;
   display: flex;
@@ -1075,7 +1075,7 @@ body[data-bg-theme="none"] .game-container {
   z-index: 99999;
 }
 .toast-msg {
-  background: rgba(18, 22, 20, 0.96);
+  background: rgba(16, 22, 18, 0.82);
   border: 1px solid var(--border-accent);
   color: #fff;
   font-family: 'FreeMono', monospace;
@@ -1083,12 +1083,13 @@ body[data-bg-theme="none"] .game-container {
   font-weight: bold;
   padding: 8px 14px;
   border-radius: 6px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.85), 0 0 10px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.55), 0 0 8px rgba(0, 0, 0, 0.3);
   animation: toastSlideDown 2.8s forwards;
   max-width: 95%;
   text-align: center;
   line-height: 1.4;
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
   pointer-events: auto;
   cursor: pointer;
   transition: transform 0.15s ease, opacity 0.15s ease;
@@ -1097,22 +1098,22 @@ body[data-bg-theme="none"] .game-container {
   transform: scale(0.97);
 }
 .toast-msg.toast-warning {
-  background: rgba(45, 18, 18, 0.98);
+  background: rgba(45, 18, 18, 0.85);
   border: 1.5px solid var(--accent-danger);
   color: #ffc4c4;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9), 0 0 16px rgba(239, 68, 68, 0.45);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 12px rgba(239, 68, 68, 0.35);
 }
 .toast-msg.toast-success {
-  background: rgba(16, 38, 22, 0.98);
+  background: rgba(16, 38, 22, 0.85);
   border: 1.5px solid var(--accent-green);
   color: #c7f9cc;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.9), 0 0 16px rgba(60, 208, 112, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), 0 0 12px rgba(60, 208, 112, 0.35);
 }
 @keyframes toastSlideDown {
-  0% { opacity: 0; transform: translateY(-14px) scale(0.96); }
-  10% { opacity: 1; transform: translateY(0) scale(1); }
-  85% { opacity: 1; transform: translateY(0) scale(1); }
-  100% { opacity: 0; transform: translateY(-8px) scale(0.96); }
+  0% { opacity: 0; transform: translateY(-10px) scale(0.96); }
+  10% { opacity: 0.92; transform: translateY(0) scale(1); }
+  85% { opacity: 0.92; transform: translateY(0) scale(1); }
+  100% { opacity: 0; transform: translateY(-6px) scale(0.96); }
 }
 
 /* ==========================================================================

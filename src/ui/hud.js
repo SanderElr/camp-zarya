@@ -81,5 +81,23 @@
       }
     }
 
+    // Динамическая высота HUD для корректного размещения всплывающих тост-уведомлений
+    if (typeof document !== 'undefined' && typeof document.querySelector === 'function' && document.documentElement) {
+      const hudHeader = document.querySelector('.hud-header');
+      if (hudHeader) {
+        document.documentElement.style.setProperty('--hud-height', hudHeader.offsetHeight + 'px');
+      }
+    }
+
     saveState();
+  }
+
+  // Обновляем высоту HUD при изменении размера экрана
+  if (typeof window !== 'undefined' && typeof document !== 'undefined' && typeof document.querySelector === 'function') {
+    window.addEventListener('resize', () => {
+      const hud = document.querySelector('.hud-header');
+      if (hud && document.documentElement) {
+        document.documentElement.style.setProperty('--hud-height', hud.offsetHeight + 'px');
+      }
+    });
   }

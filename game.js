@@ -1,6 +1,6 @@
 /* ==========================================================================
    ИГРОВОЙ ДВИЖОК: ТЕКСТОВАЯ RPG «ЛАГЕРЬ ЗАРЯ»
-   Собрано автоматически из src/ (2026-11-04T07:01:28.151Z)
+   Собрано автоматически из src/ (2026-11-04T07:36:17.775Z)
    Не редактируйте этот файл вручную — вносите изменения в файлы src/
    ========================================================================== */
 
@@ -1237,7 +1237,7 @@ met_spiridon: false,
     }
   }
 
-  // >>> MODULE: ui/hud.js (85 строк)
+  // >>> MODULE: ui/hud.js (103 строк)
   function getReputationTitle(rep) {
     if (rep < 100) return `Чужак (${rep})`;
     if (rep < 300) return `Свой (${rep})`;
@@ -1321,7 +1321,25 @@ met_spiridon: false,
       }
     }
 
+    // Динамическая высота HUD для корректного размещения всплывающих тост-уведомлений
+    if (typeof document !== 'undefined' && typeof document.querySelector === 'function' && document.documentElement) {
+      const hudHeader = document.querySelector('.hud-header');
+      if (hudHeader) {
+        document.documentElement.style.setProperty('--hud-height', hudHeader.offsetHeight + 'px');
+      }
+    }
+
     saveState();
+  }
+
+  // Обновляем высоту HUD при изменении размера экрана
+  if (typeof window !== 'undefined' && typeof document !== 'undefined' && typeof document.querySelector === 'function') {
+    window.addEventListener('resize', () => {
+      const hud = document.querySelector('.hud-header');
+      if (hud && document.documentElement) {
+        document.documentElement.style.setProperty('--hud-height', hud.offsetHeight + 'px');
+      }
+    });
   }
 
   // >>> MODULE: ui/modals.js (78 строк)
@@ -6165,7 +6183,7 @@ met_spiridon: false,
     init();
   }
 
-  // >>> MODULE: main.js (105 строк)
+  // >>> MODULE: main.js (113 строк)
   // --- ИНИЦИАЛИЗАЦИЯ И ОБНОВЛЕНИЕ UI ---
   function init() {
     initAudio();
@@ -6266,7 +6284,15 @@ met_spiridon: false,
     buildCampUpgrade,
     openCampStorage,
     transferToStorage,
-    transferFromStorage
+    transferFromStorage,
+    toast,
+    state,
+    updateHUD,
+    openLocationModal,
+    LOCATIONS,
+    ITEMS,
+    NPCS,
+    RECIPES
   };
 
 })();
