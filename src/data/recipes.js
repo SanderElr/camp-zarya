@@ -7,8 +7,8 @@
     },
     {
       id: 'brew_hot_tea', station: 'fire', name: 'Заварить горячий таёжный чай', icon: 'assets/images/dandelion_tea.png',
-      cost: { clean_water: 1, herbs: 1, firewood: 1 }, result: { hot_tea: 1 }, energy: 5, timeMin: 10,
-      desc: 'Ароматный чай. Снимает переохлаждение и дарит таёжное тепло.'
+      cost: { clean_water: 1, berries: 1, firewood: 1 }, result: { hot_tea: 1 }, energy: 5, timeMin: 10,
+      desc: 'Ароматный ягодный взвар. Снимает переохлаждение и дарит таёжное тепло.'
     },
     {
       id: 'cure_fish', station: 'fire', name: 'Завялить рыбу на углях', icon: 'assets/images/fried_fish.png',
@@ -65,7 +65,7 @@
     },
     {
       id: 'craft_spear', station: 'bench', name: 'Собрать охотничье копьё', icon: 'assets/images/iron_spear.png',
-      cost: { knife: 1, firewood: 2, wire: 1 }, result: { spear: 1 }, energy: 15, timeMin: 25,
+      cost: { scrap: 2, firewood: 2, wire: 1 }, result: { spear: 1 }, energy: 15, timeMin: 25,
       desc: 'Надёжное оружие ближнего боя против хищников.',
       oneTime: true,
       isCrafted: (s) => getItemCount('spear') > 0 || !!s.questFlags?.spear_crafted

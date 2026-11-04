@@ -967,7 +967,7 @@
     // Стандартные услуги лазарета
     actions.push(
       {
-        text: '🩹 Перевязать раны (Восстановить HP до 100 за 2 патрона)',
+        text: '🩹 Перевязать раны на месте (Восстановить HP до 100 за 2 патрона)',
         action: () => {
           if (getItemCount('ammo') >= 2) {
             removeItem('ammo', 2);
@@ -975,7 +975,24 @@
             toast('Анна обработала ваши раны (+100% HP)');
             sfx.playSuccess();
             updateHUD();
-            closeModal();
+            saveState();
+            talkAnna();
+          } else {
+            toast('Недостаточно патронов (нужно 2 шт.)');
+          }
+        }
+      },
+      {
+        text: '🩹 Купить стерильный бинт с собой (за 2 патрона)',
+        action: () => {
+          if (getItemCount('ammo') >= 2) {
+            removeItem('ammo', 2);
+            addItem('bandage', 1);
+            toast('Куплен стерильный бинт');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkAnna();
           } else {
             toast('Недостаточно патронов (нужно 2 шт.)');
           }
@@ -989,7 +1006,9 @@
             addItem('antirad', 1);
             toast('Куплен цистамин');
             sfx.playSuccess();
-            closeModal();
+            updateHUD();
+            saveState();
+            talkAnna();
           } else {
             toast('Недостаточно патронов (нужно 3 шт.)');
           }
@@ -1004,7 +1023,9 @@
             state.reputation += 5;
             toast('Анна поблагодарила за травы (+5 репутации, +1 патрон)');
             sfx.playSuccess();
-            closeModal();
+            updateHUD();
+            saveState();
+            talkAnna();
           } else {
             toast('У вас нет целебных трав в рюкзаке.');
           }
@@ -1282,6 +1303,55 @@
             toast('Недостаточно патронов.');
           }
         }
+      },
+      {
+        text: '⚙️ Купить металлолом (2 ед. за 1 патрон)',
+        action: () => {
+          if (getItemCount('ammo') >= 1) {
+            removeItem('ammo', 1);
+            addItem('scrap', 2);
+            toast('Куплен металлолом (+2 шт.)');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkProkhor();
+          } else {
+            toast('Недостаточно патронов.');
+          }
+        }
+      },
+      {
+        text: '🔪 Купить кованый таёжный нож (за 3 патрона)',
+        action: () => {
+          if (getItemCount('ammo') >= 3) {
+            removeItem('ammo', 3);
+            addItem('knife', 1);
+            toast('Куплен острый таёжный нож из рессорной стали');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkProkhor();
+          } else {
+            toast('Недостаточно патронов (нужно 3 шт.)');
+          }
+        }
+      },
+      {
+        text: '🔩 Сдать 3 металлолома в кузницу (+10 репутации, +1 патрон)',
+        action: () => {
+          if (getItemCount('scrap') >= 3) {
+            removeItem('scrap', 3);
+            addItem('ammo', 1);
+            state.reputation += 10;
+            toast('Прохор принял лом в переплавку (+10 репутации, +1 патрон)');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkProkhor();
+          } else {
+            toast('Нужно минимум 3 ед. металлолома.');
+          }
+        }
       }
     );
 
@@ -1546,9 +1616,27 @@
             state.reputation += 10;
             toast('Егор принял рыбу в общую кухню (+10 репутации, +2 патрона)');
             sfx.playSuccess();
-            closeModal();
+            updateHUD();
+            saveState();
+            talkEgor();
           } else {
             toast('Нужно минимум 2 рыбы.');
+          }
+        }
+      },
+      {
+        text: '🐟 Купить вяленую рыбу в дорогу (за 1 патрон)',
+        action: () => {
+          if (getItemCount('ammo') >= 1) {
+            removeItem('ammo', 1);
+            addItem('dried_fish', 1);
+            toast('Егор достал из коптильни порцию вяленой рыбы');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkEgor();
+          } else {
+            toast('Недостаточно патронов.');
           }
         }
       }
@@ -1905,22 +1993,40 @@
       );
     }
 
-    actions.push({
-      text: '🌿 Купить спирт за 2 патрона',
-      action: () => {
-        if (getItemCount('ammo') >= 2) {
-          removeItem('ammo', 2);
-          addItem('alcohol', 1);
-          toast('Куплен флакон чистого медицинского спирта.');
-          sfx.playSuccess();
-          updateHUD();
-          saveState();
-          talkSpiridon();
-        } else {
-          toast('Недостаточно патронов.');
+    actions.push(
+      {
+        text: '🍶 Купить спирт за 2 патрона',
+        action: () => {
+          if (getItemCount('ammo') >= 2) {
+            removeItem('ammo', 2);
+            addItem('alcohol', 1);
+            toast('Куплен флакон чистого медицинского спирта.');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkSpiridon();
+          } else {
+            toast('Недостаточно патронов.');
+          }
+        }
+      },
+      {
+        text: '🌿 Купить сушёные целебные травы (3 шт. за 1 патрон)',
+        action: () => {
+          if (getItemCount('ammo') >= 1) {
+            removeItem('ammo', 1);
+            addItem('herbs', 3);
+            toast('Спиридон достал пучок душистой полыни и чабреца');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkSpiridon();
+          } else {
+            toast('Недостаточно патронов.');
+          }
         }
       }
-    });
+    );
 
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }

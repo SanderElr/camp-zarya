@@ -1,6 +1,6 @@
 /* ==========================================================================
    ИГРОВОЙ ДВИЖОК: ТЕКСТОВАЯ RPG «ЛАГЕРЬ ЗАРЯ»
-   Собрано автоматически из src/ (2026-11-03T20:51:13.516Z)
+   Собрано автоматически из src/ (2026-11-04T06:47:42.669Z)
    Не редактируйте этот файл вручную — вносите изменения в файлы src/
    ========================================================================== */
 
@@ -87,8 +87,8 @@ const Game = (() => {
     },
     {
       id: 'brew_hot_tea', station: 'fire', name: 'Заварить горячий таёжный чай', icon: 'assets/images/dandelion_tea.png',
-      cost: { clean_water: 1, herbs: 1, firewood: 1 }, result: { hot_tea: 1 }, energy: 5, timeMin: 10,
-      desc: 'Ароматный чай. Снимает переохлаждение и дарит таёжное тепло.'
+      cost: { clean_water: 1, berries: 1, firewood: 1 }, result: { hot_tea: 1 }, energy: 5, timeMin: 10,
+      desc: 'Ароматный ягодный взвар. Снимает переохлаждение и дарит таёжное тепло.'
     },
     {
       id: 'cure_fish', station: 'fire', name: 'Завялить рыбу на углях', icon: 'assets/images/fried_fish.png',
@@ -145,7 +145,7 @@ const Game = (() => {
     },
     {
       id: 'craft_spear', station: 'bench', name: 'Собрать охотничье копьё', icon: 'assets/images/iron_spear.png',
-      cost: { knife: 1, firewood: 2, wire: 1 }, result: { spear: 1 }, energy: 15, timeMin: 25,
+      cost: { scrap: 2, firewood: 2, wire: 1 }, result: { spear: 1 }, energy: 15, timeMin: 25,
       desc: 'Надёжное оружие ближнего боя против хищников.',
       oneTime: true,
       isCrafted: (s) => getItemCount('spear') > 0 || !!s.questFlags?.spear_crafted
@@ -2133,7 +2133,7 @@ met_spiridon: false,
     renderInventory();
   }
 
-  // >>> MODULE: systems/npcs.js (2027 строк)
+  // >>> MODULE: systems/npcs.js (2133 строк)
   // --- ЛАГЕРЬ И НПС ---
   function renderNPCs() {
     const list = document.getElementById('npcList');
@@ -3103,7 +3103,7 @@ met_spiridon: false,
     // Стандартные услуги лазарета
     actions.push(
       {
-        text: '🩹 Перевязать раны (Восстановить HP до 100 за 2 патрона)',
+        text: '🩹 Перевязать раны на месте (Восстановить HP до 100 за 2 патрона)',
         action: () => {
           if (getItemCount('ammo') >= 2) {
             removeItem('ammo', 2);
@@ -3111,7 +3111,24 @@ met_spiridon: false,
             toast('Анна обработала ваши раны (+100% HP)');
             sfx.playSuccess();
             updateHUD();
-            closeModal();
+            saveState();
+            talkAnna();
+          } else {
+            toast('Недостаточно патронов (нужно 2 шт.)');
+          }
+        }
+      },
+      {
+        text: '🩹 Купить стерильный бинт с собой (за 2 патрона)',
+        action: () => {
+          if (getItemCount('ammo') >= 2) {
+            removeItem('ammo', 2);
+            addItem('bandage', 1);
+            toast('Куплен стерильный бинт');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkAnna();
           } else {
             toast('Недостаточно патронов (нужно 2 шт.)');
           }
@@ -3125,7 +3142,9 @@ met_spiridon: false,
             addItem('antirad', 1);
             toast('Куплен цистамин');
             sfx.playSuccess();
-            closeModal();
+            updateHUD();
+            saveState();
+            talkAnna();
           } else {
             toast('Недостаточно патронов (нужно 3 шт.)');
           }
@@ -3140,7 +3159,9 @@ met_spiridon: false,
             state.reputation += 5;
             toast('Анна поблагодарила за травы (+5 репутации, +1 патрон)');
             sfx.playSuccess();
-            closeModal();
+            updateHUD();
+            saveState();
+            talkAnna();
           } else {
             toast('У вас нет целебных трав в рюкзаке.');
           }
@@ -3418,6 +3439,55 @@ met_spiridon: false,
             toast('Недостаточно патронов.');
           }
         }
+      },
+      {
+        text: '⚙️ Купить металлолом (2 ед. за 1 патрон)',
+        action: () => {
+          if (getItemCount('ammo') >= 1) {
+            removeItem('ammo', 1);
+            addItem('scrap', 2);
+            toast('Куплен металлолом (+2 шт.)');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkProkhor();
+          } else {
+            toast('Недостаточно патронов.');
+          }
+        }
+      },
+      {
+        text: '🔪 Купить кованый таёжный нож (за 3 патрона)',
+        action: () => {
+          if (getItemCount('ammo') >= 3) {
+            removeItem('ammo', 3);
+            addItem('knife', 1);
+            toast('Куплен острый таёжный нож из рессорной стали');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkProkhor();
+          } else {
+            toast('Недостаточно патронов (нужно 3 шт.)');
+          }
+        }
+      },
+      {
+        text: '🔩 Сдать 3 металлолома в кузницу (+10 репутации, +1 патрон)',
+        action: () => {
+          if (getItemCount('scrap') >= 3) {
+            removeItem('scrap', 3);
+            addItem('ammo', 1);
+            state.reputation += 10;
+            toast('Прохор принял лом в переплавку (+10 репутации, +1 патрон)');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkProkhor();
+          } else {
+            toast('Нужно минимум 3 ед. металлолома.');
+          }
+        }
       }
     );
 
@@ -3682,9 +3752,27 @@ met_spiridon: false,
             state.reputation += 10;
             toast('Егор принял рыбу в общую кухню (+10 репутации, +2 патрона)');
             sfx.playSuccess();
-            closeModal();
+            updateHUD();
+            saveState();
+            talkEgor();
           } else {
             toast('Нужно минимум 2 рыбы.');
+          }
+        }
+      },
+      {
+        text: '🐟 Купить вяленую рыбу в дорогу (за 1 патрон)',
+        action: () => {
+          if (getItemCount('ammo') >= 1) {
+            removeItem('ammo', 1);
+            addItem('dried_fish', 1);
+            toast('Егор достал из коптильни порцию вяленой рыбы');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkEgor();
+          } else {
+            toast('Недостаточно патронов.');
           }
         }
       }
@@ -4041,22 +4129,40 @@ met_spiridon: false,
       );
     }
 
-    actions.push({
-      text: '🌿 Купить спирт за 2 патрона',
-      action: () => {
-        if (getItemCount('ammo') >= 2) {
-          removeItem('ammo', 2);
-          addItem('alcohol', 1);
-          toast('Куплен флакон чистого медицинского спирта.');
-          sfx.playSuccess();
-          updateHUD();
-          saveState();
-          talkSpiridon();
-        } else {
-          toast('Недостаточно патронов.');
+    actions.push(
+      {
+        text: '🍶 Купить спирт за 2 патрона',
+        action: () => {
+          if (getItemCount('ammo') >= 2) {
+            removeItem('ammo', 2);
+            addItem('alcohol', 1);
+            toast('Куплен флакон чистого медицинского спирта.');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkSpiridon();
+          } else {
+            toast('Недостаточно патронов.');
+          }
+        }
+      },
+      {
+        text: '🌿 Купить сушёные целебные травы (3 шт. за 1 патрон)',
+        action: () => {
+          if (getItemCount('ammo') >= 1) {
+            removeItem('ammo', 1);
+            addItem('herbs', 3);
+            toast('Спиридон достал пучок душистой полыни и чабреца');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            talkSpiridon();
+          } else {
+            toast('Недостаточно патронов.');
+          }
         }
       }
-    });
+    );
 
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }
@@ -4161,7 +4267,7 @@ met_spiridon: false,
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }
 
-  // >>> MODULE: systems/sorties.js (1265 строк)
+  // >>> MODULE: systems/sorties.js (1285 строк)
   // --- ЛОКАЦИОННЫЕ И ДОПОЛНИТЕЛЬНЫЕ АКТИВНОСТИ ---
   function doDiveContainer(loc) {
     if (state.energy < 20) {
@@ -4564,6 +4670,39 @@ met_spiridon: false,
     });
   }
 
+  function getEffectiveEnergyCost(loc, baseCost = null) {
+    let cost = baseCost !== null ? baseCost : (loc ? loc.energyCost : 10);
+    const weather = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
+    if (weather && weather.energyMod) {
+      cost = Math.max(5, Math.round(cost * (1 + weather.energyMod / 100)));
+    }
+    if (hasStatusEffect('spiridon_vigor')) {
+      cost = Math.max(5, Math.round(cost * 0.85));
+    }
+    if (hasStatusEffect('hypothermia')) {
+      cost = Math.round(cost * 1.25);
+    }
+    if (state.hasGeoCompass) {
+      cost = Math.max(5, cost - 5);
+    }
+    if (isNightTime(state.timeOfDay) && !state.hasElectricTorch && !hasStatusEffect('lynx_vision')) {
+      cost += 10;
+    }
+    return Math.max(5, cost);
+  }
+
+  function getEffectiveRad(loc, baseRad = null) {
+    let rad = baseRad !== null ? baseRad : (loc ? loc.rad : 0);
+    const weather = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
+    if (weather && weather.radMod) {
+      rad = rad + weather.radMod;
+    }
+    if (hasStatusEffect('rad_shield') || state.hasGeiger) {
+      rad = Math.round(rad * 0.5);
+    }
+    return Math.max(0, rad);
+  }
+
   function refreshLocationModal(loc) {
     if (!loc) return;
     if (state.hp <= 0) return;
@@ -4576,33 +4715,8 @@ met_spiridon: false,
     let body = `<p>${loc.desc}</p>`;
 
     const weather = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
-    let effectiveEnergyCost = loc.energyCost;
-    let effectiveRad = loc.rad;
-
-    // Модификаторы погоды
-    if (weather.energyMod) {
-      effectiveEnergyCost = Math.max(5, Math.round(effectiveEnergyCost * (1 + weather.energyMod / 100)));
-    }
-    if (weather.radMod) {
-      effectiveRad = effectiveRad + weather.radMod;
-    }
-
-    // Модификаторы статусов
-    if (hasStatusEffect('spiridon_vigor')) {
-      effectiveEnergyCost = Math.max(5, Math.round(effectiveEnergyCost * 0.85));
-    }
-    if (hasStatusEffect('hypothermia')) {
-      effectiveEnergyCost = Math.round(effectiveEnergyCost * 1.25);
-    }
-    if (hasStatusEffect('rad_shield') || state.hasGeiger) {
-      effectiveRad = Math.round(effectiveRad * 0.5);
-    }
-    if (state.hasGeoCompass) {
-      effectiveEnergyCost = Math.max(5, effectiveEnergyCost - 5);
-    }
-    if (isNightTime(state.timeOfDay) && !state.hasElectricTorch && !hasStatusEffect('lynx_vision')) {
-      effectiveEnergyCost += 10;
-    }
+    const effectiveEnergyCost = getEffectiveEnergyCost(loc);
+    const effectiveRad = getEffectiveRad(loc);
 
     const isLowEnergy = state.energy < effectiveEnergyCost;
     const isHighRad = state.rad >= 30;
@@ -4924,7 +5038,9 @@ met_spiridon: false,
 
   // --- КОНКРЕТНЫЕ АКТИВНОСТИ ВЫЛАЗОК ---
   function doFishing(loc) {
-    if (state.energy < loc.energyCost) {
+    const energyCost = getEffectiveEnergyCost(loc);
+    const radCost = getEffectiveRad(loc);
+    if (state.energy < energyCost) {
       toast('Недостаточно сил для рыбалки!');
       return;
     }
@@ -4940,8 +5056,8 @@ met_spiridon: false,
     sfx.init();
     sfx.playSplash();
     removeItem('worms', 1);
-    state.energy -= loc.energyCost;
-    state.rad += loc.rad;
+    state.energy -= energyCost;
+    state.rad += radCost;
     passTime(1);
 
     const roll = Math.random();
@@ -4997,14 +5113,16 @@ met_spiridon: false,
   }
 
   function doGatherWood(loc) {
-    if (state.energy < loc.energyCost) {
+    const energyCost = getEffectiveEnergyCost(loc);
+    const radCost = getEffectiveRad(loc);
+    if (state.energy < energyCost) {
       toast('Недостаточно сил!');
       return;
     }
     sfx.init();
     sfx.playClick();
-    state.energy -= loc.energyCost;
-    state.rad += loc.rad;
+    state.energy -= energyCost;
+    state.rad += radCost;
     addItem('firewood', 2);
     toast('🪵 Заготовлено 2 охапки сушняка для костра.');
     passTime(1);
@@ -5013,14 +5131,16 @@ met_spiridon: false,
   }
 
   function doGatherHerbs(loc) {
-    if (state.energy < loc.energyCost) {
+    const energyCost = getEffectiveEnergyCost(loc);
+    const radCost = getEffectiveRad(loc);
+    if (state.energy < energyCost) {
       toast('Недостаточно сил!');
       return;
     }
     sfx.init();
     sfx.playClick();
-    state.energy -= loc.energyCost;
-    state.rad += loc.rad;
+    state.energy -= energyCost;
+    state.rad += radCost;
     addItem('herbs', 2);
     addItem('berries', 1);
     toast('🌿 Нарвано 2 пучка целебных трав и горсть брусники.');
@@ -5084,14 +5204,16 @@ met_spiridon: false,
   }
 
   function doScavengeSwamp(loc) {
-    if (state.energy < loc.energyCost) {
+    const energyCost = getEffectiveEnergyCost(loc);
+    const radCost = getEffectiveRad(loc);
+    if (state.energy < energyCost) {
       toast('Слишком устали.');
       return;
     }
     sfx.init();
     sfx.playClick();
-    state.energy -= loc.energyCost;
-    state.rad += loc.rad;
+    state.energy -= energyCost;
+    state.rad += radCost;
     if (!state.questFlags) state.questFlags = {};
     state.questFlags.swamp_explored = true;
     passTime(1.5);
@@ -5129,14 +5251,16 @@ met_spiridon: false,
   }
 
   function doScavengeStation(loc) {
-    if (state.energy < loc.energyCost) {
-      toast(`Недостаточно сил для обыска! Нужно ${loc.energyCost}% энергии.`);
+    const energyCost = getEffectiveEnergyCost(loc);
+    const radCost = getEffectiveRad(loc);
+    if (state.energy < energyCost) {
+      toast(`Недостаточно сил для обыска! Нужно ${energyCost}% энергии.`);
       return;
     }
     sfx.init();
     sfx.playClick();
-    state.energy -= loc.energyCost;
-    state.rad += loc.rad;
+    state.energy -= energyCost;
+    state.rad += radCost;
     passTime(2);
 
     if (!state.questFlags) state.questFlags = {};
@@ -5386,14 +5510,16 @@ met_spiridon: false,
   }
 
   function doScavengeBunker(loc) {
-    if (state.energy < loc.energyCost) {
+    const energyCost = getEffectiveEnergyCost(loc);
+    const radCost = getEffectiveRad(loc);
+    if (state.energy < energyCost) {
       toast('Недостаточно сил!');
       return;
     }
     sfx.init();
     sfx.playClick();
-    state.energy -= loc.energyCost;
-    state.rad += loc.rad;
+    state.energy -= energyCost;
+    state.rad += radCost;
     passTime(2);
     addItem('scrap', 3);
     if (Math.random() > 0.4) addItem('antirad', 1);
@@ -5427,7 +5553,7 @@ met_spiridon: false,
     openModal(title, sub, 'assets/images/batya.png', body, actions);
   }
 
-  // >>> MODULE: systems/craft.js (135 строк)
+  // >>> MODULE: systems/craft.js (137 строк)
   // --- КРАФТ И КУЛИНАРИЯ ---
   function switchCraftStation(station) {
     sfx.init();
@@ -5552,6 +5678,8 @@ met_spiridon: false,
     if (r.id === 'craft_doghouse') {
       state.hasDog = true;
       state.questFlags.dog_house_built = true;
+      if (!state.campUpgrades) state.campUpgrades = {};
+      state.campUpgrades.kennel = true;
       state.reputation += 35;
       toast('🐶 БУРАН ОБРЕЛ ТЁПЛЫЙ ДОМ! Лайка стала вашим верным спутником (+25% к урону в боях, +35 репутации)!');
       renderNPCs();

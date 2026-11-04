@@ -400,6 +400,39 @@
     });
   }
 
+  function getEffectiveEnergyCost(loc, baseCost = null) {
+    let cost = baseCost !== null ? baseCost : (loc ? loc.energyCost : 10);
+    const weather = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
+    if (weather && weather.energyMod) {
+      cost = Math.max(5, Math.round(cost * (1 + weather.energyMod / 100)));
+    }
+    if (hasStatusEffect('spiridon_vigor')) {
+      cost = Math.max(5, Math.round(cost * 0.85));
+    }
+    if (hasStatusEffect('hypothermia')) {
+      cost = Math.round(cost * 1.25);
+    }
+    if (state.hasGeoCompass) {
+      cost = Math.max(5, cost - 5);
+    }
+    if (isNightTime(state.timeOfDay) && !state.hasElectricTorch && !hasStatusEffect('lynx_vision')) {
+      cost += 10;
+    }
+    return Math.max(5, cost);
+  }
+
+  function getEffectiveRad(loc, baseRad = null) {
+    let rad = baseRad !== null ? baseRad : (loc ? loc.rad : 0);
+    const weather = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
+    if (weather && weather.radMod) {
+      rad = rad + weather.radMod;
+    }
+    if (hasStatusEffect('rad_shield') || state.hasGeiger) {
+      rad = Math.round(rad * 0.5);
+    }
+    return Math.max(0, rad);
+  }
+
   function refreshLocationModal(loc) {
     if (!loc) return;
     if (state.hp <= 0) return;
@@ -412,33 +445,8 @@
     let body = `<p>${loc.desc}</p>`;
 
     const weather = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
-    let effectiveEnergyCost = loc.energyCost;
-    let effectiveRad = loc.rad;
-
-    // Модификаторы погоды
-    if (weather.energyMod) {
-      effectiveEnergyCost = Math.max(5, Math.round(effectiveEnergyCost * (1 + weather.energyMod / 100)));
-    }
-    if (weather.radMod) {
-      effectiveRad = effectiveRad + weather.radMod;
-    }
-
-    // Модификаторы статусов
-    if (hasStatusEffect('spiridon_vigor')) {
-      effectiveEnergyCost = Math.max(5, Math.round(effectiveEnergyCost * 0.85));
-    }
-    if (hasStatusEffect('hypothermia')) {
-      effectiveEnergyCost = Math.round(effectiveEnergyCost * 1.25);
-    }
-    if (hasStatusEffect('rad_shield') || state.hasGeiger) {
-      effectiveRad = Math.round(effectiveRad * 0.5);
-    }
-    if (state.hasGeoCompass) {
-      effectiveEnergyCost = Math.max(5, effectiveEnergyCost - 5);
-    }
-    if (isNightTime(state.timeOfDay) && !state.hasElectricTorch && !hasStatusEffect('lynx_vision')) {
-      effectiveEnergyCost += 10;
-    }
+    const effectiveEnergyCost = getEffectiveEnergyCost(loc);
+    const effectiveRad = getEffectiveRad(loc);
 
     const isLowEnergy = state.energy < effectiveEnergyCost;
     const isHighRad = state.rad >= 30;
@@ -760,7 +768,9 @@
 
   // --- КОНКРЕТНЫЕ АКТИВНОСТИ ВЫЛАЗОК ---
   function doFishing(loc) {
-    if (state.energy < loc.energyCost) {
+    const energyCost = getEffectiveEnergyCost(loc);
+    const radCost = getEffectiveRad(loc);
+    if (state.energy < energyCost) {
       toast('Недостаточно сил для рыбалки!');
       return;
     }
@@ -776,8 +786,8 @@
     sfx.init();
     sfx.playSplash();
     removeItem('worms', 1);
-    state.energy -= loc.energyCost;
-    state.rad += loc.rad;
+    state.energy -= energyCost;
+    state.rad += radCost;
     passTime(1);
 
     const roll = Math.random();
@@ -833,14 +843,16 @@
   }
 
   function doGatherWood(loc) {
-    if (state.energy < loc.energyCost) {
+    const energyCost = getEffectiveEnergyCost(loc);
+    const radCost = getEffectiveRad(loc);
+    if (state.energy < energyCost) {
       toast('Недостаточно сил!');
       return;
     }
     sfx.init();
     sfx.playClick();
-    state.energy -= loc.energyCost;
-    state.rad += loc.rad;
+    state.energy -= energyCost;
+    state.rad += radCost;
     addItem('firewood', 2);
     toast('🪵 Заготовлено 2 охапки сушняка для костра.');
     passTime(1);
@@ -849,14 +861,16 @@
   }
 
   function doGatherHerbs(loc) {
-    if (state.energy < loc.energyCost) {
+    const energyCost = getEffectiveEnergyCost(loc);
+    const radCost = getEffectiveRad(loc);
+    if (state.energy < energyCost) {
       toast('Недостаточно сил!');
       return;
     }
     sfx.init();
     sfx.playClick();
-    state.energy -= loc.energyCost;
-    state.rad += loc.rad;
+    state.energy -= energyCost;
+    state.rad += radCost;
     addItem('herbs', 2);
     addItem('berries', 1);
     toast('🌿 Нарвано 2 пучка целебных трав и горсть брусники.');
@@ -920,14 +934,16 @@
   }
 
   function doScavengeSwamp(loc) {
-    if (state.energy < loc.energyCost) {
+    const energyCost = getEffectiveEnergyCost(loc);
+    const radCost = getEffectiveRad(loc);
+    if (state.energy < energyCost) {
       toast('Слишком устали.');
       return;
     }
     sfx.init();
     sfx.playClick();
-    state.energy -= loc.energyCost;
-    state.rad += loc.rad;
+    state.energy -= energyCost;
+    state.rad += radCost;
     if (!state.questFlags) state.questFlags = {};
     state.questFlags.swamp_explored = true;
     passTime(1.5);
@@ -965,14 +981,16 @@
   }
 
   function doScavengeStation(loc) {
-    if (state.energy < loc.energyCost) {
-      toast(`Недостаточно сил для обыска! Нужно ${loc.energyCost}% энергии.`);
+    const energyCost = getEffectiveEnergyCost(loc);
+    const radCost = getEffectiveRad(loc);
+    if (state.energy < energyCost) {
+      toast(`Недостаточно сил для обыска! Нужно ${energyCost}% энергии.`);
       return;
     }
     sfx.init();
     sfx.playClick();
-    state.energy -= loc.energyCost;
-    state.rad += loc.rad;
+    state.energy -= energyCost;
+    state.rad += radCost;
     passTime(2);
 
     if (!state.questFlags) state.questFlags = {};
@@ -1222,14 +1240,16 @@
   }
 
   function doScavengeBunker(loc) {
-    if (state.energy < loc.energyCost) {
+    const energyCost = getEffectiveEnergyCost(loc);
+    const radCost = getEffectiveRad(loc);
+    if (state.energy < energyCost) {
       toast('Недостаточно сил!');
       return;
     }
     sfx.init();
     sfx.playClick();
-    state.energy -= loc.energyCost;
-    state.rad += loc.rad;
+    state.energy -= energyCost;
+    state.rad += radCost;
     passTime(2);
     addItem('scrap', 3);
     if (Math.random() > 0.4) addItem('antirad', 1);

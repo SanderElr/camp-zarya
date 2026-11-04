@@ -122,6 +122,8 @@
     if (r.id === 'craft_doghouse') {
       state.hasDog = true;
       state.questFlags.dog_house_built = true;
+      if (!state.campUpgrades) state.campUpgrades = {};
+      state.campUpgrades.kennel = true;
       state.reputation += 35;
       toast('🐶 БУРАН ОБРЕЛ ТЁПЛЫЙ ДОМ! Лайка стала вашим верным спутником (+25% к урону в боях, +35 репутации)!');
       renderNPCs();
