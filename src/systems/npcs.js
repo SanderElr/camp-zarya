@@ -1015,10 +1015,10 @@
         }
       },
       {
-        text: '🌿 Сдать пучок трав в лазарет (+5 репутации, +1 патрон)',
+        text: '🌿 Сдать 3 пучка трав в лазарет (+5 репутации, +1 патрон)',
         action: () => {
-          if (getItemCount('herbs') >= 1) {
-            removeItem('herbs', 1);
+          if (getItemCount('herbs') >= 3) {
+            removeItem('herbs', 3);
             addItem('ammo', 1);
             state.reputation += 5;
             toast('Анна поблагодарила за травы (+5 репутации, +1 патрон)');
@@ -1027,7 +1027,7 @@
             saveState();
             talkAnna();
           } else {
-            toast('У вас нет целебных трав в рюкзаке.');
+            toast('Нужно минимум 3 пучка трав для лазарета.');
           }
         }
       }
@@ -1608,13 +1608,13 @@
     // Стандартные услуги Егора
     actions.push(
       {
-        text: '🐟 Сдать 2 сырые рыбы в общий котёл (+10 репутации, +2 патрона)',
+        text: '🐟 Сдать 2 сырые рыбы в общий котёл (+5 репутации, +1 патрон)',
         action: () => {
           if (getItemCount('raw_fish') >= 2) {
             removeItem('raw_fish', 2);
-            addItem('ammo', 2);
-            state.reputation += 10;
-            toast('Егор принял рыбу в общую кухню (+10 репутации, +2 патрона)');
+            addItem('ammo', 1);
+            state.reputation += 5;
+            toast('Егор принял рыбу в общий котёл (+5 репутации, +1 патрон)');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -2011,12 +2011,12 @@
         }
       },
       {
-        text: '🌿 Купить сушёные целебные травы (3 шт. за 1 патрон)',
+        text: '🌿 Купить сушёные целебные травы (1 шт. за 1 патрон)',
         action: () => {
           if (getItemCount('ammo') >= 1) {
             removeItem('ammo', 1);
-            addItem('herbs', 3);
-            toast('Спиридон достал пучок душистой полыни и чабреца');
+            addItem('herbs', 1);
+            toast('Спиридон достал из берестяного туеска пучок сушёной полыни и чабреца');
             sfx.playSuccess();
             updateHUD();
             saveState();
