@@ -70,7 +70,9 @@
   }
 
   // Запуск при загрузке страницы
-  window.addEventListener('DOMContentLoaded', init);
+  if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+    window.addEventListener('DOMContentLoaded', init);
+  }
 
   return {
     switchTab,
@@ -103,6 +105,9 @@
     state,
     updateHUD,
     openLocationModal,
+    quickDrinkWater,
+    quickRest,
+    quickUseAntirad,
     LOCATIONS,
     ITEMS,
     NPCS,

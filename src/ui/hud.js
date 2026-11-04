@@ -93,11 +93,56 @@
   }
 
   // Обновляем высоту HUD при изменении размера экрана
-  if (typeof window !== 'undefined' && typeof document !== 'undefined' && typeof document.querySelector === 'function') {
+  if (typeof window !== 'undefined' && typeof window.addEventListener === 'function' && typeof document !== 'undefined' && typeof document.querySelector === 'function') {
     window.addEventListener('resize', () => {
       const hud = document.querySelector('.hud-header');
       if (hud && document.documentElement) {
         document.documentElement.style.setProperty('--hud-height', hud.offsetHeight + 'px');
       }
     });
+  }
+
+  // --- БЫСТРЫЕ ДЕЙСТВИЯ ПРИ КЛИКЕ НА ПАРАМЕТРЫ В HUD ---
+  function quickDrinkWater() {
+    sfx.init();
+    sfx.playClick();
+    if (getItemCount('clean_water') > 0) {
+      if (state.thirst >= 100) {
+        toast('💧 Жажда уже полностью утолена (100%)!');
+        return;
+      }
+      useItem('clean_water', false);
+      if (typeof renderInventory === 'function') renderInventory();
+    } else {
+      if (getItemCount('raw_water') > 0) {
+        toast('⚠️ Чистая вода закончилась! У вас есть только сырая речная вода — вскипятите её на костре.', 'warning');
+      } else {
+        toast('⚠️ Нет чистой воды во фляге! Наберите воды в реке и вскипятите на костре.', 'warning');
+      }
+    }
+  }
+
+  function quickRest() {
+    sfx.init();
+    sfx.playClick();
+    restAtCamp();
+  }
+
+  function quickUseAntirad() {
+    sfx.init();
+    sfx.playClick();
+    if (getItemCount('antirad') > 0) {
+      if (state.rad <= 0 && state.statusEffects?.rad_shield) {
+        toast('☢️ Радиационное заражение 0 Р, и радиозащита уже активна!');
+        return;
+      }
+      useItem('antirad', false);
+      if (typeof renderInventory === 'function') renderInventory();
+    } else {
+      if (getItemCount('herbal_tea') > 0) {
+        toast('⚠️ Нет препарата «Цистамин»! Но в рюкзаке есть таёжный антирад-отвар.', 'warning');
+      } else {
+        toast('⚠️ Нет препарата «Цистамин»! Купите у фельдшера Анны или найдите в бункере.', 'warning');
+      }
+    }
   }

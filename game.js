@@ -1,6 +1,6 @@
 /* ==========================================================================
    ИГРОВОЙ ДВИЖОК: ТЕКСТОВАЯ RPG «ЛАГЕРЬ ЗАРЯ»
-   Собрано автоматически из src/ (2026-11-04T07:36:17.775Z)
+   Собрано автоматически из src/ (2026-11-04T08:16:01.900Z)
    Не редактируйте этот файл вручную — вносите изменения в файлы src/
    ========================================================================== */
 
@@ -1237,7 +1237,7 @@ met_spiridon: false,
     }
   }
 
-  // >>> MODULE: ui/hud.js (103 строк)
+  // >>> MODULE: ui/hud.js (148 строк)
   function getReputationTitle(rep) {
     if (rep < 100) return `Чужак (${rep})`;
     if (rep < 300) return `Свой (${rep})`;
@@ -1333,13 +1333,58 @@ met_spiridon: false,
   }
 
   // Обновляем высоту HUD при изменении размера экрана
-  if (typeof window !== 'undefined' && typeof document !== 'undefined' && typeof document.querySelector === 'function') {
+  if (typeof window !== 'undefined' && typeof window.addEventListener === 'function' && typeof document !== 'undefined' && typeof document.querySelector === 'function') {
     window.addEventListener('resize', () => {
       const hud = document.querySelector('.hud-header');
       if (hud && document.documentElement) {
         document.documentElement.style.setProperty('--hud-height', hud.offsetHeight + 'px');
       }
     });
+  }
+
+  // --- БЫСТРЫЕ ДЕЙСТВИЯ ПРИ КЛИКЕ НА ПАРАМЕТРЫ В HUD ---
+  function quickDrinkWater() {
+    sfx.init();
+    sfx.playClick();
+    if (getItemCount('clean_water') > 0) {
+      if (state.thirst >= 100) {
+        toast('💧 Жажда уже полностью утолена (100%)!');
+        return;
+      }
+      useItem('clean_water', false);
+      if (typeof renderInventory === 'function') renderInventory();
+    } else {
+      if (getItemCount('raw_water') > 0) {
+        toast('⚠️ Чистая вода закончилась! У вас есть только сырая речная вода — вскипятите её на костре.', 'warning');
+      } else {
+        toast('⚠️ Нет чистой воды во фляге! Наберите воды в реке и вскипятите на костре.', 'warning');
+      }
+    }
+  }
+
+  function quickRest() {
+    sfx.init();
+    sfx.playClick();
+    restAtCamp();
+  }
+
+  function quickUseAntirad() {
+    sfx.init();
+    sfx.playClick();
+    if (getItemCount('antirad') > 0) {
+      if (state.rad <= 0 && state.statusEffects?.rad_shield) {
+        toast('☢️ Радиационное заражение 0 Р, и радиозащита уже активна!');
+        return;
+      }
+      useItem('antirad', false);
+      if (typeof renderInventory === 'function') renderInventory();
+    } else {
+      if (getItemCount('herbal_tea') > 0) {
+        toast('⚠️ Нет препарата «Цистамин»! Но в рюкзаке есть таёжный антирад-отвар.', 'warning');
+      } else {
+        toast('⚠️ Нет препарата «Цистамин»! Купите у фельдшера Анны или найдите в бункере.', 'warning');
+      }
+    }
   }
 
   // >>> MODULE: ui/modals.js (78 строк)
@@ -1891,7 +1936,7 @@ met_spiridon: false,
     showBackgroundPickerModal();
   }
 
-  // >>> MODULE: systems/inventory.js (259 строк)
+  // >>> MODULE: systems/inventory.js (266 строк)
   // --- УПРАВЛЕНИЕ ИНВЕНТАРЕМ ---
   function addItem(itemId, count = 1) {
     if (!ITEMS[itemId]) return;
@@ -1978,7 +2023,7 @@ met_spiridon: false,
     return state.inventory[itemId] || 0;
   }
 
-  function useItem(itemId) {
+  function useItem(itemId, closeOverlay = true) {
     sfx.init();
     sfx.playClick();
     const item = ITEMS[itemId];
@@ -2021,9 +2066,14 @@ met_spiridon: false,
       } else if (itemId === 'herbal_salve') {
         removeStatusEffect('bleeding');
         toast('🌿 Целебная мазь затянула рваную рану.');
-      } else if (itemId === 'antirad' || itemId === 'herbal_tea') {
+      } else if (itemId === 'antirad') {
         addStatusEffect('rad_shield', 4);
-        toast('🛡️ Организм защищён барьером от радиации на 4 хода!');
+        toast('💊 Принят Цистамин (-50 Р). Радиозащита активна на 4 хода!');
+      } else if (itemId === 'herbal_tea') {
+        addStatusEffect('rad_shield', 4);
+        toast('🍵 Выпит таёжный антирад-отвар (-25 Р). Радиозащита активна на 4 хода!');
+      } else if (itemId === 'clean_water') {
+        toast('💧 Вы сделали несколько глотков чистой воды из фляги (+45% жажды).');
       } else if (itemId === 'smoked_meat') {
         addStatusEffect('well_fed', 6);
         toast('🥩 Сытный копчёный окорок дарит сытость и регенерацию на 6 ходов!');
@@ -2043,7 +2093,9 @@ met_spiridon: false,
 
       removeItem(itemId, 1);
       updateHUD();
-      closeModal();
+      if (closeOverlay) {
+        closeModal();
+      }
         } else if (item.type === 'lore') {
       state.loreNotes = state.loreNotes || [];
       if (!state.loreNotes.includes(itemId)) {
@@ -4285,7 +4337,7 @@ met_spiridon: false,
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }
 
-  // >>> MODULE: systems/sorties.js (1242 строк)
+  // >>> MODULE: systems/sorties.js (1244 строк)
   // --- ЛОКАЦИОННЫЕ И ДОПОЛНИТЕЛЬНЫЕ АКТИВНОСТИ ---
   function doDiveContainer(loc) {
     if (state.energy < 20) {
@@ -4628,14 +4680,16 @@ met_spiridon: false,
     sfx.init();
     sfx.playClick();
     if (state.energy >= 95) {
-      toast('Вы полны сил и не хотите спать!');
+      toast(`⚡ Вы полны сил (${Math.round(state.energy)}% энергии) и пока не хотите спать!`);
       return;
     }
 
-    state.energy = Math.min(100, state.energy + 50);
+    closeModal();
+    const maxEng = state.maxEnergy || 100;
+    state.energy = Math.min(maxEng, state.energy + 50);
     state.hp = Math.min(100, state.hp + 10);
     passTime(1, 8, 12);
-    toast('💤 Вы отдохнули в бараке (+50% энергии, прошло время).');
+    toast('🛌 Вы отдохнули в бараке (+50% энергии, прошло время).');
   }
 
   function openCampFire() {
@@ -6183,7 +6237,7 @@ met_spiridon: false,
     init();
   }
 
-  // >>> MODULE: main.js (113 строк)
+  // >>> MODULE: main.js (118 строк)
   // --- ИНИЦИАЛИЗАЦИЯ И ОБНОВЛЕНИЕ UI ---
   function init() {
     initAudio();
@@ -6256,7 +6310,9 @@ met_spiridon: false,
   }
 
   // Запуск при загрузке страницы
-  window.addEventListener('DOMContentLoaded', init);
+  if (typeof window !== 'undefined' && typeof window.addEventListener === 'function') {
+    window.addEventListener('DOMContentLoaded', init);
+  }
 
   return {
     switchTab,
@@ -6289,6 +6345,9 @@ met_spiridon: false,
     state,
     updateHUD,
     openLocationModal,
+    quickDrinkWater,
+    quickRest,
+    quickUseAntirad,
     LOCATIONS,
     ITEMS,
     NPCS,

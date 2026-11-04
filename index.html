@@ -59,7 +59,7 @@
         </div>
 
         <!-- Жажда (Вода) -->
-        <div class="stat-pill" title="Жажда">
+        <div class="stat-pill interactive" id="hudStatThirst" onclick="Game.quickDrinkWater()" title="Жажда. Нажмите, чтобы сделать глоток чистой воды">
           <div class="stat-pill-header">
             <img src="assets/images/stat_water.png" class="stat-icon-img" alt="Вода">
             <span class="stat-num" id="statThirst">80%</span>
@@ -68,7 +68,7 @@
         </div>
 
         <!-- Радиация -->
-        <div class="stat-pill" title="Радиация">
+        <div class="stat-pill interactive" id="hudStatRad" onclick="Game.quickUseAntirad()" title="Радиация. Нажмите, чтобы принять Цистамин">
           <div class="stat-pill-header">
             <img src="assets/images/stat_radiation.png" class="stat-icon-img" alt="Радиация">
             <span class="stat-num" id="statRad">0 Р</span>
@@ -77,7 +77,7 @@
         </div>
 
         <!-- Энергия -->
-        <div class="stat-pill" title="Бодрость / Энергия">
+        <div class="stat-pill interactive" id="hudStatEnergy" onclick="Game.quickRest()" title="Бодрость / Энергия. Нажмите, чтобы поспать в бараке">
           <div class="stat-pill-header">
             <img src="assets/images/stat_energy.png" class="stat-icon-img" alt="Энергия">
             <span class="stat-num" id="statEnergy">100%</span>

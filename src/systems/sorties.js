@@ -340,14 +340,16 @@
     sfx.init();
     sfx.playClick();
     if (state.energy >= 95) {
-      toast('Вы полны сил и не хотите спать!');
+      toast(`⚡ Вы полны сил (${Math.round(state.energy)}% энергии) и пока не хотите спать!`);
       return;
     }
 
-    state.energy = Math.min(100, state.energy + 50);
+    closeModal();
+    const maxEng = state.maxEnergy || 100;
+    state.energy = Math.min(maxEng, state.energy + 50);
     state.hp = Math.min(100, state.hp + 10);
     passTime(1, 8, 12);
-    toast('💤 Вы отдохнули в бараке (+50% энергии, прошло время).');
+    toast('🛌 Вы отдохнули в бараке (+50% энергии, прошло время).');
   }
 
   function openCampFire() {

@@ -84,7 +84,7 @@
     return state.inventory[itemId] || 0;
   }
 
-  function useItem(itemId) {
+  function useItem(itemId, closeOverlay = true) {
     sfx.init();
     sfx.playClick();
     const item = ITEMS[itemId];
@@ -127,9 +127,14 @@
       } else if (itemId === 'herbal_salve') {
         removeStatusEffect('bleeding');
         toast('🌿 Целебная мазь затянула рваную рану.');
-      } else if (itemId === 'antirad' || itemId === 'herbal_tea') {
+      } else if (itemId === 'antirad') {
         addStatusEffect('rad_shield', 4);
-        toast('🛡️ Организм защищён барьером от радиации на 4 хода!');
+        toast('💊 Принят Цистамин (-50 Р). Радиозащита активна на 4 хода!');
+      } else if (itemId === 'herbal_tea') {
+        addStatusEffect('rad_shield', 4);
+        toast('🍵 Выпит таёжный антирад-отвар (-25 Р). Радиозащита активна на 4 хода!');
+      } else if (itemId === 'clean_water') {
+        toast('💧 Вы сделали несколько глотков чистой воды из фляги (+45% жажды).');
       } else if (itemId === 'smoked_meat') {
         addStatusEffect('well_fed', 6);
         toast('🥩 Сытный копчёный окорок дарит сытость и регенерацию на 6 ходов!');
@@ -149,7 +154,9 @@
 
       removeItem(itemId, 1);
       updateHUD();
-      closeModal();
+      if (closeOverlay) {
+        closeModal();
+      }
         } else if (item.type === 'lore') {
       state.loreNotes = state.loreNotes || [];
       if (!state.loreNotes.includes(itemId)) {

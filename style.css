@@ -214,6 +214,21 @@ body[data-bg-theme="none"] .game-container {
   flex-direction: column;
   gap: 2px;
 }
+.stat-pill.interactive {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.stat-pill.interactive:hover {
+  background: rgba(255, 255, 255, 0.09);
+  border-color: var(--border-accent);
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.06);
+}
+.stat-pill.interactive:active {
+  transform: scale(0.96);
+  background: rgba(255, 255, 255, 0.15);
+}
 .stat-pill-header {
   display: flex;
   align-items: center;
