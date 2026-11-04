@@ -68,7 +68,7 @@
     }
     updateMusicUI();
 
-    toast('🏕️ Вы прибыли в лагерь «Всем ПОХ»! Поговорите с Батей в штабе.');
+    toast('🏕️ Вы прибыли в лагерь «Всем ПОХ»! Поговорите с Санычем в штабе.');
     if (state.mainQuestStep === 0) {
     }
   }
@@ -98,8 +98,23 @@
     hideIntroScreen,
     setMusicFromIntro,
     startGameFromIntro,
+    saveState,
+    loadSavedState,
     talkToNPC,
+    talkSanych,
+    talkAtaron,
+    talkSky,
+    talkBob,
+    talkChagron,
+    talkMargo,
+    talkStrong,
     talkVarya,
+    talkBatya,
+    talkAnna,
+    talkProkhor,
+    talkEgor,
+    talkSpiridon,
+    talkSasha,
     getNpcRep,
     getNpcRepTitle,
     changeNpcRep,

@@ -1,8 +1,8 @@
   // --- СИСТЕМА КВЕСТОВ И ЕЖЕДНЕВНЫХ ЗАДАНИЙ ---
   const DAILY_GIVER_MAP = {
-    daily_fish: { giver: 'Егор Лесник', giverId: 'egor' },
-    daily_wood: { giver: 'Прохор Кузьмич', giverId: 'prokhor' },
-    daily_herbs: { giver: 'Анна Павловна', giverId: 'anna' },
+    daily_fish: { giver: 'Чагрон («Глыба»)', giverId: 'chagron' },
+    daily_wood: { giver: 'Вова «Боб»', giverId: 'bob' },
+    daily_herbs: { giver: 'Николай «Скай»', giverId: 'sky' },
     daily_berries: { giver: 'Варя (Полевой повар)', giverId: 'varya' },
     daily_water: { giver: 'Варя (Полевой повар)', giverId: 'varya' }
   };
@@ -19,44 +19,44 @@
     }
 
     // Проверяем уровень репутации жителей для улучшенных наград
-    const egorRep = getNpcRep('egor');
-    const prokhorRep = getNpcRep('prokhor');
-    const annaRep = getNpcRep('anna');
+    const chagronRep = getNpcRep('chagron');
+    const bobRep = getNpcRep('bob');
+    const skyRep = getNpcRep('sky');
     const varyaRep = getNpcRep('varya');
 
     state.dailyQuests = [
       { 
         id: 'daily_fish', type: 'fish', 
-        title: egorRep >= 50 ? '🐟 Царский улов' : 'Рыбный день', 
-        giver: 'Егор Лесник', giverId: 'egor', 
-        desc: egorRep >= 50 ? 'Поймать 3 отборные рыбы на реке Быстрянке для старого следопыта.' : 'Поймать 2 рыбы на реке Быстрянке.', 
-        goal: egorRep >= 50 ? 3 : 2, current: 0, 
-        rewardRep: egorRep >= 50 ? 25 : 15, 
-        rewardAmmo: egorRep >= 50 ? 3 : 2, 
+        title: chagronRep >= 50 ? '🐟 Царский улов' : 'Рыбный день', 
+        giver: 'Чагрон («Глыба»)', giverId: 'chagron', 
+        desc: chagronRep >= 50 ? 'Поймать 3 отборные рыбы на реке Быстрянке для старого следопыта.' : 'Поймать 2 рыбы на реке Быстрянке.', 
+        goal: chagronRep >= 50 ? 3 : 2, current: 0, 
+        rewardRep: chagronRep >= 50 ? 25 : 15, 
+        rewardAmmo: chagronRep >= 50 ? 3 : 2, 
         completed: false, notifiedReady: false, 
-        isUpgraded: egorRep >= 50 
+        isUpgraded: chagronRep >= 50 
       },
       { 
         id: 'daily_wood', type: 'wood', 
-        title: prokhorRep >= 50 ? '🌲 Отборная сушина' : 'Дрова для костра', 
-        giver: 'Прохор Кузьмич', giverId: 'prokhor', 
-        desc: prokhorRep >= 50 ? 'Заготовить 3 плотных полена для кузнечного горна Кузьмича.' : 'Заготовить 2 охапки сухих дров.', 
-        goal: prokhorRep >= 50 ? 3 : 2, current: 0, 
-        rewardRep: prokhorRep >= 50 ? 20 : 10, 
-        rewardAmmo: prokhorRep >= 50 ? 2 : 1, 
+        title: bobRep >= 50 ? '🌲 Отборная сушина' : 'Дрова для костра', 
+        giver: 'Вова «Боб»', giverId: 'bob', 
+        desc: bobRep >= 50 ? 'Заготовить 3 плотных полена для кузнечного горна Бобчонка.' : 'Заготовить 2 охапки сухих дров.', 
+        goal: bobRep >= 50 ? 3 : 2, current: 0, 
+        rewardRep: bobRep >= 50 ? 20 : 10, 
+        rewardAmmo: bobRep >= 50 ? 2 : 1, 
         completed: false, notifiedReady: false, 
-        isUpgraded: prokhorRep >= 50 
+        isUpgraded: bobRep >= 50 
       },
       { 
         id: 'daily_herbs', type: 'herbs', 
-        title: annaRep >= 50 ? '🌿 Чистый аптечный сбор' : 'Аптечный сбор', 
-        giver: 'Анна Павловна', giverId: 'anna', 
-        desc: annaRep >= 50 ? 'Собрать 3 пучка душистой полыни и чабреца для медпункта.' : 'Собрать 2 пучка полыни для лазарета Анны.', 
-        goal: annaRep >= 50 ? 3 : 2, current: 0, 
-        rewardRep: annaRep >= 50 ? 25 : 15, 
-        rewardAmmo: annaRep >= 50 ? 3 : 2, 
+        title: skyRep >= 50 ? '🌿 Чистый аптечный сбор' : 'Аптечный сбор', 
+        giver: 'Николай «Скай»', giverId: 'sky', 
+        desc: skyRep >= 50 ? 'Собрать 3 пучка душистой полыни и чабреца для лазарета Ская.' : 'Собрать 2 пучка полыни для доктора Ская.', 
+        goal: skyRep >= 50 ? 3 : 2, current: 0, 
+        rewardRep: skyRep >= 50 ? 25 : 15, 
+        rewardAmmo: skyRep >= 50 ? 3 : 2, 
         completed: false, notifiedReady: false, 
-        isUpgraded: annaRep >= 50 
+        isUpgraded: skyRep >= 50 
       },
       { 
         id: 'daily_berries', type: 'berries', 
@@ -236,9 +236,12 @@
       const repBox = document.createElement('div');
       repBox.style.cssText = 'background:rgba(0,0,0,0.3); border:1px solid var(--border-dim); border-radius:6px; padding:10px; margin-bottom:12px;';
       let repRows = '';
-      Object.entries(NPCS).forEach(([id, npc]) => {
-        if (id === 'spiridon' && !state.questFlags?.met_spiridon) return;
-        if (id === 'sasha' && !state.questFlags?.met_sasha) return;
+      const order = ['sanych', 'ataron', 'sky', 'bob', 'chagron', 'varya', 'margo', 'strong'];
+      order.forEach(id => {
+        const npc = NPCS[id];
+        if (!npc) return;
+        if (id === 'margo' && !state.questFlags?.met_margo && !state.questFlags?.met_spiridon) return;
+        if (id === 'strong' && !state.questFlags?.met_strong && !state.questFlags?.met_sasha) return;
         const repVal = getNpcRep(id);
         const tier = getNpcRepTitle(repVal);
         const firstName = npc.name.split(' ')[0];
@@ -475,7 +478,7 @@
         </div>
         <div class="quest-item-card">
           <div class="quest-title-row"><span>🏕️ Основание лагеря «Всем ПОХ»</span></div>
-          <p class="quest-desc">Майор Дмитрий («Батя») собрал уцелевших рабочих, егерей и семьи на холме у старой лесопилки. Благодаря возвышенности и бьющим родникам лагерь выстоял. Сегодня «Всем ПОХ» — единственный оплот надежды посреди отравленной сибирской тайги.</p>
+          <p class="quest-desc">Александр Александрович («Саныч») вместе с Андреем «Атароном» собрали уцелевших рабочих, егерей, ученых и скитальцев на холме у старой продуваемой лесопилки. Благодаря несгибаемому оптимизму Саныча («Не ронять слёз! Сжать ягодицы в кулак!»), железной дисциплине Атарона и упорству Совета Основателей лагерь выстоял. Сегодня «Всем ПОХ» — единственный оплот надежды посреди отравленной сибирской тайги.</p>
         </div>
         <div class="quest-item-card">
           <div class="quest-title-row"><span>🧪 Тайна профессора Воронова</span></div>

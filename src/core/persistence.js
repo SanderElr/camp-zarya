@@ -13,11 +13,20 @@
         parsed.questFlags = Object.assign({}, INITIAL_STATE.questFlags, parsed.questFlags || {});
 
         // Автоматическая нормализация флагов для старых сохранений
-        if (parsed.mainQuestStep >= 1) parsed.questFlags.met_batya = true;
+        if (parsed.mainQuestStep >= 1) {
+          parsed.questFlags.met_sanych = true;
+          parsed.questFlags.met_batya = true;
+        }
         if (parsed.mainQuestStep >= 2) {
+          parsed.questFlags.met_sanych = true;
+          parsed.questFlags.met_batya = true;
+          parsed.questFlags.met_sky = true;
           parsed.questFlags.met_anna = true;
+          parsed.questFlags.met_chagron = true;
           parsed.questFlags.met_egor = true;
+          parsed.questFlags.met_bob = true;
           parsed.questFlags.met_prokhor = true;
+          parsed.questFlags.met_ataron = true;
         }
         if (parsed.mainQuestStep >= 4) {
           parsed.questFlags.egor_starter_worms = true;
@@ -104,16 +113,63 @@
         
         // Нормализация индивидуальной репутации и новых квестовых систем
         parsed.npcRep = Object.assign({}, INITIAL_STATE.npcRep, parsed.npcRep || {});
+
+        // Синхронизация старых и новых ключей репутации
+        if (parsed.npcRep.batya !== undefined) {
+          if (parsed.npcRep.sanych === undefined || parsed.npcRep.sanych === 15) parsed.npcRep.sanych = parsed.npcRep.batya;
+          if (parsed.npcRep.ataron === undefined || parsed.npcRep.ataron === 15) parsed.npcRep.ataron = parsed.npcRep.batya;
+        }
+        if (parsed.npcRep.anna !== undefined) {
+          if (parsed.npcRep.sky === undefined || parsed.npcRep.sky === 15) parsed.npcRep.sky = parsed.npcRep.anna;
+        }
+        if (parsed.npcRep.prokhor !== undefined) {
+          if (parsed.npcRep.bob === undefined || parsed.npcRep.bob === 15) parsed.npcRep.bob = parsed.npcRep.prokhor;
+        }
+        if (parsed.npcRep.egor !== undefined) {
+          if (parsed.npcRep.chagron === undefined || parsed.npcRep.chagron === 15) parsed.npcRep.chagron = parsed.npcRep.egor;
+        }
+        if (parsed.npcRep.spiridon !== undefined) {
+          if (parsed.npcRep.margo === undefined || parsed.npcRep.margo === 5) parsed.npcRep.margo = parsed.npcRep.spiridon;
+        }
+        if (parsed.npcRep.sasha !== undefined) {
+          if (parsed.npcRep.strong === undefined || parsed.npcRep.strong === 0) parsed.npcRep.strong = parsed.npcRep.sasha;
+        }
+
+        // Двусторонняя синхронизация псевдонимов
+        parsed.npcRep.batya = parsed.npcRep.sanych;
+        parsed.npcRep.anna = parsed.npcRep.sky;
+        parsed.npcRep.prokhor = parsed.npcRep.bob;
+        parsed.npcRep.egor = parsed.npcRep.chagron;
+        parsed.npcRep.spiridon = parsed.npcRep.margo;
+        parsed.npcRep.sasha = parsed.npcRep.strong;
+
+        // Синхронизация флагов знакомства
+        parsed.questFlags.met_sanych = parsed.questFlags.met_sanych || parsed.questFlags.met_batya || false;
+        parsed.questFlags.met_ataron = parsed.questFlags.met_ataron || parsed.questFlags.met_batya || false;
+        parsed.questFlags.met_sky = parsed.questFlags.met_sky || parsed.questFlags.met_anna || false;
+        parsed.questFlags.met_bob = parsed.questFlags.met_bob || parsed.questFlags.met_prokhor || false;
+        parsed.questFlags.met_chagron = parsed.questFlags.met_chagron || parsed.questFlags.met_egor || false;
+        parsed.questFlags.met_margo = parsed.questFlags.met_margo || parsed.questFlags.met_spiridon || false;
+        parsed.questFlags.met_strong = parsed.questFlags.met_strong || parsed.questFlags.met_sasha || false;
+        parsed.questFlags.met_batya = parsed.questFlags.met_sanych;
+        parsed.questFlags.met_anna = parsed.questFlags.met_sky;
+        parsed.questFlags.met_prokhor = parsed.questFlags.met_bob;
+        parsed.questFlags.met_egor = parsed.questFlags.met_chagron;
+        parsed.questFlags.met_spiridon = parsed.questFlags.met_margo;
+        parsed.questFlags.met_sasha = parsed.questFlags.met_strong;
+
         if (parsed.reputation && parsed.reputation > 50) {
           const bonus = Math.floor((parsed.reputation - 50) / 10);
-          ['batya', 'anna', 'prokhor', 'egor', 'varya'].forEach(id => {
+          ['sanych', 'ataron', 'sky', 'bob', 'chagron', 'varya', 'batya', 'anna', 'prokhor', 'egor'].forEach(id => {
             if (parsed.npcRep[id] <= 15) parsed.npcRep[id] += Math.min(bonus, 35);
           });
-          if (parsed.questFlags?.met_spiridon && parsed.npcRep.spiridon <= 5) {
-            parsed.npcRep.spiridon += Math.min(bonus, 25);
+          if (parsed.questFlags?.met_margo && parsed.npcRep.margo <= 5) {
+            parsed.npcRep.margo += Math.min(bonus, 25);
+            parsed.npcRep.spiridon = parsed.npcRep.margo;
           }
-          if (parsed.questFlags?.met_sasha && parsed.npcRep.sasha <= 0) {
-            parsed.npcRep.sasha += Math.min(bonus, 25);
+          if (parsed.questFlags?.met_strong && parsed.npcRep.strong <= 0) {
+            parsed.npcRep.strong += Math.min(bonus, 25);
+            parsed.npcRep.sasha = parsed.npcRep.strong;
           }
         }
         parsed.crossQuests = parsed.crossQuests || {};

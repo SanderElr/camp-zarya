@@ -67,10 +67,11 @@
   function doVisitSpiridon(loc) {
     sfx.init();
     sfx.playClick();
+    state.questFlags.met_margo = true;
     state.questFlags.met_spiridon = true;
-    toast('🛖 Вы пробрались по замшелым кочкам к затерянной Заимке деда Спиридона!');
+    toast('🛖 Вы пробрались по замшелым кочкам к затерянной Заимке травницы Марго!');
     closeModal();
-    talkSpiridon();
+    talkMargo();
   }
 
   function doSearchBrdm(loc) {
@@ -175,20 +176,21 @@
     sfx.init();
     sfx.playClick();
     if (getItemCount('bandage') < 2 || getItemCount('clean_water') < 1) {
-      toast('Саша истекает кровью в расщелине! Нужно: 2 стерильных бинта и 1 фляга чистой воды.');
+      toast('Стронг истекает кровью в расщелине! Нужно: 2 стерильных бинта и 1 фляга чистой воды.');
       return;
     }
     removeItem('bandage', 2);
     removeItem('clean_water', 1);
+    state.questFlags.met_strong = true;
     state.questFlags.met_sasha = true;
     state.reputation += 40;
     passTime(2);
-    toast('🆘 САША СПАСЕН! Вы перевязали раненого радиста и помогли ему дойти до лагеря! Теперь Саша наладит связь в «Всем ПОХ»!');
+    toast('🆘 СТРОНГ СПАСЕН! Вы перевязали раненого аналитика и помогли ему добраться до лагеря! Теперь Стронг наладит радиопеленг в «Всем ПОХ»!');
     sfx.playSuccess();
     updateHUD();
     saveState();
     closeModal();
-    talkSasha();
+    talkStrong();
   }
 
   function doExtractLogger(loc) {
@@ -521,9 +523,9 @@
           primary: true
         });
       }
-      if (state.questFlags.met_spiridon && !state.questFlags.geo1_done) {
+      if ((state.questFlags.met_margo || state.questFlags.met_spiridon) && !state.questFlags.geo1_done) {
         actions.push({
-          text: '📍 Осмотреть геодезический триангулятор на скале (Наводка Спиридона)',
+          text: '📍 Осмотреть геодезический триангулятор на скале (Наводка Марго)',
           action: () => doSearchTriangulator(loc)
         });
       }
@@ -540,10 +542,11 @@
 
     // Болота: Гнилая гать
     if (loc.id === 'swamp') {
+      const metM = !!(state.questFlags.met_margo || state.questFlags.met_spiridon);
       actions.push({
-        text: '🛖 Пробраться по гати к Заимке старовера (Дед Спиридон)',
+        text: metM ? '🛖 Зайти на Заимку травницы Марго' : '🛖 Пробраться по гати к Заимке травницы Марго',
         action: () => doVisitSpiridon(loc),
-        primary: !state.questFlags.met_spiridon
+        primary: !metM
       });
       if (!state.questFlags.brdm_searched) {
         actions.push({
@@ -644,9 +647,9 @@
 
     // Радиовышка
     if (loc.id === 'radio_tower') {
-      if (state.mainQuestStep >= 11 && !state.questFlags.met_sasha) {
+      if (state.mainQuestStep >= 11 && !state.questFlags.met_strong && !state.questFlags.met_sasha) {
         actions.push({
-          text: '🆘 Осмотреть расщелину под утесом (Стоны о помощи)',
+          text: '🆘 Осмотреть расщелину под утесом (Спасенный Стронг)',
           action: () => doRescueSasha(loc),
           primary: true
         });
@@ -1218,15 +1221,15 @@
   }
 
   function showVictoryScreen() {
-    const title = '🏆 ВЕЛИКАЯ ПОБЕДА! СПАСЕНИЕ ЛАГЕРЯ «ЗАРЯ»!';
+    const title = '🏆 ВЕЛИКАЯ ПОБЕДА! СПАСЕНИЕ ЛАГЕРЯ «ВСЕМ ПОХ»!';
     const sub = 'Сюжетная сага из 20 квестов успешно завершена';
     const body = `
-      <p style="color:var(--accent-gold); font-size:14px; font-weight:bold;">Майор Дмитрий и вся община лагеря салютуют вам!</p>
-      <p>Вы прошли колоссальный путь: от истощённого беженца до легендарного защитника тайги. Реактор НИИ «Сфера» заглушен, повторный ядовитый выброс остановлен навсегда, а биостабилизатор «Нектар-7» очистит сибирские земли и вернёт людям жизнь!</p>
+      <p style="color:var(--accent-gold); font-size:14px; font-weight:bold;">Саныч, Атарон и весь Совет Основателей салютуют вам!</p>
+      <p>Вы прошли колоссальный путь: от истощённого беженца до легендарного защитника тайги. Реактор НИИ «Сфера» заглушен, повторный ядовитый выброс остановлен навсегда, а биостабилизатор «Нектар-7» очистит сибирские земли и вернёт людям жизнь! «Всем ПОХ на апокалипсис!» — гремит победный салют над костром.</p>
       <div style="background:rgba(0,0,0,0.45); padding:10px 14px; border-radius:8px; margin:12px 0; border:1px solid rgba(255,255,255,0.15); line-height:1.6;">
         <b>Ваш итоговый послужной список:</b><br>
-        • Финальный статус: <b>${getReputationTitle(state.reputation)}</b> (${state.reputation} очков репутации)<br>
-        • Прожито дней в тайге: <b>${state.day}</b><br>
+        • Финальный статус: <b>\${getReputationTitle(state.reputation)}</b> (\${state.reputation} очков репутации)<br>
+        • Прожито дней в тайге: <b>\${state.day}</b><br>
         • Выполнены все 20 ключевых сюжетных заданий!<br>
         • Открыты все сектора карты: Быстрянка, Лес, Гнилая гать, Насосная станция, Охотничьи угодья, Кордон, Радиовышка, Бункер «Сфера»!
       </div>
@@ -1239,5 +1242,5 @@
         primary: true
       }
     ];
-    openModal(title, sub, 'assets/images/batya.png', body, actions);
+    openModal(title, sub, 'assets/images/npc_leader.png', body, actions);
   }

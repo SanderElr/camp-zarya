@@ -1,33 +1,68 @@
-  // --- НПС ЛАГЕРЯ ---
+  // --- НПС ЛАГЕРЯ «ВСЕМ ПОХ»: СОВЕТ ОСНОВАТЕЛЕЙ И ЖИТЕЛИ ---
   const NPCS = {
-    batya: {
-      id: 'batya', name: 'Майор Дмитрий (Батя)', role: 'Комендант лагеря', avatar: 'assets/images/npc_leader.png?v=2.1',
-      desc: 'Руководит обороной лагеря и распределением припасов. Бывший военный.'
+    sanych: {
+      id: 'sanych',
+      name: 'Александр Александрович (Саныч)',
+      role: 'Глава лагеря «Всем ПОХ»',
+      avatar: 'assets/images/npc_leader.png?v=2.2',
+      desc: 'Основатель поселения и верховный мотиватор. Неисправимый оптимист («Не ронять слёз! Сжать ягодицы в кулак!»), цитирует «ДМБ» и советское кино, хранит семена надежды из Короба №42.'
     },
-    anna: {
-      id: 'anna', name: 'Анна Павловна', role: 'Фельдшер-травница', avatar: 'assets/images/npc_default_woman.png?v=2.1',
-      desc: 'Лечит раненых, готовит настойки и скупает таёжные травы.'
+    ataron: {
+      id: 'ataron',
+      name: 'Андрей «Атарон»',
+      role: 'Комендант периметра и безопасности',
+      avatar: 'assets/images/npc_male2.png?v=2.2',
+      desc: 'Отвечает за оборону и строгий учет. Частокол у него стоит строго под 45 градусов, факелы горят по уставу. Коллекционирует пивные крышечки — твердую валюту порядка.'
     },
-    prokhor: {
-      id: 'prokhor', name: 'Прохор Кузьмич', role: 'Механик лагеря', avatar: 'assets/images/npc_engineer.png?v=2.1',
-      desc: 'Заведует верстаком. Из консервной банки и проволоки соберет капкан.'
+    sky: {
+      id: 'sky',
+      name: 'Николай «Скай»',
+      role: 'Главный врач и токсиколог',
+      avatar: 'assets/images/npc_vet.png?v=2.2',
+      desc: 'Полевой хирург с чернейшим юмором и усталыми глазами. Лечит раненых, ворчит на речную воду («Наука проиграла реке!»), варит «Адское варево» и спасает от радиации.'
     },
-    egor: {
-      id: 'egor', name: 'Егор Лесник', role: 'Охотник и следопыт', avatar: 'assets/images/npc_def_male.png?v=2.1',
-      desc: 'Знает каждый овраг в тайге. Учит ловить рыбу и ставить силки.'
+    bob: {
+      id: 'bob',
+      name: 'Вова «Боб» («Бобчонок»)',
+      role: 'Главный инженер и механик',
+      avatar: 'assets/images/npc_engineer.png?v=2.2',
+      desc: 'Кудесник кустарных технологий. Рассуждает строго по пунктам: «Пункт первый, пункт второй...». Перебирает водоочистители, кует снаряжение и варит крафтовое пиво.'
     },
-spiridon: {
-      id: 'spiridon', name: 'Дед Спиридон', role: 'Знахарь-старовер', avatar: 'assets/images/npc_spiridon.png?v=2.2',
-      desc: 'Отшельник из глубины Гнилой гати. Хранит секреты таёжной алхимии и древних снадобий.'
-    },
-    sasha: {
-      id: 'sasha', name: 'Саша «Связист»', role: 'Радиотехник НИИ', avatar: 'assets/images/npc_sasha.png?v=2.2',
-      desc: 'Спасённый лаборант «Сферы». Сканирует радиоэфир и собирает сложную электронику.'
+    chagron: {
+      id: 'chagron',
+      name: 'Чагрон («Глыба»)',
+      role: 'Снайпер и таёжный следопыт',
+      avatar: 'assets/images/npc_def_male.png?v=2.2',
+      desc: 'Двухметровый богатырь с ладонями-лопатами. Немногословен, виртуозно бьет калибром 7.62x54R. Втайне не выносит пустоты и одиночества, поэтому любит греться у костра с новичками.'
     },
     varya: {
-      id: 'varya', name: 'Варя (Варвара)', role: 'Полевой повар лагеря', avatar: 'assets/images/npc_varya.png?v=2.2',
-      desc: 'Бойкая молодая девушка родом из Брянска. Была спасена от бандитов неизвестным героем. Заведует общим котлом и регулярно интересуется у всех калибрами патронов.'
+      id: 'varya',
+      name: 'Варя (Варвара)',
+      role: 'Полевой повар лагеря',
+      avatar: 'assets/images/npc_varya.png?v=2.2',
+      desc: 'Молодая девушка родом из Брянска, спасённая на мосту неизвестным снайпером. Заведует общим котлом, варит наваристые супы и выспрашивает у всех калибр 7.62x54R.'
+    },
+    margo: {
+      id: 'margo',
+      name: 'Марго (Марья Моревна)',
+      role: 'Лесная травница Пустоши',
+      avatar: 'assets/images/npc_default_woman.png?v=2.2',
+      desc: 'Травница с фиолетовыми волосами в кедах «Два мяча». Знает все секреты болот, дегтя и грибов. Главный философ лагеря: «Добро должно быть с кулаками! Трави бобров, спасай деревья!».',
+      marker: 'swamp'
+    },
+    strong: {
+      id: 'strong',
+      name: 'Стронг',
+      role: 'Аналитик и радио-статист',
+      avatar: 'assets/images/npc_sasha.png?v=2.2',
+      desc: 'Человек с антрацитовым глазом и потертым блокнотом. Ведет «Реестр Всходов», сканирует радиоэфир на Скалистом утёсе и точно вычисляет вероятности выживания.'
     }
   };
 
-  
+  // Неперечислимые псевдонимы для 100% обратной совместимости со старыми сохранениями и кодом
+  Object.defineProperty(NPCS, 'batya', { value: NPCS.sanych, enumerable: false, writable: true, configurable: true });
+  Object.defineProperty(NPCS, 'anna', { value: NPCS.sky, enumerable: false, writable: true, configurable: true });
+  Object.defineProperty(NPCS, 'prokhor', { value: NPCS.bob, enumerable: false, writable: true, configurable: true });
+  Object.defineProperty(NPCS, 'egor', { value: NPCS.chagron, enumerable: false, writable: true, configurable: true });
+  Object.defineProperty(NPCS, 'spiridon', { value: NPCS.margo, enumerable: false, writable: true, configurable: true });
+  Object.defineProperty(NPCS, 'sasha', { value: NPCS.strong, enumerable: false, writable: true, configurable: true });
