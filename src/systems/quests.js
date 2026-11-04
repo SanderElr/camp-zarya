@@ -3,8 +3,8 @@
     daily_fish: { giver: 'Егор Лесник', giverId: 'egor' },
     daily_wood: { giver: 'Прохор Кузьмич', giverId: 'prokhor' },
     daily_herbs: { giver: 'Анна Павловна', giverId: 'anna' },
-    daily_berries: { giver: 'Варвара (Варя)', giverId: 'varya' },
-    daily_water: { giver: 'Варвара (Варя)', giverId: 'varya' }
+    daily_berries: { giver: 'Варя (Полевой повар)', giverId: 'varya' },
+    daily_water: { giver: 'Варя (Полевой повар)', giverId: 'varya' }
   };
 
   function generateDailyQuestsIfNeeded(force = false) {
@@ -61,7 +61,7 @@
       { 
         id: 'daily_berries', type: 'berries', 
         title: varyaRep >= 50 ? '🍒 Таёжный ягодный запас' : 'Ягоды для котла', 
-        giver: 'Варвара (Варя)', giverId: 'varya', 
+        giver: 'Варя (Полевой повар)', giverId: 'varya', 
         desc: varyaRep >= 50 ? 'Собрать 3 порции брусники для лагерного киселя и витаминного взвара.' : 'Собрать 2 порции лесной брусники для полевой кухни.', 
         goal: varyaRep >= 50 ? 3 : 2, current: 0, 
         rewardRep: varyaRep >= 50 ? 20 : 12, 
