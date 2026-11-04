@@ -137,5 +137,23 @@
       oneTime: true,
       unlocked: (s) => !!s.questFlags?.met_sasha,
       isCrafted: (s) => !!s.hasElectricTorch || getItemCount('electric_torch') > 0 || !!s.questFlags?.electric_torch_crafted
+    },
+    {
+      id: 'cook_royal_soup', station: 'fire', name: 'Праздничный таёжный борщ', icon: 'assets/images/rich_soup.png',
+      cost: { canned_food: 1, berries: 2, clean_water: 1, firewood: 1 }, result: { royal_soup: 1 }, energy: 10, timeMin: 35,
+      desc: 'Кулинарный шедевр Вари. Дарует +80 сытости, +50 жажды и мощный бафф «Сытость 3x»!',
+      unlocked: (s) => s.sideQuests?.varya_royal_soup?.status === 'completed'
+    },
+    {
+      id: 'brew_balsam', station: 'fire', name: 'Бальзам Вари и Спиридона', icon: 'assets/images/hw_potion.png',
+      cost: { alcohol: 1, berries: 2, herbs: 2, swamp_moss: 1 }, result: { taiga_balsam: 1 }, energy: 10, timeMin: 25,
+      desc: 'Целебный медово-ягодный эликсир. Полностью исцеляет (+60 HP, +50 энергии, снимает отравление и холод).',
+      unlocked: (s) => s.crossQuests?.cross_balsam?.status === 'completed'
+    },
+    {
+      id: 'cook_smoked_feast', station: 'fire', name: 'Окорок по-лесному', icon: 'assets/images/fried_chopmeat.png',
+      cost: { raw_meat: 1, berries: 2, charcoal: 1, firewood: 1 }, result: { smoked_feast: 1 }, energy: 10, timeMin: 40,
+      desc: 'Особый охотничий окорок от Егора и Вари, вымоченный в брусничном взваре (+75 сытости, +25 энергии, бафф «Сытость 2x»).',
+      unlocked: (s) => s.crossQuests?.cross_feast?.status === 'completed'
     }
   ];

@@ -101,6 +101,27 @@
         if (parsed.eventLog.length === 0) {
           parsed.eventLog.push({ id: 1, day: parsed.day || 1, time: parsed.timeOfDay || 0, text: 'Хроника лагеря начата.', category: 'story' });
         }
+        
+        // Нормализация индивидуальной репутации и новых квестовых систем
+        parsed.npcRep = Object.assign({}, INITIAL_STATE.npcRep, parsed.npcRep || {});
+        if (parsed.reputation && parsed.reputation > 50) {
+          const bonus = Math.floor((parsed.reputation - 50) / 10);
+          ['batya', 'anna', 'prokhor', 'egor', 'varya'].forEach(id => {
+            if (parsed.npcRep[id] <= 15) parsed.npcRep[id] += Math.min(bonus, 35);
+          });
+          if (parsed.questFlags?.met_spiridon && parsed.npcRep.spiridon <= 5) {
+            parsed.npcRep.spiridon += Math.min(bonus, 25);
+          }
+          if (parsed.questFlags?.met_sasha && parsed.npcRep.sasha <= 0) {
+            parsed.npcRep.sasha += Math.min(bonus, 25);
+          }
+        }
+        parsed.crossQuests = parsed.crossQuests || {};
+        parsed.highRepQuests = parsed.highRepQuests || {};
+        parsed.npcChatDay = parsed.npcChatDay || {};
+        if (parsed.varyaStewClaimedDay === undefined) parsed.varyaStewClaimedDay = -1;
+        if (parsed.varyaWaterClaimedDay === undefined) parsed.varyaWaterClaimedDay = -1;
+
         state = Object.assign(state, parsed);
       }
     } catch(e) {}

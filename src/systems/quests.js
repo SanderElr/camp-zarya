@@ -2,7 +2,9 @@
   const DAILY_GIVER_MAP = {
     daily_fish: { giver: 'Егор Лесник', giverId: 'egor' },
     daily_wood: { giver: 'Прохор Кузьмич', giverId: 'prokhor' },
-    daily_herbs: { giver: 'Анна Павловна', giverId: 'anna' }
+    daily_herbs: { giver: 'Анна Павловна', giverId: 'anna' },
+    daily_berries: { giver: 'Варвара (Варя)', giverId: 'varya' },
+    daily_water: { giver: 'Варвара (Варя)', giverId: 'varya' }
   };
 
   function generateDailyQuestsIfNeeded(force = false) {
@@ -16,10 +18,57 @@
       return;
     }
 
+    // Проверяем уровень репутации жителей для улучшенных наград
+    const egorRep = getNpcRep('egor');
+    const prokhorRep = getNpcRep('prokhor');
+    const annaRep = getNpcRep('anna');
+    const varyaRep = getNpcRep('varya');
+
     state.dailyQuests = [
-      { id: 'daily_fish', type: 'fish', title: 'Рыбный день', giver: 'Егор Лесник', giverId: 'egor', desc: 'Поймать 2 рыбы на реке Быстрянке.', goal: 2, current: 0, rewardRep: 15, rewardAmmo: 2, completed: false, notifiedReady: false },
-      { id: 'daily_wood', type: 'wood', title: 'Дрова для костра', giver: 'Прохор Кузьмич', giverId: 'prokhor', desc: 'Заготовить 2 охапки сухих дров.', goal: 2, current: 0, rewardRep: 10, rewardAmmo: 1, completed: false, notifiedReady: false },
-      { id: 'daily_herbs', type: 'herbs', title: 'Аптечный сбор', giver: 'Анна Павловна', giverId: 'anna', desc: 'Собрать 2 пучка полыни для лазарета Анны.', goal: 2, current: 0, rewardRep: 15, rewardAmmo: 2, completed: false, notifiedReady: false }
+      { 
+        id: 'daily_fish', type: 'fish', 
+        title: egorRep >= 50 ? '🐟 Царский улов' : 'Рыбный день', 
+        giver: 'Егор Лесник', giverId: 'egor', 
+        desc: egorRep >= 50 ? 'Поймать 3 отборные рыбы на реке Быстрянке для старого следопыта.' : 'Поймать 2 рыбы на реке Быстрянке.', 
+        goal: egorRep >= 50 ? 3 : 2, current: 0, 
+        rewardRep: egorRep >= 50 ? 25 : 15, 
+        rewardAmmo: egorRep >= 50 ? 3 : 2, 
+        completed: false, notifiedReady: false, 
+        isUpgraded: egorRep >= 50 
+      },
+      { 
+        id: 'daily_wood', type: 'wood', 
+        title: prokhorRep >= 50 ? '🌲 Отборная сушина' : 'Дрова для костра', 
+        giver: 'Прохор Кузьмич', giverId: 'prokhor', 
+        desc: prokhorRep >= 50 ? 'Заготовить 3 плотных полена для кузнечного горна Кузьмича.' : 'Заготовить 2 охапки сухих дров.', 
+        goal: prokhorRep >= 50 ? 3 : 2, current: 0, 
+        rewardRep: prokhorRep >= 50 ? 20 : 10, 
+        rewardAmmo: prokhorRep >= 50 ? 2 : 1, 
+        completed: false, notifiedReady: false, 
+        isUpgraded: prokhorRep >= 50 
+      },
+      { 
+        id: 'daily_herbs', type: 'herbs', 
+        title: annaRep >= 50 ? '🌿 Чистый аптечный сбор' : 'Аптечный сбор', 
+        giver: 'Анна Павловна', giverId: 'anna', 
+        desc: annaRep >= 50 ? 'Собрать 3 пучка душистой полыни и чабреца для медпункта.' : 'Собрать 2 пучка полыни для лазарета Анны.', 
+        goal: annaRep >= 50 ? 3 : 2, current: 0, 
+        rewardRep: annaRep >= 50 ? 25 : 15, 
+        rewardAmmo: annaRep >= 50 ? 3 : 2, 
+        completed: false, notifiedReady: false, 
+        isUpgraded: annaRep >= 50 
+      },
+      { 
+        id: 'daily_berries', type: 'berries', 
+        title: varyaRep >= 50 ? '🍒 Таёжный ягодный запас' : 'Ягоды для котла', 
+        giver: 'Варвара (Варя)', giverId: 'varya', 
+        desc: varyaRep >= 50 ? 'Собрать 3 порции брусники для лагерного киселя и витаминного взвара.' : 'Собрать 2 порции лесной брусники для полевой кухни.', 
+        goal: varyaRep >= 50 ? 3 : 2, current: 0, 
+        rewardRep: varyaRep >= 50 ? 20 : 12, 
+        rewardAmmo: varyaRep >= 50 ? 2 : 1, 
+        completed: false, notifiedReady: false, 
+        isUpgraded: varyaRep >= 50 
+      }
     ];
   }
 
@@ -47,6 +96,12 @@
     q.completed = true;
     state.reputation += q.rewardRep;
     addItem('ammo', q.rewardAmmo);
+
+    // Рост индивидуальной репутации у конкретного жителя
+    if (q.giverId) {
+      changeNpcRep(q.giverId, Math.max(5, Math.round(q.rewardRep * 0.8)));
+    }
+
     toast(`🎖️ Поручение «${q.title}» успешно сдано! Получено: +${q.rewardRep} репутации, +${q.rewardAmmo} патрона.`, 'success');
     sfx.playSuccess();
     updateHUD();
@@ -177,7 +232,42 @@
       `;
       area.appendChild(headerDiv);
 
+      // Дашборд индивидуальной репутации жителей лагеря
+      const repBox = document.createElement('div');
+      repBox.style.cssText = 'background:rgba(0,0,0,0.3); border:1px solid var(--border-dim); border-radius:6px; padding:10px; margin-bottom:12px;';
+      let repRows = '';
+      Object.entries(NPCS).forEach(([id, npc]) => {
+        if (id === 'spiridon' && !state.questFlags?.met_spiridon) return;
+        if (id === 'sasha' && !state.questFlags?.met_sasha) return;
+        const repVal = getNpcRep(id);
+        const tier = getNpcRepTitle(repVal);
+        const firstName = npc.name.split(' ')[0];
+        repRows += `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:4px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:11.5px;">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <img src="${npc.avatar}" style="width:20px; height:20px; border-radius:3px; object-fit:cover;" alt="">
+              <span style="color:#fff; font-weight:bold;">${firstName}</span>
+              <span style="font-size:10px; color:var(--text-dim);">(${npc.role})</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span style="color:${tier.color}; font-weight:bold; font-size:11px;">${tier.icon} ${tier.title}</span>
+              <span style="color:var(--accent-gold); font-size:11px; font-family:monospace; min-width:32px; text-align:right;">${repVal}</span>
+            </div>
+          </div>
+        `;
+      });
+      repBox.innerHTML = `
+        <div style="font-family:Russo One,sans-serif; font-size:12px; color:var(--accent-gold); margin-bottom:6px; display:flex; justify-content:space-between;">
+          <span>🤝 Отношения с жителями лагеря</span>
+          <span style="font-size:10px; color:var(--text-dim); font-family:sans-serif;">Репутация открывает союзы и уникальные квесты</span>
+        </div>
+        ${repRows}
+      `;
+      area.appendChild(repBox);
+
       const categories = [
+        { id: 'cross', name: '⚔️ Союзы жителей (Пересекающиеся цепочки)' },
+        { id: 'high_rep', name: '⭐ Квесты высокой репутации (70+)' },
         { id: 'camp', name: '⛺ Поручения жителей лагеря' },
         { id: 'location', name: '🗺️ Тайны открытых локаций' },
         { id: 'story', name: '📖 Сюжетные цепочки историй' },

@@ -1,3 +1,127 @@
+  // --- СИСТЕМА ИНДИВИДУАЛЬНОЙ РЕПУТАЦИИ У ЖИТЕЛЕЙ ЛАГЕРЯ ---
+  function getNpcRep(npcId) {
+    if (!state.npcRep) state.npcRep = {};
+    if (state.npcRep[npcId] === undefined) {
+      const defs = { batya: 15, anna: 15, prokhor: 15, egor: 15, varya: 15, spiridon: 5, sasha: 0 };
+      state.npcRep[npcId] = defs[npcId] !== undefined ? defs[npcId] : 10;
+    }
+    return state.npcRep[npcId];
+  }
+
+  function getNpcRepTitle(rep) {
+    if (rep < 25) return { title: 'Чужак', level: 1, color: '#9ca3af', icon: '⚪', attitude: '«Присматривается с настороженностью»' };
+    if (rep < 50) return { title: 'Знакомый', level: 2, color: 'var(--accent-blue)', icon: '🔵', attitude: '«Считает надёжным и дельным человеком»' };
+    if (rep < 80) return { title: 'Доверенный', level: 3, color: 'var(--accent-green)', icon: '🟢', attitude: '«Полное доверие и уважение»' };
+    return { title: 'Побратим / Верный друг', level: 4, color: 'var(--accent-gold)', icon: '⭐', attitude: '«Готов стоять спиной к спине в любой беде»' };
+  }
+
+  function changeNpcRep(npcId, amount, notify = true) {
+    if (!state.npcRep) state.npcRep = {};
+    const current = getNpcRep(npcId);
+    const oldTier = getNpcRepTitle(current);
+    const newRep = Math.max(0, current + amount);
+    state.npcRep[npcId] = newRep;
+    const newTier = getNpcRepTitle(newRep);
+
+    if (notify && amount !== 0) {
+      const npcName = NPCS[npcId]?.name ? NPCS[npcId].name.split(' ')[0] : npcId;
+      const sign = amount > 0 ? '+' : '';
+      toast(`🤝 Репутация (${npcName}): ${sign}${amount} (${newTier.title}, ${newRep})`);
+    }
+    if (oldTier.level !== newTier.level && notify && amount > 0) {
+      const npcName = NPCS[npcId]?.name || npcId;
+      toast(`🎉 ${npcName} теперь считает вас: ${newTier.title}! Открыты новые возможности общины.`);
+      sfx.playSuccess();
+    }
+    saveState();
+    updateHUD();
+  }
+
+  function renderNpcRepHeader(npcId) {
+    const rep = getNpcRep(npcId);
+    const tier = getNpcRepTitle(rep);
+    return `
+      <div style="background:rgba(0,0,0,0.35); border:1px solid var(--border-dim); border-left:3px solid ${tier.color}; border-radius:4px; padding:6px 10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:11.5px; color:var(--text-dim);">
+          Отношение: <strong style="color:${tier.color};">${tier.icon} ${tier.title} (${rep})</strong>
+        </span>
+        <span style="font-size:10px; color:${tier.color}; font-style:italic;">
+          ${tier.attitude}
+        </span>
+      </div>
+    `;
+  }
+
+  // --- ДУШЕВНЫЕ ДИАЛОГИ И ЛАГЕРНЫЕ НОВОСТИ («ПОБОЛТАТЬ») ---
+  function openNpcChat(npcId) {
+    const npc = NPCS[npcId];
+    if (!npc) return;
+    const rep = getNpcRep(npcId);
+    const tier = getNpcRepTitle(rep);
+
+    state.npcChatDay = state.npcChatDay || {};
+    const chatKey = `${npcId}_${state.day}`;
+    let bonusText = '';
+    if (!state.npcChatDay[chatKey]) {
+      state.npcChatDay[chatKey] = true;
+      changeNpcRep(npcId, 3, false);
+      bonusText = `<div style="color:var(--accent-green); font-size:11px; margin-top:8px;">🤝 ${npc.name.split(' ')[0]} оценил(а) душевную беседу (+3 к личной репутации)!</div>`;
+    }
+
+    let chatText = '';
+    if (npcId === 'varya') {
+      if (state.weather === 'freeze') {
+        chatText = `<i>«Ох, мороз какой лютый на дворе! Котёл чуть не примёрз к земле, еле растопила. Ты к печи ближе садись, ноги грей. Я в котелок шишек сосновых и брусничного листа бросила — пар кости прогревает. Главное в такую пору — голодным на снег не соваться, кровь стынет враз.»</i>`;
+      } else if (state.weather === 'rain') {
+        chatText = `<i>«Дождь хлещет, вода в корыта с навеса так и льётся. Хоть какая-то польза — отстоять её через уголь, и будет запас для похлёбки. А то таскать с Быстрянки вёдра — спина отваливается. Зато под шум дождя ушица в котле так славно булькает!»</i>`;
+      } else if (tier.level >= 3) {
+        chatText = `<i>«Садись, сынок, я тебе с самого донышка навар зачерпну, с мясными шкварками! Ты для нашей «Зари» столько сделал... Раньше ведь как было? Хлебнём пустой кипяток с кореньями и зубами щёлкаем. А сейчас благодаря тебе и крупа есть, и рыба свежая, и дрова сухие. Дай бог тебе здоровья на таёжных тропах.»</i>`;
+      } else {
+        chatText = `<i>«Ты заходи почаще, не стесняйся. У меня правило простое: если боец из вылазки вернулся живым — его первым делом накормить надо, а уж потом Бате рапорты строчить. Принесёшь брусники или рыбки — с меня добавка!»</i>`;
+      }
+    } else if (npcId === 'batya') {
+      if (tier.level >= 3) {
+        chatText = `<i>«Вольно, боец. Гляжу на тебя и вспоминаю свою роту в первые недели катастрофы. Мало кто сдюжил, паника людей быстрее пуль косила. А ты держишься кремнем. Я за этот лагерь перед погибшими ребятами в ответе, и на тебя могу положиться как на самого себя. Береги себя в рейдах.»</i>`;
+      } else {
+        chatText = `<i>«Дисциплина и порядок — вот на чём держится «Заря». В тайге без устава и пяти минут не протянешь. Караулы должны сменяться вовремя, патроны беречь, а оружие чистить до блеска. Вижу, стараешься. Продолжай в том же духе — община своих людей не бросает.»</i>`;
+      }
+    } else if (npcId === 'anna') {
+      if (tier.level >= 3) {
+        chatText = `<i>«Знаешь, когда радиостанция замолчала и пошли первые кислотные туманы, мне казалось, что выхода нет... Но глядя, как вы возвращаетесь из самых гиблых топей, я снова верю, что мы выстоим. Спасибо за травы и сфагнум — без твоей помощи лазарет давно бы опустел.»</i>`;
+      } else {
+        chatText = `<i>«Усталость копится незаметно, береги нервы и сон. В тайге если глаза слипаются — считай, пропал: то в растяжку угодишь, то зверь подкрадётся. Пей больше кипячёной воды и не лезь в рыжие заросли мха у насосной станции — там радиация до сих пор звенит.»</i>`;
+      }
+    } else if (npcId === 'prokhor') {
+      if (tier.level >= 3) {
+        chatText = `<i>«Здорово, золотые руки! Видал, какой у меня горн весёлый? Металл ещё тот, златоустовский, не то что нынешняя сыромятина. Ты заходи, чайку из жестянки хлебнём. Если инструмент какой затупится или капкан перекосит — неси, сделаем в лучшем виде.»</i>`;
+      } else {
+        chatText = `<i>«Ворчу вот... Свёрла советские кончаются, напильники сточены до блеска. А лагерь железной рукой держать надо: то петлю на воротах сорвёт, то бур на скважине встанет. Найдёшь на вылазках обрезки труб, болты или тросы — тащи всё в кузницу, перекуем!»</i>`;
+      }
+    } else if (npcId === 'egor') {
+      if (tier.level >= 3) {
+        chatText = `<i>«Здорово, братка таёжный! Чуешь, как кедром тянет? Ветер с водораздела пошёл, значит, зверь к ручьям спустится. Мы с тобой уже не один овраг исходили, я по следам твоим вижу — тайгу ты начал понимать. Она ведь не злая, она просто жалости не знает. Будь честен с лесом — и он тебя прокормит.»</i>`;
+      } else {
+        chatText = `<i>«Следы на реке нехорошие были по утру. Не то волк-переросток прошёл, не то рысь со скальника сошла. Рыба в омутах глубже встала — чует перемену погоды. На воду выходишь — оглядывайся почаще и без ножа на берег ни ногой.»</i>`;
+      }
+    } else if (npcId === 'spiridon') {
+      chatText = `<i>«Мир тебе, чадо. Слышу шелест сосен — старая тайга вздыхает. Люди суетятся, железом гремят, в землю трубы вбивают... А земля-то живая, всё помнит и всё залечит. Ты в лес придёшь — поклонись старому дубу, травинку не рви понапрасну. Корни силу дают тому, кто сердце чистое хранит.»</i>`;
+    } else if (npcId === 'sasha') {
+      chatText = `<i>«Привет! Слушай, вчера на частоте 3650 кГц странный пакет морзянки прошёл... Похоже на автоматический маркер из штольни «Сферы». Неужели там внизу до сих пор аварийные аккумуляторы держат? Если поможешь наладить фильтры приёмника — мы сможем перехватывать сигналы со всей долины!»</i>`;
+    }
+
+    const body = `
+      ${renderNpcRepHeader(npcId)}
+      <div style="font-size:12.5px; line-height:1.6; color:var(--text-main); margin-bottom:12px;">
+        ${chatText}
+      </div>
+      ${bonusText}
+    `;
+
+    openModal(npc.name, `Беседа • ${npc.role}`, npc.avatar, body, [
+      { text: '↩️ Вернуться к делам', action: () => talkToNPC(npcId), primary: true }
+    ]);
+  }
+
   // --- ЛАГЕРЬ И НПС ---
   function renderNPCs() {
     const list = document.getElementById('npcList');
@@ -9,6 +133,9 @@
       // Саша виден после спасения у Радиовышки
       if (npc.id === 'sasha' && !state.questFlags?.met_sasha) return;
 
+      const repVal = getNpcRep(npc.id);
+      const repTier = getNpcRepTitle(repVal);
+
       const card = document.createElement('div');
       card.className = 'npc-card';
       card.innerHTML = `
@@ -17,6 +144,11 @@
           <div class="npc-header-row">
             <span class="npc-name">${npc.name}</span>
             <span class="npc-role">${npc.role}</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px; margin:2px 0 3px;">
+            <span class="npc-badge" style="border-color:${repTier.color}; color:${repTier.color}; background:rgba(0,0,0,0.35); font-size:10px; padding:1px 5px;">
+              ${repTier.icon} ${repTier.title} (${repVal})
+            </span>
           </div>
           <p class="npc-desc">${npc.desc}</p>
         </div>
@@ -66,6 +198,7 @@
         met_anna: false,
         met_egor: false,
         met_prokhor: false,
+        met_varya: false,
         has_membrane: false,
         pump_repaired: false,
         radio_repaired: false,
@@ -86,6 +219,8 @@
       talkSpiridon();
     } else if (npcId === 'sasha') {
       talkSasha();
+    } else if (npcId === 'varya') {
+      talkVarya();
     }
   }
 
@@ -102,10 +237,17 @@
     if (!state.questFlags) state.questFlags = {};
     state.questFlags.met_batya = true;
 
-    let body = `<p>Майор Дмитрий стоит у карты района, скрестив руки на груди. В глазах читается усталость, но голос звенит металлом.</p>`;
+    let body = renderNpcRepHeader('batya');
+    body += `<p>Майор Дмитрий стоит у карты района, скрестив руки на груди. В глазах читается усталость, но голос звенит металлом.</p>`;
     body += `<p><i>«Ну что, боец. Лагерь "Заря" — последнее место в этой тайге, где люди живут по законам чести. Если готов пахать ради общины — не пропадёшь.»</i></p>`;
 
     const actions = [];
+
+    // Душевная беседа
+    actions.push({
+      text: '💬 «Поболтать с Батей о делах в тайге»',
+      action: () => openNpcChat('batya')
+    });
 
     // Квест 1: Стартовый инструктаж (step 0)
     if (state.mainQuestStep === 0) {
@@ -838,6 +980,54 @@
       });
     }
 
+        // Квест высокой репутации (80+): Спецрезерв коменданта
+    const batyaRep = getNpcRep('batya');
+    if (batyaRep >= 80 && !state.highRepQuests?.batya?.status) {
+      actions.push({
+        text: '🎖️ «Батя, на какую поддержку штаба я могу рассчитывать?» (Репутация 80+)',
+        action: () => {
+          state.highRepQuests = state.highRepQuests || {};
+          state.highRepQuests.batya = { status: 'completed' };
+          addItem('ammo', 20);
+          addItem('canned_food', 2);
+          addItem('antirad', 1);
+          addItem('army_ration_box', 1);
+          changeNpcRep('batya', 15);
+          toast('⭐ Майор Дмитрий открыл спецрезерв коменданта (+20 патронов, 2 тушёнки, цистамин, спецпаёк)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          renderQuests();
+          talkBatya();
+        }
+      });
+    }
+
+    // Союзный квест: Штабной перехват: Секретный арсенал (Батя, Саша, Прохор - реп 60+ у всех трёх)
+    const sashaRep = getNpcRep('sasha');
+    const prokhorRep = getNpcRep('prokhor');
+    if (batyaRep >= 60 && sashaRep >= 60 && prokhorRep >= 60 && !state.crossQuests?.cross_arsenal?.status) {
+      actions.push({
+        text: '📻 «Батя, Саша перехватил военный шифр, а Прохор готов вскрыть спецхран!»',
+        action: () => {
+          state.crossQuests = state.crossQuests || {};
+          state.crossQuests.cross_arsenal = { status: 'completed' };
+          addItem('ammo', 25);
+          addItem('army_ration_box', 1);
+          changeNpcRep('batya', 35);
+          changeNpcRep('sasha', 35);
+          changeNpcRep('prokhor', 35);
+          state.reputation += 50;
+          toast('🏆 СЕКРЕТНЫЙ АРСЕНАЛ ВСКРЫТ! Офицерский спецхран передан общине (+25 патронов, спецпаёк, +35 репутации каждому союзнику)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          renderQuests();
+          talkBatya();
+        }
+      });
+    }
+
     body += `<p style="font-size:11px; color:var(--text-dim); margin-top:10px;">Репутация в лагере: ${getReputationTitle(state.reputation)} (${state.reputation} очков)</p>`;
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }
@@ -847,10 +1037,17 @@
     if (!state.questFlags) state.questFlags = {};
     state.questFlags.met_anna = true;
 
-    let body = `<p>В медицинском вагончике приятно пахнет сушеной мятой и спиртом. Анна перевязывает жгут и тепло улыбается.</p>`;
+    let body = renderNpcRepHeader('anna');
+    body += `<p>В медицинском вагончике приятно пахнет сушеной мятой и спиртом. Анна перевязывает жгут и тепло улыбается.</p>`;
     body += `<p><i>«Здравствуй! Главное в тайге — не пей сырую воду из реки и не хватай фонящие ягоды. Если накопишь радиацию — я сварю тебе отвар или дам цистамин.»</i></p>`;
 
     const actions = [];
+
+    // Душевная беседа
+    actions.push({
+      text: '💬 «Поболтать с Анной о лазарете и травах»',
+      action: () => openNpcChat('anna')
+    });
 
     // Квест 2
     if (state.mainQuestStep === 1) {
@@ -1181,6 +1378,28 @@
       });
     }
 
+        // Квест высокой репутации (70+): Биопротектор Анны
+    const annaRep = getNpcRep('anna');
+    if (annaRep >= 70 && !state.highRepQuests?.anna?.status) {
+      actions.push({
+        text: '🧪 «Анна Павловна, вы упоминали о секретной формуле биозащиты?» (Репутация 70+)',
+        action: () => {
+          state.highRepQuests = state.highRepQuests || {};
+          state.highRepQuests.anna = { status: 'completed' };
+          addItem('stimulator_m', 1);
+          addItem('antirad', 2);
+          changeNpcRep('anna', 20);
+          state.reputation += 35;
+          toast('⭐ Анна Павловна синтезировала «Биопротектор» (+1 «Стимулятор-М», +2 цистамина, +20 репутации)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          renderQuests();
+          talkAnna();
+        }
+      });
+    }
+
     checkStarterQuestProgress();
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }
@@ -1190,10 +1409,17 @@
     if (!state.questFlags) state.questFlags = {};
     state.questFlags.met_prokhor = true;
 
-    let body = `<p>Кузьмич орудует напильником над куском рельса. Под ногами гора стружки и шестеренок.</p>`;
+    let body = renderNpcRepHeader('prokhor');
+    body += `<p>Кузьмич орудует напильником над куском рельса. Под ногами гора стружки и шестеренок.</p>`;
     body += `<p><i>«Чего стоишь как чужой? Если руки из нужного места — подходи к верстаку, делай капканы да факелы. Принесешь металлолом — по рукам ударим.»</i></p>`;
 
     const actions = [];
+
+    // Душевная беседа
+    actions.push({
+      text: '💬 «Поболтать с Прохором о железе и мастерской»',
+      action: () => openNpcChat('prokhor')
+    });
 
     // Квест 3: Совет по факелу
     if (state.mainQuestStep === 2) {
@@ -1470,6 +1696,28 @@
       });
     }
 
+        // Квест высокой репутации (70+): Особая заточка Кузьмича
+    const prokhorRep = getNpcRep('prokhor');
+    if (prokhorRep >= 70 && !state.highRepQuests?.prokhor?.status) {
+      actions.push({
+        text: '🔨 «Кузьмич, покажи свой фирменный секрет закалки стали!» (Репутация 70+)',
+        action: () => {
+          state.highRepQuests = state.highRepQuests || {};
+          state.highRepQuests.prokhor = { status: 'completed' };
+          addItem('ammo', 10);
+          addItem('knife', 1);
+          changeNpcRep('prokhor', 20);
+          state.reputation += 35;
+          toast('⭐ Кузьмич выполнил особую заточку вашего клинка и подарил патроны (+1 кованый нож, +10 патронов, +20 репутации)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          renderQuests();
+          talkProkhor();
+        }
+      });
+    }
+
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }
 
@@ -1478,10 +1726,17 @@
     if (!state.questFlags) state.questFlags = {};
     state.questFlags.met_egor = true;
 
-    let body = `<p>Егор чистит шкуру зайца за деревянным столом. Рядом лежит старая двустволка и плетёные верши.</p>`;
+    let body = renderNpcRepHeader('egor');
+    body += `<p>Егор чистит шкуру зайца за деревянным столом. Рядом лежит старая двустволка и плетёные верши.</p>`;
     body += `<p><i>«Тайга любит терпеливых. У реки червей накопай, удочку сооруди — голодным никогда не останешься. А будешь в чаще — смотри под ноги, волчьих следов полно.»</i></p>`;
 
     const actions = [];
+
+    // Душевная беседа
+    actions.push({
+      text: '💬 «Поболтать с Егором об охоте и тайге»',
+      action: () => openNpcChat('egor')
+    });
 
     // Квест 2
     if (state.mainQuestStep === 1) {
@@ -1804,6 +2059,28 @@
       body += `<p style="color:var(--accent-gold);"><b>[БУРАН]:</b> Егор с гордостью кивает на конуру: <i>«Ладная будка вышла! Пёс сыт, крепок и чует любого зверя за версту. Не забывай трепать его за ухом перед вылазкой!»</i></p>`;
     }
 
+        // Квест высокой репутации (70+): Тайный омут Егора
+    const egorRep = getNpcRep('egor');
+    if (egorRep >= 70 && !state.highRepQuests?.egor?.status) {
+      actions.push({
+        text: '🎣 «Егор, покажи мне свой секретный омут на Быстрянке!» (Репутация 70+)',
+        action: () => {
+          state.highRepQuests = state.highRepQuests || {};
+          state.highRepQuests.egor = { status: 'completed' };
+          addItem('fish', 3);
+          addItem('worms', 5);
+          changeNpcRep('egor', 20);
+          state.reputation += 35;
+          toast('⭐ Егор показал тайный омут у переката! Получено 3 отборные рыбы и наживка (+20 репутации)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          renderQuests();
+          talkEgor();
+        }
+      });
+    }
+
     checkStarterQuestProgress();
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }
@@ -1860,10 +2137,17 @@
     if (!state.questFlags) state.questFlags = {};
     state.questFlags.met_spiridon = true;
 
-    let body = `<p>Дед Спиридон сидит на лавке у бревенчатой стены своей заимки, чистит деревянной ложкой сушеные травы и неспешно подкладывает лучину в чугунную плошку. В избе пахнет сухим чабрецом, воском и ладаном.</p>`;
+    let body = renderNpcRepHeader('spiridon');
+    body += `<p>Дед Спиридон сидит на лавке у бревенчатой стены своей заимки, чистит деревянной ложкой сушеные травы и неспешно подкладывает лучину в чугунную плошку. В избе пахнет сухим чабрецом, воском и ладаном.</p>`;
     body += `<p><i>«Мир избе твоей, чадо. Слышу по дыханию — тяжёл твой путь был сквозь трясину. В тайге суета — первый враг. Сядь, отдышись у огня. Земля наша хоть и покалечена железной бедой, а силу живую в травах хранит. Коли с уважением к лесу придёшь — всё отдаст.»</i></p>`;
 
     const actions = [];
+
+    // Душевная беседа
+    actions.push({
+      text: '💬 «Поболтать с дедом Спиридоном о тайнах тайги»',
+      action: () => openNpcChat('spiridon')
+    });
 
     // Квест 2 Спиридона: Ведьмин гриб
     if (state.sideQuests?.spiridon_mushrooms?.status === 'active') {
@@ -2028,6 +2312,28 @@
       }
     );
 
+        // Квест высокой репутации (70+): Благословение тайги
+    const spiridonRep = getNpcRep('spiridon');
+    if (spiridonRep >= 70 && !state.highRepQuests?.spiridon?.status) {
+      actions.push({
+        text: '🌲 «Дед Спиридон, проведи надо мной обряд очищения тайги» (Репутация 70+)',
+        action: () => {
+          state.highRepQuests = state.highRepQuests || {};
+          state.highRepQuests.spiridon = { status: 'completed' };
+          state.radiation = 0;
+          state.hp = 100;
+          changeNpcRep('spiridon', 20);
+          state.reputation += 35;
+          toast('⭐ Спиридон окурил вас чабрецом и можжевельником: радиация снята, HP 100% (+20 репутации)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          renderQuests();
+          talkSpiridon();
+        }
+      });
+    }
+
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }
 
@@ -2037,10 +2343,17 @@
     if (!state.questFlags) state.questFlags = {};
     state.questFlags.met_sasha = true;
 
-    let body = `<p>Александр сидит за верстаком в радиорубке, поправив перемотанные синей изолентой очки. Из динамика лампового приёмника Р-326 доносится тихое атмосферное шипение и далёкие щелчки морзянки.</p>`;
+    let body = renderNpcRepHeader('sasha');
+    body += `<p>Александр сидит за верстаком в радиорубке, поправив перемотанные синей изолентой очки. Из динамика лампового приёмника Р-326 доносится тихое атмосферное шипение и далёкие щелчки морзянки.</p>`;
     body += `<p><i>«Привет! Знаешь, после того ада в реакторном зале я думал, что радиоэфир навсегда мёртв. Но нет! Если правильно согласовать антенну и отфильтровать помехи от ионизированных облаков — в эфире можно поймать радиомаяки старых аварийных сбросов. Раз в сутки я могу проводить пеленгацию для тебя!»</i></p>`;
 
     const actions = [];
+
+    // Душевная беседа
+    actions.push({
+      text: '💬 «Поболтать с Сашей о радиоэфире и технике»',
+      action: () => openNpcChat('sasha')
+    });
 
     // Ежедневное сканирование радиоэфира
     if (!state.sashaRadioUsedToday) {
@@ -2127,6 +2440,409 @@
         }
       }
     });
+
+    // Квест высокой репутации (70+): Глубокий радиопеленг
+    const sashaRep = getNpcRep('sasha');
+    if (sashaRep >= 70 && !state.highRepQuests?.sasha?.status) {
+      actions.push({
+        text: '📡 «Саша, сможем перепаять каскад усилителя для дальнего пеленга?» (Репутация 70+)',
+        action: () => {
+          state.highRepQuests = state.highRepQuests || {};
+          state.highRepQuests.sasha = { status: 'completed' };
+          addItem('ammo', 10);
+          addItem('batteryaaa', 2);
+          changeNpcRep('sasha', 20);
+          state.reputation += 35;
+          toast('⭐ Саша модернизировал ламповый каскад приемника (+10 патронов, 2 батарейки, +20 репутации)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          renderQuests();
+          talkSasha();
+        }
+      });
+    }
+
+    openModal(npc.name, npc.role, npc.avatar, body, actions);
+  }
+
+
+  // --- ВАРВАРА СТЕПАНОВНА (ПОЛЕВАЯ КУХНЯ И ЗАПАСЫ) ---
+  function talkVarya() {
+    const npc = NPCS.varya;
+    if (!state.questFlags) state.questFlags = {};
+    state.questFlags.met_varya = true;
+
+    const rep = getNpcRep('varya');
+    const tier = getNpcRepTitle(rep);
+
+    let body = renderNpcRepHeader('varya');
+    body += `<p>Варвара Степановна хлопочет у походной чугунной печи. Из огромного котла поднимается густой аппетитный пар с ароматом копченостей, соснового дымка и сушеных трав.</p>`;
+    body += `<p><i>«Здравствуй, милый! Заходи к огню, погрейся. В тайге без горячей похлёбки долго не протянешь — на сухарях да холодной воде ноги быстро откажут. Пока я у котла — голодным из "Зари" никто не уйдёт!»</i></p>`;
+
+    const actions = [];
+
+    // Душевный разговор
+    actions.push({
+      text: '💬 «Поболтать с Варей о новостях и стряпне»',
+      action: () => openNpcChat('varya')
+    });
+
+    // 1. Дневная бесплатная похлёбка
+    if (state.varyaStewClaimedDay !== state.day) {
+      actions.push({
+        text: '🍲 «Варя, можно порцию горячей похлёбки?» (Раз в день)',
+        action: () => {
+          state.varyaStewClaimedDay = state.day;
+          addItem('varya_stew', 1);
+          changeNpcRep('varya', 2);
+          toast('🍲 Варя налила вам полную миску горячей похлёбки (+1 похлёбка, +2 к репутации у Вари)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          talkVarya();
+        },
+        primary: true
+      });
+    } else {
+      body += `<p style="font-size:11.5px; color:var(--text-dim);">🍲 <i>«Дневную похлёбку ты уже получил, сынок. Приходи завтра поутру, новый котёл поспеет!»</i></p>`;
+    }
+
+    // 2. Набрать / очистить воду
+    const hasFilter = getItemCount('gravel_filter') > 0 || state.sideQuests?.varya_filter?.status === 'completed';
+    if (hasFilter && state.varyaWaterClaimedDay !== state.day) {
+      actions.push({
+        text: '💧 «Варя, набрать чистой воды через гравийный фильтр» (Бесплатно раз в день)',
+        action: () => {
+          state.varyaWaterClaimedDay = state.day;
+          addItem('clean_water', 1);
+          changeNpcRep('varya', 2);
+          toast('💧 Набрана фляга родниковой воды через кухонный фильтр Вари (+1 чистая вода)!');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          talkVarya();
+        }
+      });
+    }
+
+    // Обмен сырой воды на чистую (кипячение в котле)
+    if (getItemCount('raw_water') >= 2) {
+      actions.push({
+        text: '🫖 Вскипятить воду: обменять 2 сырой воды на 2 чистой',
+        action: () => {
+          removeItem('raw_water', 2);
+          addItem('clean_water', 2);
+          changeNpcRep('varya', 1);
+          toast('🫖 Варя прокипятила речную воду в котле: получено 2 фляги чистой воды!');
+          sfx.playClick();
+          updateHUD();
+          saveState();
+          talkVarya();
+        }
+      });
+    }
+
+    // 3. Сдача припасов для кухни (поддержка лагеря и рост репутации)
+    if (getItemCount('berries') >= 3) {
+      actions.push({
+        text: '🍒 Сдать лесную бруснику для компота (3 шт. ➔ 1 патрон, +5 реп)',
+        action: () => {
+          removeItem('berries', 3);
+          addItem('ammo', 1);
+          changeNpcRep('varya', 5);
+          state.reputation += 8;
+          toast('🍒 Брусника сдана на кухню! Варя выдала 1 патрон (+5 реп у Вари, +8 реп в лагере).');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          talkVarya();
+        }
+      });
+    }
+
+    if (getItemCount('fish') >= 2) {
+      actions.push({
+        text: '🐟 Сдать свежую рыбу для ухи (2 шт. ➔ 1 патрон, +6 реп)',
+        action: () => {
+          removeItem('fish', 2);
+          addItem('ammo', 1);
+          changeNpcRep('varya', 6);
+          state.reputation += 10;
+          toast('🐟 Рыба отдана в общий котёл! Варя выдала 1 патрон (+6 реп у Вари, +10 реп в лагере).');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          talkVarya();
+        }
+      });
+    }
+
+    if (getItemCount('firewood') >= 2) {
+      actions.push({
+        text: '🪵 Принести сухих дров для топки котла (2 шт. ➔ 1 патрон, +5 реп)',
+        action: () => {
+          removeItem('firewood', 2);
+          addItem('ammo', 1);
+          changeNpcRep('varya', 5);
+          state.reputation += 8;
+          toast('🪵 Дрова сложены у печи! Варя выдала 1 патрон (+5 реп у Вари, +8 реп в лагере).');
+          sfx.playSuccess();
+          updateHUD();
+          saveState();
+          talkVarya();
+        }
+      });
+    }
+
+    // --- ЛИЧНЫЕ КВЕСТЫ ВАРИ ---
+    // Квест 1: Огонь и котелок (varya_fire)
+    if (!state.sideQuests?.varya_fire?.status) {
+      actions.push({
+        text: '🔥 «Варя, помочь с растопкой кухни?» (Квест: Огонь и котелок)',
+        action: () => {
+          state.sideQuests = state.sideQuests || {};
+          state.sideQuests.varya_fire = { status: 'active' };
+          toast('📜 Взято поручение: «Огонь и котелок» (Принести 3 охапки сухих дров)');
+          sfx.playClick();
+          saveState();
+          renderQuests();
+          talkVarya();
+        }
+      });
+    } else if (state.sideQuests.varya_fire.status === 'active') {
+      const hasWood = getItemCount('firewood') >= 3;
+      body += `<p style="color:var(--accent-gold);"><b>[ОГОНЬ И КОТЕЛОК]:</b> <i>«Дрова для печи принёс? Без сухого жара щи не закипят!»</i></p>`;
+      if (hasWood) {
+        actions.push({
+          text: '🪵 «Вот 3 охапки сухих берёзовых дров, Варвара Степановна!»',
+          action: () => {
+            removeItem('firewood', 3);
+            state.sideQuests.varya_fire.status = 'completed';
+            addItem('varya_stew', 2);
+            changeNpcRep('varya', 15);
+            state.reputation += 15;
+            toast('⭐ Квест «Огонь и котелок» сдан (+2 порции похлёбки, +15 репутации у Вари)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            talkVarya();
+          },
+          primary: true
+        });
+      }
+    }
+
+    // Квест 2: Чистый исток (varya_filter) - требует репутацию 25+
+    if (rep >= 25 && state.sideQuests?.varya_fire?.status === 'completed' && !state.sideQuests?.varya_filter?.status) {
+      actions.push({
+        text: '💧 «Варя, как сделать воду на кухне чище?» (Квест: Чистый исток)',
+        action: () => {
+          state.sideQuests.varya_filter = { status: 'active' };
+          toast('📜 Взято поручение: «Чистый исток» (Собрать: 2 древесных угля, 2 сфагнума, 1 металлолом)');
+          sfx.playClick();
+          saveState();
+          renderQuests();
+          talkVarya();
+        }
+      });
+    } else if (state.sideQuests?.varya_filter?.status === 'active') {
+      const hasFilterMats = getItemCount('charcoal') >= 2 && getItemCount('swamp_moss') >= 2 && getItemCount('scrap') >= 1;
+      body += `<p style="color:var(--accent-gold);"><b>[ЧИСТЫЙ ИСТОК]:</b> <i>«Нужны 2 угля, 2 сфагнума и кусок жести для гравийного фильтра.»</i></p>`;
+      if (hasFilterMats) {
+        actions.push({
+          text: '🪨 «Собрать гравийный фильтр тонкой очистки для кухни»',
+          action: () => {
+            removeItem('charcoal', 2);
+            removeItem('swamp_moss', 2);
+            removeItem('scrap', 1);
+            state.sideQuests.varya_filter.status = 'completed';
+            addItem('gravel_filter', 1);
+            changeNpcRep('varya', 25);
+            state.reputation += 25;
+            toast('⭐ Гравийный фильтр Вари готов! Теперь можно бесплатно набирать чистую воду каждый день (+25 реп)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            talkVarya();
+          },
+          primary: true
+        });
+      }
+    }
+
+    // Квест 3: Вкус прежнего мира (varya_royal_soup) - требует репутацию 70+
+    if (rep >= 70 && !state.sideQuests?.varya_royal_soup?.status) {
+      actions.push({
+        text: '🍲 «Варя, давай сварим настоящий праздник для всего лагеря!»',
+        action: () => {
+          state.sideQuests.varya_royal_soup = { status: 'active' };
+          toast('📜 Взято поручение: «Вкус прежнего мира» (Принести: 1 тушёнку, 3 брусники, 2 чистой воды, 2 дров)');
+          sfx.playClick();
+          saveState();
+          renderQuests();
+          talkVarya();
+        }
+      });
+    } else if (state.sideQuests?.varya_royal_soup?.status === 'active') {
+      const hasSoupMats = getItemCount('canned_food') >= 1 && getItemCount('berries') >= 3 && getItemCount('clean_water') >= 2 && getItemCount('firewood') >= 2;
+      body += `<p style="color:var(--accent-gold);"><b>[ВКУС ПРЕЖНЕГО МИРА]:</b> <i>«Ох, если найдёшь банку армейской тушёнки, брусники и чистой воды — сотворим борщ, какого тайга ещё не пробовала!»</i></p>`;
+      if (hasSoupMats) {
+        actions.push({
+          text: '🍲 «Сварить Праздничный таёжный борщ вместе с Варей»',
+          action: () => {
+            removeItem('canned_food', 1);
+            removeItem('berries', 3);
+            removeItem('clean_water', 2);
+            removeItem('firewood', 2);
+            state.sideQuests.varya_royal_soup.status = 'completed';
+            addItem('royal_soup', 2);
+            changeNpcRep('varya', 30);
+            state.reputation += 35;
+            toast('🏆 Праздничный таёжный борщ готов! Открыт рецепт для костра (+2 порции, +30 реп у Вари, +35 лагерю)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            talkVarya();
+          },
+          primary: true
+        });
+      }
+    }
+
+    // --- ПЕРЕСЕКАЮЩИЕСЯ КВЕСТЫ (СОЮЗЫ) ---
+    // 1. Большой таёжный пир (Варя + Егор, реп >= 50)
+    const egorRep = getNpcRep('egor');
+    if (rep >= 50 && egorRep >= 50 && !state.crossQuests?.cross_feast?.status) {
+      actions.push({
+        text: '🍖 «Варя, мы с Егором предлагаем устроить Большой таёжный пир!»',
+        action: () => {
+          state.crossQuests = state.crossQuests || {};
+          state.crossQuests.cross_feast = { status: 'active' };
+          toast('⚔️ СОЮЗ ЖИТЕЛЕЙ: Взят квест «Большой таёжный пир» (Варя + Егор)! Нужно: 2 мяса, 3 рыбы, 3 ягоды.');
+          sfx.playClick();
+          saveState();
+          renderQuests();
+          talkVarya();
+        }
+      });
+    } else if (state.crossQuests?.cross_feast?.status === 'active') {
+      const hasFeastMats = getItemCount('raw_meat') >= 2 && getItemCount('fish') >= 3 && getItemCount('berries') >= 3;
+      body += `<p style="color:var(--accent-gold);"><b>[СОЮЗ: БОЛЬШОЙ ТАЁЖНЫЙ ПИР]:</b> <i>«Егор обещал подсобить с разделкой! Принёс 2 мяса, 3 рыбы и 3 брусники?»</i></p>`;
+      if (hasFeastMats) {
+        actions.push({
+          text: '🎉 «Сдать припасы и зажечь праздничный костёр пира»',
+          action: () => {
+            removeItem('raw_meat', 2);
+            removeItem('fish', 3);
+            removeItem('berries', 3);
+            state.crossQuests.cross_feast.status = 'completed';
+            addItem('smoked_feast', 2);
+            changeNpcRep('varya', 25);
+            changeNpcRep('egor', 25);
+            state.reputation += 50;
+            toast('🏆 БОЛЬШОЙ ТАЁЖНЫЙ ПИР СОСТОЯЛСЯ! Весь лагерь празднует (+25 реп Варе, +25 реп Егору, +50 лагерю, открыт рецепт «Окорок по-лесному»)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            talkVarya();
+          },
+          primary: true
+        });
+      }
+    }
+
+    // 2. Полевой автоклав и дистиллятор (Варя, Прохор, Анна, реп >= 50 у всех трёх)
+    const prokhorRep = getNpcRep('prokhor');
+    const annaRep = getNpcRep('anna');
+    if (rep >= 50 && prokhorRep >= 50 && annaRep >= 50 && !state.crossQuests?.cross_autoclave?.status) {
+      actions.push({
+        text: '⚙️ «Варя, объединим силы с Прохором и Анной для сборки Автоклава?»',
+        action: () => {
+          state.crossQuests = state.crossQuests || {};
+          state.crossQuests.cross_autoclave = { status: 'active' };
+          toast('⚔️ ТРОЙСТВЕННЫЙ СОЮЗ: Взят квест «Полевой автоклав» (Варя + Прохор + Анна)! Нужно: 3 лома, 2 проволоки, 1 мембрана.');
+          sfx.playClick();
+          saveState();
+          renderQuests();
+          talkVarya();
+        }
+      });
+    } else if (state.crossQuests?.cross_autoclave?.status === 'active') {
+      const hasAutoMats = getItemCount('scrap') >= 3 && getItemCount('wire') >= 2 && (getItemCount('filter_membrane') >= 1 || getItemCount('scrap') >= 5);
+      body += `<p style="color:var(--accent-gold);"><b>[СОЮЗ: ПОЛЕВОЙ АВТОКЛАВ]:</b> <i>«Прохор согнёт корпус из труб, Анна продизенфицирует штуцера, а мы с тобой пустим чистый пар!»</i></p>`;
+      if (hasAutoMats) {
+        actions.push({
+          text: '🔧 «Смонтировать автоклав-дистиллятор в лагере»',
+          action: () => {
+            removeItem('scrap', 3);
+            removeItem('wire', 2);
+            if (getItemCount('filter_membrane') >= 1) removeItem('filter_membrane', 1);
+            else removeItem('scrap', 2);
+            state.crossQuests.cross_autoclave.status = 'completed';
+            addItem('autoclave_unit', 1);
+            changeNpcRep('varya', 25);
+            changeNpcRep('prokhor', 25);
+            changeNpcRep('anna', 25);
+            state.reputation += 50;
+            toast('🏆 АВТОКЛАВ УСТАНОВЛЕН! Община получила постоянную стерилизацию и дистиллятор (+25 реп каждому соратнику, +50 лагерю)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            talkVarya();
+          },
+          primary: true
+        });
+      }
+    }
+
+    // 3. Таёжный бальзам долголетия (Варя + Спиридон, реп >= 50 оба)
+    const spiridonRep = getNpcRep('spiridon');
+    if (rep >= 50 && spiridonRep >= 50 && !state.crossQuests?.cross_balsam?.status) {
+      actions.push({
+        text: '🌿 «Варя, объединим твои сиропы с настойками деда Спиридона?»',
+        action: () => {
+          state.crossQuests = state.crossQuests || {};
+          state.crossQuests.cross_balsam = { status: 'active' };
+          toast('⚔️ СОЮЗ ЗНАХАРЕЙ: Взят квест «Таёжный бальзам» (Варя + Спиридон)! Нужно: 1 спирт, 3 травы, 2 сфагнума, 2 брусники.');
+          sfx.playClick();
+          saveState();
+          renderQuests();
+          talkVarya();
+        }
+      });
+    } else if (state.crossQuests?.cross_balsam?.status === 'active') {
+      const hasBalsamMats = getItemCount('alcohol') >= 1 && getItemCount('herbs') >= 3 && getItemCount('swamp_moss') >= 2 && getItemCount('berries') >= 2;
+      body += `<p style="color:var(--accent-gold);"><b>[СОЮЗ: ТАЁЖНЫЙ БАЛЬЗАМ]:</b> <i>«Дед Спиридон шептал над чашей с травами, теперь наш черёд варить взвар!»</i></p>`;
+      if (hasBalsamMats) {
+        actions.push({
+          text: '🧪 «Приготовить легендарный Бальзам Вари и Спиридона»',
+          action: () => {
+            removeItem('alcohol', 1);
+            removeItem('herbs', 3);
+            removeItem('swamp_moss', 2);
+            removeItem('berries', 2);
+            state.crossQuests.cross_balsam.status = 'completed';
+            addItem('taiga_balsam', 2);
+            changeNpcRep('varya', 25);
+            changeNpcRep('spiridon', 25);
+            state.reputation += 40;
+            toast('🏆 БАЛЬЗАМ ДОЛГОЛЕТИЯ СВАРЕН! Рецепт открыт для костра (+2 бальзама, +25 реп обоим, +40 лагерю)!');
+            sfx.playSuccess();
+            updateHUD();
+            saveState();
+            renderQuests();
+            talkVarya();
+          },
+          primary: true
+        });
+      }
+    }
 
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }

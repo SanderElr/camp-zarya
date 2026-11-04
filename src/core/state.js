@@ -85,6 +85,22 @@ met_spiridon: false,
     sideQuests: {},
     dailyQuests: [],
     
+    // Индивидуальная репутация у каждого жителя (НПС)
+    npcRep: {
+      batya: 15,
+      anna: 15,
+      prokhor: 15,
+      egor: 15,
+      varya: 15,
+      spiridon: 5,
+      sasha: 0
+    },
+    varyaStewClaimedDay: -1,
+    varyaWaterClaimedDay: -1,
+    crossQuests: {},
+    highRepQuests: {},
+    npcChatDay: {},
+
     weather: 'clear',
     statusEffects: {},
     campUpgrades: {
