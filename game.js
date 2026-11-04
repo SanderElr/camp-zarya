@@ -1,6 +1,6 @@
 /* ==========================================================================
    ИГРОВОЙ ДВИЖОК: ТЕКСТОВАЯ RPG «ЛАГЕРЬ ЗАРЯ»
-   Собрано автоматически из src/ (2026-11-04T09:55:47.993Z)
+   Собрано автоматически из src/ (2026-11-04T10:35:50.037Z)
    Не редактируйте этот файл вручную — вносите изменения в файлы src/
    ========================================================================== */
 
@@ -942,8 +942,14 @@ met_spiridon: false,
     return ((idx + 4) % 4) === 3;
   }
 
-  // >>> MODULE: core/audio.js (167 строк)
+  // >>> MODULE: core/audio.js (208 строк)
   // --- АУДИОСИСТЕМА (МУЗЫКА И ЗВУКИ) ---
+  const MUSIC_TRACKS = [
+    { id: 'fate2', title: 'Fate 2 (Основная тема)', src: 'assets/audio/fate2.mp3' },
+    { id: 'track2', title: 'Таёжный мотив (Тема 2)', src: 'assets/audio/track2.mp3' },
+    { id: 'track3', title: 'Сумерки Зари (Тема 3)', src: 'assets/audio/track3.mp3' }
+  ];
+  let currentTrackIndex = 0;
   let bgMusicEl = null;
   let musicEnabled = true;
   let musicVolume = 0.35;
@@ -1042,12 +1048,22 @@ met_spiridon: false,
       if (savedM !== null) musicEnabled = (savedM === 'true');
       const savedV = localStorage.getItem('camp_music_vol');
       if (savedV !== null) musicVolume = parseFloat(savedV) || 0.35;
+      const savedT = localStorage.getItem('camp_music_track');
+      if (savedT !== null) currentTrackIndex = parseInt(savedT, 10) || 0;
+      if (currentTrackIndex < 0 || currentTrackIndex >= MUSIC_TRACKS.length) currentTrackIndex = 0;
       const savedSfx = localStorage.getItem('camp_sfx_enabled');
       if (savedSfx !== null) sfxEnabled = (savedSfx === 'true');
     } catch(e) {}
 
     if (bgMusicEl) {
       bgMusicEl.volume = musicVolume;
+      const curSrc = MUSIC_TRACKS[currentTrackIndex].src;
+      if (!bgMusicEl.src || !bgMusicEl.src.includes(curSrc)) {
+        bgMusicEl.src = curSrc;
+      }
+      bgMusicEl.onended = () => {
+        nextMusicTrack(false);
+      };
     }
     updateMusicUI();
 
@@ -1065,6 +1081,25 @@ met_spiridon: false,
     document.addEventListener('keydown', startAudio);
   }
 
+  function nextMusicTrack(notify = true) {
+    currentTrackIndex = (currentTrackIndex + 1) % MUSIC_TRACKS.length;
+    try {
+      localStorage.setItem('camp_music_track', currentTrackIndex);
+    } catch(e) {}
+
+    if (bgMusicEl) {
+      bgMusicEl.src = MUSIC_TRACKS[currentTrackIndex].src;
+      bgMusicEl.volume = musicVolume;
+      if (musicEnabled) {
+        bgMusicEl.play().catch(() => {});
+      }
+    }
+    updateMusicUI();
+    if (notify) {
+      toast(`🎵 Играет: ${MUSIC_TRACKS[currentTrackIndex].title}`);
+    }
+  }
+
   function toggleMusic() {
     musicEnabled = !musicEnabled;
     try {
@@ -1073,9 +1108,13 @@ met_spiridon: false,
 
     if (bgMusicEl) {
       if (musicEnabled) {
+        const curSrc = MUSIC_TRACKS[currentTrackIndex].src;
+        if (!bgMusicEl.src || !bgMusicEl.src.includes(curSrc)) {
+          bgMusicEl.src = curSrc;
+        }
         bgMusicEl.volume = musicVolume;
         bgMusicEl.play().then(() => {
-          toast('🎵 Фоновая музыка включена');
+          toast(`🎵 Играет: ${MUSIC_TRACKS[currentTrackIndex].title}`);
         }).catch(() => {
           toast('🎵 Нажмите на экран для старта музыки');
         });
@@ -1106,7 +1145,9 @@ met_spiridon: false,
     if (btn) {
       if (musicEnabled) btn.classList.add('active');
       else btn.classList.remove('active');
-      btn.title = musicEnabled ? 'Музыка играет (нажмите для паузы)' : 'Музыка выключена (нажмите для включения)';
+      btn.title = musicEnabled 
+        ? `Музыка: ${MUSIC_TRACKS[currentTrackIndex].title} (нажмите для паузы)` 
+        : 'Музыка выключена (нажмите для включения)';
     }
   }
 
@@ -1806,7 +1847,7 @@ met_spiridon: false,
     else if (tabId === 'tabCamp') renderNPCs();
   }
 
-  // >>> MODULE: ui/menu.js (141 строк)
+  // >>> MODULE: ui/menu.js (158 строк)
   // --- МЕНЮ СИСТЕМЫ И НАСТРОЕК ---
   function openSystemMenu() {
     sfx.init();
@@ -1814,18 +1855,35 @@ met_spiridon: false,
 
     const title = '⚙️ МЕНЮ ВЫЖИВАНИЯ';
     const sub = 'Управление игрой и настройками';
+    const curTrack = MUSIC_TRACKS[currentTrackIndex] || MUSIC_TRACKS[0];
     let body = `
       <div style="display:flex; flex-direction:column; gap:10px; margin:4px 0;">
         <!-- Секция аудио -->
         <div style="background:rgba(0,0,0,0.35); border:1px solid var(--border-dim); border-radius:6px; padding:10px;">
-          <b style="color:var(--accent-gold); font-size:12.5px;">🎵 Фоновая музыка («Fate 2»)</b>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
-            <span style="font-size:12px;">Воспроизведение:</span>
-            <button class="modal-btn" style="margin:0; padding:4px 12px; min-height:32px; font-weight:bold;" onclick="Game.toggleMusic(); Game.openSystemMenu();">
-              ${musicEnabled ? '🔊 ВКЛЮЧЕНА' : '🔇 ВЫКЛЮЧЕНА'}
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <b style="color:var(--accent-gold); font-size:12.5px;">🎵 Фоновая музыка</b>
+            <span style="font-size:10.5px; color:var(--text-dim); font-family:monospace;">${currentTrackIndex + 1} / ${MUSIC_TRACKS.length}</span>
+          </div>
+
+          <!-- Название текущего трека -->
+          <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:6px 8px; margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+            <span style="font-size:14px;">📻</span>
+            <span style="font-size:12px; color:var(--text-main); font-weight:bold; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+              ${curTrack.title}
+            </span>
+          </div>
+
+          <!-- Кнопки управления: Воспроизведение + Переключение на следующий -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-bottom:8px;">
+            <button class="modal-btn" style="margin:0; padding:6px 10px; min-height:36px; font-weight:bold; justify-content:center; font-size:12px;" onclick="Game.toggleMusic(); Game.openSystemMenu();">
+              ${musicEnabled ? '⏸️ Пауза' : '▶️ Играть'}
+            </button>
+            <button class="modal-btn" style="margin:0; padding:6px 10px; min-height:36px; font-weight:bold; justify-content:center; font-size:12px;" onclick="Game.nextMusicTrack(); Game.openSystemMenu();" title="Переключить на следующий трек">
+              ⏭️ След. трек
             </button>
           </div>
-          <div style="margin-top:10px;">
+
+          <div style="margin-top:6px;">
             <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-dim); margin-bottom:4px;">
               <span>Громкость музыки:</span>
               <span id="musicVolDisplay" style="color:var(--accent-gold); font-weight:bold;">${Math.round(musicVolume * 100)}%</span>
@@ -6249,7 +6307,7 @@ met_spiridon: false,
     init();
   }
 
-  // >>> MODULE: main.js (118 строк)
+  // >>> MODULE: main.js (125 строк)
   // --- ИНИЦИАЛИЗАЦИЯ И ОБНОВЛЕНИЕ UI ---
   function init() {
     initAudio();
@@ -6311,6 +6369,10 @@ met_spiridon: false,
       } catch(e) {}
     }
     if (musicEnabled && bgMusicEl) {
+      const curSrc = MUSIC_TRACKS[currentTrackIndex].src;
+      if (!bgMusicEl.src || !bgMusicEl.src.includes(curSrc)) {
+        bgMusicEl.src = curSrc;
+      }
       bgMusicEl.volume = musicVolume;
       bgMusicEl.play().catch(() => {});
     }
@@ -6337,6 +6399,9 @@ met_spiridon: false,
     closeModal,
     toggleMusic,
     setMusicVolume,
+    nextMusicTrack,
+    MUSIC_TRACKS,
+    getCurrentTrackIndex: () => currentTrackIndex,
     openSystemMenu,
     resetGame,
     showIntroScreen,

@@ -59,6 +59,10 @@
       } catch(e) {}
     }
     if (musicEnabled && bgMusicEl) {
+      const curSrc = MUSIC_TRACKS[currentTrackIndex].src;
+      if (!bgMusicEl.src || !bgMusicEl.src.includes(curSrc)) {
+        bgMusicEl.src = curSrc;
+      }
       bgMusicEl.volume = musicVolume;
       bgMusicEl.play().catch(() => {});
     }
@@ -85,6 +89,9 @@
     closeModal,
     toggleMusic,
     setMusicVolume,
+    nextMusicTrack,
+    MUSIC_TRACKS,
+    getCurrentTrackIndex: () => currentTrackIndex,
     openSystemMenu,
     resetGame,
     showIntroScreen,

@@ -1,4 +1,10 @@
   // --- АУДИОСИСТЕМА (МУЗЫКА И ЗВУКИ) ---
+  const MUSIC_TRACKS = [
+    { id: 'fate2', title: 'Fate 2 (Основная тема)', src: 'assets/audio/fate2.mp3' },
+    { id: 'track2', title: 'Таёжный мотив (Тема 2)', src: 'assets/audio/track2.mp3' },
+    { id: 'track3', title: 'Сумерки Зари (Тема 3)', src: 'assets/audio/track3.mp3' }
+  ];
+  let currentTrackIndex = 0;
   let bgMusicEl = null;
   let musicEnabled = true;
   let musicVolume = 0.35;
@@ -97,12 +103,22 @@
       if (savedM !== null) musicEnabled = (savedM === 'true');
       const savedV = localStorage.getItem('camp_music_vol');
       if (savedV !== null) musicVolume = parseFloat(savedV) || 0.35;
+      const savedT = localStorage.getItem('camp_music_track');
+      if (savedT !== null) currentTrackIndex = parseInt(savedT, 10) || 0;
+      if (currentTrackIndex < 0 || currentTrackIndex >= MUSIC_TRACKS.length) currentTrackIndex = 0;
       const savedSfx = localStorage.getItem('camp_sfx_enabled');
       if (savedSfx !== null) sfxEnabled = (savedSfx === 'true');
     } catch(e) {}
 
     if (bgMusicEl) {
       bgMusicEl.volume = musicVolume;
+      const curSrc = MUSIC_TRACKS[currentTrackIndex].src;
+      if (!bgMusicEl.src || !bgMusicEl.src.includes(curSrc)) {
+        bgMusicEl.src = curSrc;
+      }
+      bgMusicEl.onended = () => {
+        nextMusicTrack(false);
+      };
     }
     updateMusicUI();
 
@@ -120,6 +136,25 @@
     document.addEventListener('keydown', startAudio);
   }
 
+  function nextMusicTrack(notify = true) {
+    currentTrackIndex = (currentTrackIndex + 1) % MUSIC_TRACKS.length;
+    try {
+      localStorage.setItem('camp_music_track', currentTrackIndex);
+    } catch(e) {}
+
+    if (bgMusicEl) {
+      bgMusicEl.src = MUSIC_TRACKS[currentTrackIndex].src;
+      bgMusicEl.volume = musicVolume;
+      if (musicEnabled) {
+        bgMusicEl.play().catch(() => {});
+      }
+    }
+    updateMusicUI();
+    if (notify) {
+      toast(`🎵 Играет: ${MUSIC_TRACKS[currentTrackIndex].title}`);
+    }
+  }
+
   function toggleMusic() {
     musicEnabled = !musicEnabled;
     try {
@@ -128,9 +163,13 @@
 
     if (bgMusicEl) {
       if (musicEnabled) {
+        const curSrc = MUSIC_TRACKS[currentTrackIndex].src;
+        if (!bgMusicEl.src || !bgMusicEl.src.includes(curSrc)) {
+          bgMusicEl.src = curSrc;
+        }
         bgMusicEl.volume = musicVolume;
         bgMusicEl.play().then(() => {
-          toast('🎵 Фоновая музыка включена');
+          toast(`🎵 Играет: ${MUSIC_TRACKS[currentTrackIndex].title}`);
         }).catch(() => {
           toast('🎵 Нажмите на экран для старта музыки');
         });
@@ -161,6 +200,8 @@
     if (btn) {
       if (musicEnabled) btn.classList.add('active');
       else btn.classList.remove('active');
-      btn.title = musicEnabled ? 'Музыка играет (нажмите для паузы)' : 'Музыка выключена (нажмите для включения)';
+      btn.title = musicEnabled 
+        ? `Музыка: ${MUSIC_TRACKS[currentTrackIndex].title} (нажмите для паузы)` 
+        : 'Музыка выключена (нажмите для включения)';
     }
   }

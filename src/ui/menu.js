@@ -5,18 +5,35 @@
 
     const title = '⚙️ МЕНЮ ВЫЖИВАНИЯ';
     const sub = 'Управление игрой и настройками';
+    const curTrack = MUSIC_TRACKS[currentTrackIndex] || MUSIC_TRACKS[0];
     let body = `
       <div style="display:flex; flex-direction:column; gap:10px; margin:4px 0;">
         <!-- Секция аудио -->
         <div style="background:rgba(0,0,0,0.35); border:1px solid var(--border-dim); border-radius:6px; padding:10px;">
-          <b style="color:var(--accent-gold); font-size:12.5px;">🎵 Фоновая музыка («Fate 2»)</b>
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
-            <span style="font-size:12px;">Воспроизведение:</span>
-            <button class="modal-btn" style="margin:0; padding:4px 12px; min-height:32px; font-weight:bold;" onclick="Game.toggleMusic(); Game.openSystemMenu();">
-              ${musicEnabled ? '🔊 ВКЛЮЧЕНА' : '🔇 ВЫКЛЮЧЕНА'}
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <b style="color:var(--accent-gold); font-size:12.5px;">🎵 Фоновая музыка</b>
+            <span style="font-size:10.5px; color:var(--text-dim); font-family:monospace;">${currentTrackIndex + 1} / ${MUSIC_TRACKS.length}</span>
+          </div>
+
+          <!-- Название текущего трека -->
+          <div style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:4px; padding:6px 8px; margin-bottom:8px; display:flex; align-items:center; gap:8px;">
+            <span style="font-size:14px;">📻</span>
+            <span style="font-size:12px; color:var(--text-main); font-weight:bold; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+              ${curTrack.title}
+            </span>
+          </div>
+
+          <!-- Кнопки управления: Воспроизведение + Переключение на следующий -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:6px; margin-bottom:8px;">
+            <button class="modal-btn" style="margin:0; padding:6px 10px; min-height:36px; font-weight:bold; justify-content:center; font-size:12px;" onclick="Game.toggleMusic(); Game.openSystemMenu();">
+              ${musicEnabled ? '⏸️ Пауза' : '▶️ Играть'}
+            </button>
+            <button class="modal-btn" style="margin:0; padding:6px 10px; min-height:36px; font-weight:bold; justify-content:center; font-size:12px;" onclick="Game.nextMusicTrack(); Game.openSystemMenu();" title="Переключить на следующий трек">
+              ⏭️ След. трек
             </button>
           </div>
-          <div style="margin-top:10px;">
+
+          <div style="margin-top:6px;">
             <div style="display:flex; justify-content:space-between; font-size:11px; color:var(--text-dim); margin-bottom:4px;">
               <span>Громкость музыки:</span>
               <span id="musicVolDisplay" style="color:var(--accent-gold); font-weight:bold;">${Math.round(musicVolume * 100)}%</span>
