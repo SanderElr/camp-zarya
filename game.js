@@ -1,6 +1,6 @@
 /* ==========================================================================
    ИГРОВОЙ ДВИЖОК: ТЕКСТОВАЯ RPG «ЛАГЕРЬ ЗАРЯ»
-   Собрано автоматически из src/ (2026-11-04T06:47:42.669Z)
+   Собрано автоматически из src/ (2026-11-04T07:01:28.151Z)
    Не редактируйте этот файл вручную — вносите изменения в файлы src/
    ========================================================================== */
 
@@ -4267,7 +4267,7 @@ met_spiridon: false,
     openModal(npc.name, npc.role, npc.avatar, body, actions);
   }
 
-  // >>> MODULE: systems/sorties.js (1285 строк)
+  // >>> MODULE: systems/sorties.js (1242 строк)
   // --- ЛОКАЦИОННЫЕ И ДОПОЛНИТЕЛЬНЫЕ АКТИВНОСТИ ---
   function doDiveContainer(loc) {
     if (state.energy < 20) {
@@ -4653,7 +4653,6 @@ met_spiridon: false,
           </div>
           <p class="loc-desc">${isUnlocked ? loc.desc : `🔒 Закрыто. Требуется репутация ${loc.reqRep || 'по сюжету'}`}</p>
           <div class="loc-features">
-            <span class="feat-pill">Тир ${loc.tier}</span>
             <span class="feat-pill">⚡ -${loc.energyCost}% энергии</span>
           </div>
         </div>
@@ -4713,48 +4712,6 @@ met_spiridon: false,
     sfx.init();
     sfx.playClick();
     let body = `<p>${loc.desc}</p>`;
-
-    const weather = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
-    const effectiveEnergyCost = getEffectiveEnergyCost(loc);
-    const effectiveRad = getEffectiveRad(loc);
-
-    const isLowEnergy = state.energy < effectiveEnergyCost;
-    const isHighRad = state.rad >= 30;
-    const isLowHp = state.hp <= 35;
-    const timeName = getTimeName(state.timeOfDay);
-
-    body += `
-      <div class="loc-modal-stats">
-        <div class="loc-stat-badge energy ${isLowEnergy ? 'low' : ''}" title="Текущая энергия и расход сил с учётом погоды и баффов">
-          <span class="stat-icon">⚡</span>
-          <div class="stat-info">
-            <div class="stat-label">Энергия</div>
-            <div class="stat-val">${state.energy}% <span class="stat-delta">(-${effectiveEnergyCost}%)</span></div>
-          </div>
-        </div>
-        <div class="loc-stat-badge rad ${isHighRad ? 'high' : ''}" title="Текущий уровень радиации и доза в локации с учётом погоды">
-          <span class="stat-icon">☢️</span>
-          <div class="stat-info">
-            <div class="stat-label">Радиация</div>
-            <div class="stat-val">${state.rad} Р <span class="stat-delta">(+${effectiveRad})</span></div>
-          </div>
-        </div>
-        <div class="loc-stat-badge hp ${isLowHp ? 'low' : ''}" title="Здоровье выжившего">
-          <span class="stat-icon">❤️</span>
-          <div class="stat-info">
-            <div class="stat-label">HP</div>
-            <div class="stat-val">${state.hp} <span class="stat-delta">/ 100</span></div>
-          </div>
-        </div>
-        <div class="loc-stat-badge weather" title="Погода: ${weather.name}. ${weather.desc}">
-          <span class="stat-icon">${weather.icon}</span>
-          <div class="stat-info">
-            <div class="stat-label">Погода</div>
-            <div class="stat-val">${weather.name}</div>
-          </div>
-        </div>
-      </div>
-    `;
 
     const actions = [];
 
@@ -5033,7 +4990,7 @@ met_spiridon: false,
       }
     }
 
-    openModal(loc.name, `Вылазка в Тир ${loc.tier}`, loc.icon, body, actions);
+    openModal(loc.name, 'Вылазка', loc.icon, body, actions);
   }
 
   // --- КОНКРЕТНЫЕ АКТИВНОСТИ ВЫЛАЗОК ---
