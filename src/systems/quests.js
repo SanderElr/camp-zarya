@@ -141,7 +141,7 @@
       headerDiv.style.cssText = 'background:var(--bg-card); border:1px solid var(--border-color); border-radius:6px; padding:10px 12px; margin-bottom:12px;';
       headerDiv.innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <span style="font-weight:700; font-size:13px; color:var(--accent-gold);">📜 Основной сюжет: Спасение «Зари»</span>
+          <span style="font-weight:700; font-size:13px; color:var(--accent-gold);">📜 Основной сюжет: Спасение «Всем ПОХ»</span>
           <span style="font-weight:700; font-size:12px; color:var(--text-main);">${completedCount} / ${MAIN_QUESTS.length} (${progressPct}%)</span>
         </div>
         <div style="background:rgba(0,0,0,0.4); border-radius:4px; height:8px; overflow:hidden; border:1px solid rgba(255,255,255,0.08);">
@@ -474,8 +474,8 @@
           <p class="quest-desc">В конце 1980-х годов в закрытом исследовательском комплексе НИИ «Сфера» произошла аномальная авария реактора синтеза. Заражённые токсичные воды и радиоактивный смог накрыли прилегающую тайгу. Жилые посёлки были эвакуированы, а оставшиеся превратились в изолированные очаги выживания.</p>
         </div>
         <div class="quest-item-card">
-          <div class="quest-title-row"><span>🏕️ Основание лагеря «Заря»</span></div>
-          <p class="quest-desc">Майор Дмитрий («Батя») собрал уцелевших рабочих, егерей и семьи на холме у старой лесопилки. Благодаря возвышенности и бьющим родникам лагерь выстоял. Сегодня «Заря» — единственный оплот надежды посреди отравленной сибирской тайги.</p>
+          <div class="quest-title-row"><span>🏕️ Основание лагеря «Всем ПОХ»</span></div>
+          <p class="quest-desc">Майор Дмитрий («Батя») собрал уцелевших рабочих, егерей и семьи на холме у старой лесопилки. Благодаря возвышенности и бьющим родникам лагерь выстоял. Сегодня «Всем ПОХ» — единственный оплот надежды посреди отравленной сибирской тайги.</p>
         </div>
         <div class="quest-item-card">
           <div class="quest-title-row"><span>🧪 Тайна профессора Воронова</span></div>

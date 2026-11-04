@@ -52,7 +52,7 @@
       </div>
     `;
 
-    openModal('ОБУСТРОЙСТВО ЛАГЕРЯ', 'Инфраструктура базы «Заря»', 'assets/images/cabin.png', html, [
+    openModal('ОБУСТРОЙСТВО ЛАГЕРЯ', 'Инфраструктура базы «Всем ПОХ»', 'assets/images/cabin.png', html, [
       { text: 'Закрыть', action: closeModal }
     ]);
   }
@@ -155,7 +155,7 @@
       </div>
     `;
 
-    openModal('ЛАГЕРНЫЙ СУНДУК', 'Хранилище базы «Заря»', 'assets/images/food_box.png', html, [
+    openModal('ЛАГЕРНЫЙ СУНДУК', 'Хранилище базы «Всем ПОХ»', 'assets/images/food_box.png', html, [
       { text: 'Закрыть', action: closeModal }
     ]);
   }

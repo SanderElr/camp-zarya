@@ -2,7 +2,7 @@
   const MUSIC_TRACKS = [
     { id: 'fate2', title: 'Fate 2 (Основная тема)', src: 'assets/audio/fate2.mp3' },
     { id: 'track2', title: 'Таёжный мотив (Тема 2)', src: 'assets/audio/track2.mp3' },
-    { id: 'track3', title: 'Сумерки Зари (Тема 3)', src: 'assets/audio/track3.mp3' }
+    { id: 'track3', title: 'Сумерки «Всем ПОХ» (Тема 3)', src: 'assets/audio/track3.mp3' }
   ];
   let currentTrackIndex = 0;
   let bgMusicEl = null;

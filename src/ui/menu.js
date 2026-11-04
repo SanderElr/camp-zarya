@@ -46,7 +46,7 @@
 
         <!-- Секция информации -->
         <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.06); border-radius:6px; padding:8px 10px; font-size:11.5px; color:var(--text-dim); line-height:1.6;">
-          <div>🏕️ <b>Лагерь «Заря»</b> v1.2</div>
+          <div>🏕️ <b>Лагерь «Всем ПОХ»</b> v1.3</div>
           <div>👤 Репутация: <b>${state.reputation}</b> (${getReputationTitle(state.reputation)})</div>
           <div>📅 День: <b>${state.day}</b> | Время: <b>${getTimeName(state.timeOfDay)}</b></div>
         </div>
@@ -81,7 +81,7 @@
     const body = `
       <p style="color:var(--accent-danger); font-weight:bold; font-size:13px;">Внимание! Весь текущий прогресс будет удалён!</p>
       <p>Вы потеряете инвентарь, оружие, патроны, репутацию у выживших и выполненные сюжетные задания.</p>
-      <p>Игра начнётся с чистого листа с Дня 1 у костра лагеря «Заря».</p>
+      <p>Игра начнётся с чистого листа с Дня 1 у костра лагеря «Всем ПОХ».</p>
     `;
     const actions = [
       {
@@ -101,7 +101,7 @@
   }
 
   const BG_THEMES = [
-    { id: 'camp', name: '🏕️ Лагерь «Заря» (Атмосфера общины)', desc: 'Панорама лагеря выживших с бревенчатыми постройками и костром', preview: 'assets/images/backgrounds/camp_alt.jpg' },
+    { id: 'camp', name: '🏕️ Лагерь «Всем ПОХ» (Атмосфера общины)', desc: 'Панорама лагеря выживших с бревенчатыми постройками и костром', preview: 'assets/images/backgrounds/camp_alt.jpg' },
     { id: 'fog', name: '🌲 Таёжный туман (Утренняя мгла)', desc: 'Хвойная глухая тайга, скрытая радиационным туманом', preview: 'assets/images/backgrounds/taiga_fog.jpg' },
     { id: 'winter', name: '❄️ Зимняя тайга (Суровый мороз)', desc: 'Заснеженные сопки и ледяной сибирский бурелом', preview: 'assets/images/backgrounds/taiga_winter.jpg' },
     { id: 'map', name: '🗺️ Топографическая карта Зоны', desc: 'Военная топокарта с изолиниями и секторами катастрофы', preview: 'assets/images/backgrounds/map_topo.jpg' },

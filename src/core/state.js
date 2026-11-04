@@ -113,7 +113,7 @@ met_spiridon: false,
     },
     campStorage: {},
     eventLog: [
-      { id: 1, day: 1, time: 0, text: 'Вы очнулись на окраине лагеря «Заря». Потрескивает костёр.', category: 'story' }
+      { id: 1, day: 1, time: 0, text: 'Вы очнулись на окраине лагеря «Всем ПОХ». Потрескивает костёр.', category: 'story' }
     ],
     loreNotes: ['note_order'],
     unlockedLocations: ['river', 'forest'],
