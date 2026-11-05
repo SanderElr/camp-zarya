@@ -109,6 +109,7 @@
     talkMargo,
     talkStrong,
     talkVarya,
+    interactWithDog,
     talkBatya,
     talkAnna,
     talkProkhor,

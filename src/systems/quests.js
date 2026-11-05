@@ -99,7 +99,7 @@
 
     // Рост индивидуальной репутации у конкретного жителя
     if (q.giverId) {
-      changeNpcRep(q.giverId, Math.max(3, Math.round(q.rewardRep * 0.6)));
+      changeNpcRep(q.giverId, Math.max(2, Math.round(q.rewardRep * 0.45)));
     }
 
     toast(`🎖️ Поручение «${q.title}» успешно сдано! Получено: +${q.rewardRep} репутации, +${q.rewardAmmo} патрона.`, 'success');

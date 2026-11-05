@@ -115,6 +115,7 @@
     },
     varyaStewClaimedDay: -1,
     varyaWaterClaimedDay: -1,
+    dogPetClaimedDay: -1,
     crossQuests: {},
     highRepQuests: {},
     npcChatDay: {},

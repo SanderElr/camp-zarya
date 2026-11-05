@@ -177,6 +177,7 @@
         parsed.npcChatDay = parsed.npcChatDay || {};
         if (parsed.varyaStewClaimedDay === undefined) parsed.varyaStewClaimedDay = -1;
         if (parsed.varyaWaterClaimedDay === undefined) parsed.varyaWaterClaimedDay = -1;
+        if (parsed.dogPetClaimedDay === undefined) parsed.dogPetClaimedDay = -1;
 
         state = Object.assign(state, parsed);
       }
