@@ -24,7 +24,7 @@
 
     // Инструменты и оружие
     rod: { id: 'rod', name: 'Самодельная удочка', type: 'tool', icon: 'assets/images/fishing_rod.png', weight: 0.8, desc: 'Гибкое удилище с леской и крючком из булавки.' },
-    trap: { id: 'trap', name: 'Охотничий капкан', type: 'tool', icon: 'assets/images/trapie.png', weight: 1.5, desc: 'Стальной капкан на мелкую и среднюю дичь.' },
+    trap: { id: 'trap', name: 'Охотничий капкан', type: 'tool', icon: 'assets/images/trap.png', weight: 1.5, desc: 'Стальной капкан на мелкую и среднюю дичь.' },
     knife: { id: 'knife', name: 'Охотничий нож', type: 'tool', icon: 'assets/images/steel_knife.png', weight: 0.4, desc: 'Острый нож из советской стали. Незаменим в лесу.' },
     torch: { id: 'torch', name: 'Смоляной факел', type: 'tool', icon: 'assets/images/torch.png', weight: 0.5, desc: 'Яркий факел из сосновых лучин и проволоки. Разгоняет тьму и отпугивает диких зверей.' },
     spear: { id: 'spear', name: 'Охотничье копьё', type: 'tool', icon: 'assets/images/iron_spear.png', weight: 1.2, desc: 'Берёзовое древко с наконечником из ножа и проволоки. Оружие ближнего боя.' },

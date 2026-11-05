@@ -1,6 +1,6 @@
 /* ==========================================================================
    ИГРОВОЙ ДВИЖОК: ТЕКСТОВАЯ RPG «ЛАГЕРЬ ЗАРЯ»
-   Собрано автоматически из src/ (2026-11-05T19:52:57.589Z)
+   Собрано автоматически из src/ (2026-11-05T20:01:34.272Z)
    Не редактируйте этот файл вручную — вносите изменения в файлы src/
    ========================================================================== */
 
@@ -33,7 +33,7 @@ const Game = (() => {
 
     // Инструменты и оружие
     rod: { id: 'rod', name: 'Самодельная удочка', type: 'tool', icon: 'assets/images/fishing_rod.png', weight: 0.8, desc: 'Гибкое удилище с леской и крючком из булавки.' },
-    trap: { id: 'trap', name: 'Охотничий капкан', type: 'tool', icon: 'assets/images/trapie.png', weight: 1.5, desc: 'Стальной капкан на мелкую и среднюю дичь.' },
+    trap: { id: 'trap', name: 'Охотничий капкан', type: 'tool', icon: 'assets/images/trap.png', weight: 1.5, desc: 'Стальной капкан на мелкую и среднюю дичь.' },
     knife: { id: 'knife', name: 'Охотничий нож', type: 'tool', icon: 'assets/images/steel_knife.png', weight: 0.4, desc: 'Острый нож из советской стали. Незаменим в лесу.' },
     torch: { id: 'torch', name: 'Смоляной факел', type: 'tool', icon: 'assets/images/torch.png', weight: 0.5, desc: 'Яркий факел из сосновых лучин и проволоки. Разгоняет тьму и отпугивает диких зверей.' },
     spear: { id: 'spear', name: 'Охотничье копьё', type: 'tool', icon: 'assets/images/iron_spear.png', weight: 1.2, desc: 'Берёзовое древко с наконечником из ножа и проволоки. Оружие ближнего боя.' },
@@ -168,7 +168,7 @@ const Game = (() => {
       isCrafted: (s) => !!s.hasDog || !!s.questFlags?.dog_house_built
     },
     {
-      id: 'craft_trap', station: 'bench', name: 'Сколотить капкан', icon: 'assets/images/trapie.png',
+      id: 'craft_trap', station: 'bench', name: 'Сколотить капкан', icon: 'assets/images/trap.png',
       cost: { scrap: 2, wire: 1 }, result: { trap: 1 }, energy: 20, timeMin: 45,
       desc: 'Ловушка для добычи мяса и ценных шкур в тайге.'
     },

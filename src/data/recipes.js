@@ -79,7 +79,7 @@
       isCrafted: (s) => !!s.hasDog || !!s.questFlags?.dog_house_built
     },
     {
-      id: 'craft_trap', station: 'bench', name: 'Сколотить капкан', icon: 'assets/images/trapie.png',
+      id: 'craft_trap', station: 'bench', name: 'Сколотить капкан', icon: 'assets/images/trap.png',
       cost: { scrap: 2, wire: 1 }, result: { trap: 1 }, energy: 20, timeMin: 45,
       desc: 'Ловушка для добычи мяса и ценных шкур в тайге.'
     },
