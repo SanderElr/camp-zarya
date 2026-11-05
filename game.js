@@ -1,6 +1,6 @@
 /* ==========================================================================
    ИГРОВОЙ ДВИЖОК: ТЕКСТОВАЯ RPG «ЛАГЕРЬ ЗАРЯ»
-   Собрано автоматически из src/ (2026-11-05T06:32:07.881Z)
+   Собрано автоматически из src/ (2026-11-05T07:56:16.649Z)
    Не редактируйте этот файл вручную — вносите изменения в файлы src/
    ========================================================================== */
 
@@ -4832,7 +4832,7 @@ const Game = (() => {
   function talkSpiridon() { talkMargo(); }
   function talkSasha() { talkStrong(); }
 
-  // >>> MODULE: systems/sorties.js (1247 строк)
+  // >>> MODULE: systems/sorties.js (1261 строк)
   // --- ЛОКАЦИОННЫЕ И ДОПОЛНИТЕЛЬНЫЕ АКТИВНОСТИ ---
   function doDiveContainer(loc) {
     if (state.energy < 20) {
@@ -5533,7 +5533,9 @@ const Game = (() => {
 
     // Бункер НИИ «Сфера»
     if (loc.id === 'bunker') {
-      if (state.mainQuestStep === 17 && !state.questFlags.turrets_neutralized) {
+      if (state.mainQuestStep < 17) {
+        body += `<p style="color:var(--text-dim); font-size:12px;">🔒 <i>Тяжёлые бронированные гермодвери наглухо заперты автоматикой. Доступ откроется на завершающих этапах кампании (Квест 18).</i></p>`;
+      } else if (state.mainQuestStep === 17 && !state.questFlags.turrets_neutralized) {
         actions.push({
           text: '🚪 Вскрыть гермодверь ключ-картой и подавить турели (Квест 18)',
           action: () => doEnterBunker(loc),
@@ -5545,8 +5547,8 @@ const Game = (() => {
           action: () => doShutdownReactor(loc),
           primary: true
         });
-      } else {
-        if (state.questFlags.bunker_entered && !state.questFlags.bio4_cleared) {
+      } else if (state.questFlags.bunker_entered) {
+        if (!state.questFlags.bio4_cleared) {
           actions.push({
             text: '🧬 Взломать спецхран криолаборатории «Био-4» («Стимулятор-М»)',
             action: () => doCrackBio4(loc)
@@ -5978,6 +5980,10 @@ const Game = (() => {
   }
 
   function doEnterBunker(loc) {
+    if (state.mainQuestStep < 17) {
+      toast('Бункер запечатан бронированными гермодверями! Доступ откроется на завершающих этапах кампании.');
+      return;
+    }
     if (state.energy < loc.energyCost) {
       toast('Слишком мало сил для штурма бункера!');
       return;
@@ -6006,7 +6012,7 @@ const Game = (() => {
     addItem('antirad', 2);
     addItem('clean_water', 2);
     addItem('ammo', 5);
-    toast('⭐ ОХРАННЫЕ ТУРЕЛИ ПОДАВЛЕНЫ! Проход в глубины Бункера открыт! Доложите Бате.');
+    toast('⭐ ОХРАННЫЕ ТУРЕЛИ ПОДАВЛЕНЫ! Проход в глубины Бункера открыт! Доложите Санычу.');
     sfx.playSuccess();
     updateHUD();
     saveState();
@@ -6015,6 +6021,10 @@ const Game = (() => {
   }
 
   function doShutdownReactor(loc) {
+    if (!state.questFlags?.bunker_entered || state.mainQuestStep < 18) {
+      toast('Сначала необходимо проникнуть в бункер и подавить турели!');
+      return;
+    }
     if (getItemCount('respirator') < 1 && !state.questFlags.respirator_crafted) {
       toast('В реакторном зале ядовитый газ! Наденьте респиратор Р-2 перед спуском.');
       return;
@@ -6029,7 +6039,7 @@ const Game = (() => {
     state.questFlags.reactor_shutdown = true;
     addItem('floppy_disk', 1);
     addItem('stabilizer_nectar', 1);
-    toast('⭐ РЕАКТОР ЗАГЛУШЕН! Катастрофа предотвращена! Архив «Каскад» и «Нектар-7» спасены! Срочно к Бате!');
+    toast('⭐ РЕАКТОР ЗАГЛУШЕН! Катастрофа предотвращена! Архив «Каскад» и «Оптимист-7» спасены! Срочно к Санычу!');
     updateHUD();
     saveState();
     renderQuests();
@@ -6037,6 +6047,10 @@ const Game = (() => {
   }
 
   function doScavengeBunker(loc) {
+    if (!state.questFlags?.bunker_entered) {
+      toast('Сначала необходимо проникнуть в бункер и подавить охранные турели!');
+      return;
+    }
     const energyCost = getEffectiveEnergyCost(loc);
     const radCost = getEffectiveRad(loc);
     if (state.energy < energyCost) {
@@ -6060,7 +6074,7 @@ const Game = (() => {
     const sub = 'Сюжетная сага из 20 квестов успешно завершена';
     const body = `
       <p style="color:var(--accent-gold); font-size:14px; font-weight:bold;">Саныч, Атарон и весь Совет Основателей салютуют вам!</p>
-      <p>Вы прошли колоссальный путь: от истощённого беженца до легендарного защитника тайги. Реактор НИИ «Сфера» заглушен, повторный ядовитый выброс остановлен навсегда, а биостабилизатор «Нектар-7» очистит сибирские земли и вернёт людям жизнь! «Всем ПОХ на апокалипсис!» — гремит победный салют над костром.</p>
+      <p>Вы прошли колоссальный путь: от истощённого беженца до легендарного защитника тайги. Реактор НИИ «Сфера» заглушен, повторный ядовитый выброс остановлен навсегда, а биостабилизатор «Оптимист-7» очистит сибирские земли и вернёт людям жизнь! «Всем ПОХ на апокалипсис!» — гремит победный салют над костром.</p>
       <div style="background:rgba(0,0,0,0.45); padding:10px 14px; border-radius:8px; margin:12px 0; border:1px solid rgba(255,255,255,0.15); line-height:1.6;">
         <b>Ваш итоговый послужной список:</b><br>
         • Финальный статус: <b>\${getReputationTitle(state.reputation)}</b> (\${state.reputation} очков репутации)<br>
@@ -6252,8 +6266,8 @@ const Game = (() => {
         giver: 'Чагрон («Глыба»)', giverId: 'chagron', 
         desc: chagronRep >= 50 ? 'Поймать 3 отборные рыбы на реке Быстрянке для старого следопыта.' : 'Поймать 2 рыбы на реке Быстрянке.', 
         goal: chagronRep >= 50 ? 3 : 2, current: 0, 
-        rewardRep: chagronRep >= 50 ? 25 : 15, 
-        rewardAmmo: chagronRep >= 50 ? 3 : 2, 
+        rewardRep: chagronRep >= 50 ? 18 : 10, 
+        rewardAmmo: chagronRep >= 50 ? 2 : 1, 
         completed: false, notifiedReady: false, 
         isUpgraded: chagronRep >= 50 
       },
@@ -6263,7 +6277,7 @@ const Game = (() => {
         giver: 'Вова «Боб»', giverId: 'bob', 
         desc: bobRep >= 50 ? 'Заготовить 3 плотных полена для кузнечного горна Бобчонка.' : 'Заготовить 2 охапки сухих дров.', 
         goal: bobRep >= 50 ? 3 : 2, current: 0, 
-        rewardRep: bobRep >= 50 ? 20 : 10, 
+        rewardRep: bobRep >= 50 ? 18 : 10, 
         rewardAmmo: bobRep >= 50 ? 2 : 1, 
         completed: false, notifiedReady: false, 
         isUpgraded: bobRep >= 50 
@@ -6274,8 +6288,8 @@ const Game = (() => {
         giver: 'Николай «Скай»', giverId: 'sky', 
         desc: skyRep >= 50 ? 'Собрать 3 пучка душистой полыни и чабреца для лазарета Ская.' : 'Собрать 2 пучка полыни для доктора Ская.', 
         goal: skyRep >= 50 ? 3 : 2, current: 0, 
-        rewardRep: skyRep >= 50 ? 25 : 15, 
-        rewardAmmo: skyRep >= 50 ? 3 : 2, 
+        rewardRep: skyRep >= 50 ? 18 : 10, 
+        rewardAmmo: skyRep >= 50 ? 2 : 1, 
         completed: false, notifiedReady: false, 
         isUpgraded: skyRep >= 50 
       },
@@ -6285,7 +6299,7 @@ const Game = (() => {
         giver: 'Варя (Полевой повар)', giverId: 'varya', 
         desc: varyaRep >= 50 ? 'Собрать 3 порции брусники для лагерного киселя и витаминного взвара.' : 'Собрать 2 порции лесной брусники для полевой кухни.', 
         goal: varyaRep >= 50 ? 3 : 2, current: 0, 
-        rewardRep: varyaRep >= 50 ? 20 : 12, 
+        rewardRep: varyaRep >= 50 ? 18 : 10, 
         rewardAmmo: varyaRep >= 50 ? 2 : 1, 
         completed: false, notifiedReady: false, 
         isUpgraded: varyaRep >= 50 
@@ -6709,7 +6723,7 @@ const Game = (() => {
     }
   }
 
-  // >>> MODULE: core/persistence.js (195 строк)
+  // >>> MODULE: core/persistence.js (196 строк)
   // --- СОХРАНЕНИЕ И СБРОС ---
   function saveState() {
     try {
@@ -6899,13 +6913,14 @@ const Game = (() => {
     try {
       localStorage.removeItem('camp_zarya_save');
     } catch(e) {}
-    state = JSON.parse(JSON.stringify(INITIAL_STATE));
+    for (const key in state) delete state[key];
+    Object.assign(state, JSON.parse(JSON.stringify(INITIAL_STATE)));
     state.introSeen = false;
     closeModal();
     init();
   }
 
-  // >>> MODULE: main.js (145 строк)
+  // >>> MODULE: main.js (152 строк)
   // --- ИНИЦИАЛИЗАЦИЯ И ОБНОВЛЕНИЕ UI ---
   function init() {
     initAudio();
@@ -7037,7 +7052,14 @@ const Game = (() => {
     transferToStorage,
     transferFromStorage,
     toast,
-    state,
+    get state() { return state; },
+    getState: () => state,
+    addItem,
+    removeItem,
+    getItemCount,
+    useItem,
+    passTime,
+    onNewDay,
     updateHUD,
     openLocationModal,
     quickDrinkWater,

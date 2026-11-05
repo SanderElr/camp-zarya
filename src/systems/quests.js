@@ -31,8 +31,8 @@
         giver: 'Чагрон («Глыба»)', giverId: 'chagron', 
         desc: chagronRep >= 50 ? 'Поймать 3 отборные рыбы на реке Быстрянке для старого следопыта.' : 'Поймать 2 рыбы на реке Быстрянке.', 
         goal: chagronRep >= 50 ? 3 : 2, current: 0, 
-        rewardRep: chagronRep >= 50 ? 25 : 15, 
-        rewardAmmo: chagronRep >= 50 ? 3 : 2, 
+        rewardRep: chagronRep >= 50 ? 18 : 10, 
+        rewardAmmo: chagronRep >= 50 ? 2 : 1, 
         completed: false, notifiedReady: false, 
         isUpgraded: chagronRep >= 50 
       },
@@ -42,7 +42,7 @@
         giver: 'Вова «Боб»', giverId: 'bob', 
         desc: bobRep >= 50 ? 'Заготовить 3 плотных полена для кузнечного горна Бобчонка.' : 'Заготовить 2 охапки сухих дров.', 
         goal: bobRep >= 50 ? 3 : 2, current: 0, 
-        rewardRep: bobRep >= 50 ? 20 : 10, 
+        rewardRep: bobRep >= 50 ? 18 : 10, 
         rewardAmmo: bobRep >= 50 ? 2 : 1, 
         completed: false, notifiedReady: false, 
         isUpgraded: bobRep >= 50 
@@ -53,8 +53,8 @@
         giver: 'Николай «Скай»', giverId: 'sky', 
         desc: skyRep >= 50 ? 'Собрать 3 пучка душистой полыни и чабреца для лазарета Ская.' : 'Собрать 2 пучка полыни для доктора Ская.', 
         goal: skyRep >= 50 ? 3 : 2, current: 0, 
-        rewardRep: skyRep >= 50 ? 25 : 15, 
-        rewardAmmo: skyRep >= 50 ? 3 : 2, 
+        rewardRep: skyRep >= 50 ? 18 : 10, 
+        rewardAmmo: skyRep >= 50 ? 2 : 1, 
         completed: false, notifiedReady: false, 
         isUpgraded: skyRep >= 50 
       },
@@ -64,7 +64,7 @@
         giver: 'Варя (Полевой повар)', giverId: 'varya', 
         desc: varyaRep >= 50 ? 'Собрать 3 порции брусники для лагерного киселя и витаминного взвара.' : 'Собрать 2 порции лесной брусники для полевой кухни.', 
         goal: varyaRep >= 50 ? 3 : 2, current: 0, 
-        rewardRep: varyaRep >= 50 ? 20 : 12, 
+        rewardRep: varyaRep >= 50 ? 18 : 10, 
         rewardAmmo: varyaRep >= 50 ? 2 : 1, 
         completed: false, notifiedReady: false, 
         isUpgraded: varyaRep >= 50 

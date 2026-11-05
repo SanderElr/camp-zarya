@@ -698,7 +698,9 @@
 
     // Бункер НИИ «Сфера»
     if (loc.id === 'bunker') {
-      if (state.mainQuestStep === 17 && !state.questFlags.turrets_neutralized) {
+      if (state.mainQuestStep < 17) {
+        body += `<p style="color:var(--text-dim); font-size:12px;">🔒 <i>Тяжёлые бронированные гермодвери наглухо заперты автоматикой. Доступ откроется на завершающих этапах кампании (Квест 18).</i></p>`;
+      } else if (state.mainQuestStep === 17 && !state.questFlags.turrets_neutralized) {
         actions.push({
           text: '🚪 Вскрыть гермодверь ключ-картой и подавить турели (Квест 18)',
           action: () => doEnterBunker(loc),
@@ -710,8 +712,8 @@
           action: () => doShutdownReactor(loc),
           primary: true
         });
-      } else {
-        if (state.questFlags.bunker_entered && !state.questFlags.bio4_cleared) {
+      } else if (state.questFlags.bunker_entered) {
+        if (!state.questFlags.bio4_cleared) {
           actions.push({
             text: '🧬 Взломать спецхран криолаборатории «Био-4» («Стимулятор-М»)',
             action: () => doCrackBio4(loc)
@@ -1143,6 +1145,10 @@
   }
 
   function doEnterBunker(loc) {
+    if (state.mainQuestStep < 17) {
+      toast('Бункер запечатан бронированными гермодверями! Доступ откроется на завершающих этапах кампании.');
+      return;
+    }
     if (state.energy < loc.energyCost) {
       toast('Слишком мало сил для штурма бункера!');
       return;
@@ -1171,7 +1177,7 @@
     addItem('antirad', 2);
     addItem('clean_water', 2);
     addItem('ammo', 5);
-    toast('⭐ ОХРАННЫЕ ТУРЕЛИ ПОДАВЛЕНЫ! Проход в глубины Бункера открыт! Доложите Бате.');
+    toast('⭐ ОХРАННЫЕ ТУРЕЛИ ПОДАВЛЕНЫ! Проход в глубины Бункера открыт! Доложите Санычу.');
     sfx.playSuccess();
     updateHUD();
     saveState();
@@ -1180,6 +1186,10 @@
   }
 
   function doShutdownReactor(loc) {
+    if (!state.questFlags?.bunker_entered || state.mainQuestStep < 18) {
+      toast('Сначала необходимо проникнуть в бункер и подавить турели!');
+      return;
+    }
     if (getItemCount('respirator') < 1 && !state.questFlags.respirator_crafted) {
       toast('В реакторном зале ядовитый газ! Наденьте респиратор Р-2 перед спуском.');
       return;
@@ -1194,7 +1204,7 @@
     state.questFlags.reactor_shutdown = true;
     addItem('floppy_disk', 1);
     addItem('stabilizer_nectar', 1);
-    toast('⭐ РЕАКТОР ЗАГЛУШЕН! Катастрофа предотвращена! Архив «Каскад» и «Нектар-7» спасены! Срочно к Бате!');
+    toast('⭐ РЕАКТОР ЗАГЛУШЕН! Катастрофа предотвращена! Архив «Каскад» и «Оптимист-7» спасены! Срочно к Санычу!');
     updateHUD();
     saveState();
     renderQuests();
@@ -1202,6 +1212,10 @@
   }
 
   function doScavengeBunker(loc) {
+    if (!state.questFlags?.bunker_entered) {
+      toast('Сначала необходимо проникнуть в бункер и подавить охранные турели!');
+      return;
+    }
     const energyCost = getEffectiveEnergyCost(loc);
     const radCost = getEffectiveRad(loc);
     if (state.energy < energyCost) {
@@ -1225,7 +1239,7 @@
     const sub = 'Сюжетная сага из 20 квестов успешно завершена';
     const body = `
       <p style="color:var(--accent-gold); font-size:14px; font-weight:bold;">Саныч, Атарон и весь Совет Основателей салютуют вам!</p>
-      <p>Вы прошли колоссальный путь: от истощённого беженца до легендарного защитника тайги. Реактор НИИ «Сфера» заглушен, повторный ядовитый выброс остановлен навсегда, а биостабилизатор «Нектар-7» очистит сибирские земли и вернёт людям жизнь! «Всем ПОХ на апокалипсис!» — гремит победный салют над костром.</p>
+      <p>Вы прошли колоссальный путь: от истощённого беженца до легендарного защитника тайги. Реактор НИИ «Сфера» заглушен, повторный ядовитый выброс остановлен навсегда, а биостабилизатор «Оптимист-7» очистит сибирские земли и вернёт людям жизнь! «Всем ПОХ на апокалипсис!» — гремит победный салют над костром.</p>
       <div style="background:rgba(0,0,0,0.45); padding:10px 14px; border-radius:8px; margin:12px 0; border:1px solid rgba(255,255,255,0.15); line-height:1.6;">
         <b>Ваш итоговый послужной список:</b><br>
         • Финальный статус: <b>\${getReputationTitle(state.reputation)}</b> (\${state.reputation} очков репутации)<br>

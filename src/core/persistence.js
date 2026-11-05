@@ -187,7 +187,8 @@
     try {
       localStorage.removeItem('camp_zarya_save');
     } catch(e) {}
-    state = JSON.parse(JSON.stringify(INITIAL_STATE));
+    for (const key in state) delete state[key];
+    Object.assign(state, JSON.parse(JSON.stringify(INITIAL_STATE)));
     state.introSeen = false;
     closeModal();
     init();
