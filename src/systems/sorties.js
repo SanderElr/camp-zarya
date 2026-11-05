@@ -11,9 +11,9 @@
     passTime(1);
     state.questFlags.river_container_looted = true;
     addItem('canned_food', 3);
-    addItem('ammo', 10);
-    state.reputation += 25;
-    toast('📦 ТЕРМОБОКС ПОДНЯТ СО ДНА! Найдено 3 банки армейской тушенки и 10 патронов (+25 репутации)!');
+    addItem('ammo', 8);
+    state.reputation += 15;
+    toast('📦 ТЕРМОБОКС ПОДНЯТ СО ДНА! Найдено 3 банки армейской тушенки и 8 патронов (+15 репутации)!');
     sfx.playSuccess();
     updateHUD();
     saveState();
@@ -38,8 +38,8 @@
     passTime(1.5);
     addItem('leather', 2);
     addItem('wolf_fang', 1);
-    state.reputation += 30;
-    toast(`🐺 ВОЛЧЬЕ ЛОГОВО РАЗГРОМЛЕНО! Вожак повержен! Получен амулет «Волчий клык» (+5 к урону), 2 шкуры (${damage} урона)!`);
+    state.reputation += 18;
+    toast(`🐺 ВОЛЧЬЕ ЛОГОВО РАЗГРОМЛЕНО! Вожак повержен! Получен амулет «Волчий клык» (+5 к урону), 2 шкуры (${damage} урона, +18 репутации)!`);
     sfx.playSuccess();
     updateHUD();
     saveState();
@@ -56,8 +56,8 @@
     removeItem('bandage', 1);
     state.questFlags.pup_rescued = true;
     passTime(1);
-    state.reputation += 20;
-    toast('🐾 ЩЕНОК СПАСЕН! Вы аккуратно разжали дуги ржавого капкана, промыли рану и перевязали щенка. Отнесите его Егору в лагерь!');
+    state.reputation += 12;
+    toast('🐾 ЩЕНОК СПАСЕН! Вы аккуратно разжали дуги ржавого капкана, промыли рану и перевязали щенка. Отнесите его Чагрону в лагерь (+12 репутации)!');
     sfx.playSuccess();
     updateHUD();
     saveState();
@@ -85,9 +85,9 @@
     state.rad += 15;
     passTime(1.5);
     state.questFlags.brdm_searched = true;
-    addItem('ammo', 8);
-    state.reputation += 35;
-    toast('🚜 БРДМ-2 ОБСЛЕДОВАН! Найдены жетоны сержанта Гурова, патроны и офицерский планшет! Отнесите Бате.');
+    addItem('ammo', 6);
+    state.reputation += 20;
+    toast('🚜 БРДМ-2 ОБСЛЕДОВАН! Найдены жетоны сержанта Гурова, патроны и планшет! Отнесите Атарону (+20 репутации).');
     sfx.playSuccess();
     updateHUD();
     saveState();
@@ -103,8 +103,8 @@
     state.questFlags.glowing_moss_found = true;
     addItem('glowing_moss', 1);
     addItem('stabilizer_nectar', 1);
-    state.reputation += 30;
-    toast('✨ СВЕТЯЩИЙСЯ СФАГНУМ СОБРАН! Чистый экстракт спасет от любых ран и радиации! Отнесите Анне.');
+    state.reputation += 16;
+    toast('✨ СВЕТЯЩИЙСЯ СФАГНУМ СОБРАН! Чистый экстракт спасет от ран и радиации! Отнесите Марго или Скаю (+16 репутации).');
     sfx.playSuccess();
     updateHUD();
     saveState();
@@ -124,9 +124,9 @@
     sfx.playSuccess();
     state.energy -= 25;
     state.pumpWaterActive = true;
-    state.reputation += 35;
+    state.reputation += 20;
     passTime(1);
-    toast('🚰 ДОННЫЙ ВЕНТИЛЬ ПОВЕРНУТ! Шлам сброшен! Теперь каждое утро лагерная колонка выдает +1 флягу чистой воды!');
+    toast('🚰 ДОННЫЙ ВЕНТИЛЬ ПОВЕРНУТ! Шлам сброшен! Теперь каждое утро лагерная колонка выдает +1 флягу чистой воды (+20 репутации)!');
     updateHUD();
     saveState();
     refreshLocationModal(loc);
@@ -142,11 +142,11 @@
     state.energy -= 15;
     state.questFlags.safe_cracked = true;
     state.maxWeight += 2.5;
-    addItem('ammo', 12);
+    addItem('ammo', 10);
     addItem('wire', 2);
-    state.reputation += 35;
+    state.reputation += 20;
     passTime(1);
-    toast('🔐 СЕЙФ ВЗЛОМАН! Найдены чертежи разгрузки Кузьмина (+2.5 кг к вместимости), 12 патронов и проволока!');
+    toast('🔐 СЕЙФ ВЗЛОМАН! Найдены чертежи разгрузки Кузьмина (+2.5 кг к вместимости), 10 патронов и проволока (+20 репутации)!');
     updateHUD();
     saveState();
     refreshLocationModal(loc);
@@ -163,9 +163,9 @@
     state.questFlags.stove_searched = true;
     state.maxWeight += 2.5;
     addItem('ammo', 6);
-    state.reputation += 30;
+    state.reputation += 16;
     passTime(1);
-    toast('🏚️ ТАЙНИК В ПЕЧИ ОБНАРУЖЕН! Найден кожаный патронташ лесничего (+2.5 кг к весу) и 6 патронов ТОЗ!');
+    toast('🏚️ ТАЙНИК В ПЕЧИ ОБНАРУЖЕН! Найден кожаный патронташ лесничего (+2.5 кг к весу) и 6 патронов ТОЗ (+16 репутации)!');
     sfx.playSuccess();
     updateHUD();
     saveState();
@@ -183,9 +183,9 @@
     removeItem('clean_water', 1);
     state.questFlags.met_strong = true;
     state.questFlags.met_sasha = true;
-    state.reputation += 40;
+    state.reputation += 22;
     passTime(2);
-    toast('🆘 СТРОНГ СПАСЕН! Вы перевязали раненого аналитика и помогли ему добраться до лагеря! Теперь Стронг наладит радиопеленг в «Всем ПОХ»!');
+    toast('🆘 СТРОНГ СПАСЕН! Вы перевязали раненого аналитика и помогли ему добраться до лагеря! Теперь Стронг наладит радиопеленг (+22 репутации)!');
     sfx.playSuccess();
     updateHUD();
     saveState();
@@ -205,9 +205,9 @@
     state.questFlags.logger_extracted = true;
     addItem('scrap', 3);
     addItem('wire', 2);
-    state.reputation += 50;
+    state.reputation += 25;
     passTime(2);
-    toast('📊 САМОПИСЕЦ ИЗВЛЕЧЕН! Архивные данные аварии и ценные радиодетали сняты со шпиля вышки (+50 репутации)!');
+    toast('📊 САМОПИСЕЦ ИЗВЛЕЧЕН! Архивные данные аварии и ценные радиодетали сняты со шпиля вышки (+25 репутации)!');
     updateHUD();
     saveState();
     refreshLocationModal(loc);
@@ -231,9 +231,9 @@
     state.questFlags.boar_defeated = true;
     addItem('raw_meat', 4);
     addItem('leather', 2);
-    state.reputation += 45;
+    state.reputation += 24;
     passTime(2);
-    toast(`🐗 ВЕПРЬ-СЕКАЧ ПОВЕРЖЕН! Двустволка свалила гиганта (+4 мяса, +2 толстые шкуры, получено ${damage} урона)!`);
+    toast(`🐗 ВЕПРЬ-СЕКАЧ ПОВЕРЖЕН! Двустволка свалила гиганта (+4 мяса, +2 толстые шкуры, получено ${damage} урона, +24 репутации)!`);
     sfx.playSuccess();
     updateHUD();
     saveState();
@@ -251,9 +251,9 @@
     state.rad += 15;
     state.questFlags.bio4_cleared = true;
     addItem('stimulator_m', 1);
-    state.reputation += 60;
+    state.reputation += 30;
     passTime(2);
-    toast('🧬 СПЕЦХРАН «БИО-4» ВСКРЫТ! Извлечен армейский биостимулятор «Стимулятор-М» (+25 постоянной максимальной энергии)!');
+    toast('🧬 СПЕЦХРАН «БИО-4» ВСКРЫТ! Извлечен армейский биостимулятор «Стимулятор-М» (+25 постоянной максимальной энергии, +30 репутации)!');
     updateHUD();
     saveState();
     refreshLocationModal(loc);
@@ -264,8 +264,8 @@
     sfx.playClick();
     state.energy -= 10;
     state.questFlags.geo1_done = true;
-    state.reputation += 15;
-    toast('📍 ТРИАНГУЛЯТОР ОБСЛЕДОВАН! В металлическом тубусе найдена карта геологоразведки «Енисей-3» с координатами скважины №7 на Быстрянке!');
+    state.reputation += 10;
+    toast('📍 ТРИАНГУЛЯТОР ОБСЛЕДОВАН! В металлическом тубусе найдена карта геологоразведки «Енисей-3» с координатами скважины №7 на Быстрянке (+10 репутации)!');
     sfx.playSuccess();
     updateHUD();
     saveState();
@@ -282,8 +282,8 @@
     sfx.playSuccess();
     state.energy -= 20;
     state.questFlags.geo2_done = true;
-    state.reputation += 25;
-    toast('⛏️ СКВАЖИНА №7 РАСЧИЩЕНА! Со дна шурфа поднят запечатанный геологический керн с черным аномальным минералом! Покажите Прохору.');
+    state.reputation += 15;
+    toast('⛏️ СКВАЖИНА №7 РАСЧИЩЕНА! Со дна шурфа поднят запечатанный геологический керн с черным аномальным минералом! Покажите Бобу (+15 репутации).');
     updateHUD();
     saveState();
     renderQuests();
@@ -295,8 +295,8 @@
     sfx.playClick();
     state.energy -= 10;
     state.questFlags.caravan1_done = true;
-    state.reputation += 20;
-    toast('👣 СЛЕДЫ БАНДЫ «ХЛЫЩА» ОБНАРУЖЕНЫ! Найдены гильзы и нацарапанная на камне стрелка в сторону штольни на Скалистом утёсе!');
+    state.reputation += 12;
+    toast('👣 СЛЕДЫ БАНДЫ «ХЛЫЩА» ОБНАРУЖЕНЫ! Найдены гильзы и нацарапанная на камне стрелка в сторону штольни на Скалистом утёсе (+12 репутации)!');
     sfx.playSuccess();
     updateHUD();
     saveState();
@@ -314,10 +314,10 @@
     state.questFlags.caravan2_done = true;
     state.questFlags.caravan_cache_found = true;
     addItem('toz_scope', 1);
-    addItem('ammo', 25);
+    addItem('ammo', 20);
     state.hasTozScope = true;
-    state.reputation += 50;
-    toast('🏴‍☠️ СХРОН МАРОДЕРОВ ВЗЯТ! Растяжка обезврежена! Найден коллиматорный прицел ТОЗ (+30% крит) и 25 патронов! Доложите Бате.');
+    state.reputation += 25;
+    toast('🏴‍☠️ СХРОН МАРОДЕРОВ ВЗЯТ! Растяжка обезврежена! Найден коллиматорный прицел ТОЗ (+30% крит) и 20 патронов! Доложите Атарону (+25 репутации).');
     updateHUD();
     saveState();
     refreshLocationModal(loc);
@@ -331,10 +331,134 @@
     addItem('canned_food', 2);
     addItem('ammo', 8);
     addItem('batteryaaa', 1);
-    state.reputation += 20;
-    toast('📦 ПАРАШЮТНЫЙ КОНТЕЙНЕР НАЙДЕН! Забрано: 2 банки тушёнки, 8 патронов и комплект батареек ААА (+20 репутации)!');
+    state.reputation += 12;
+    toast('📦 ПАРАШЮТНЫЙ КОНТЕЙНЕР НАЙДЕН! Забрано: 2 банки тушёнки, 8 патронов и комплект батареек ААА (+12 репутации)!');
     updateHUD();
     saveState();
+    refreshLocationModal(loc);
+  }
+
+  // --- УНИКАЛЬНЫЕ ПОГОДНЫЕ КВЕСТЫ (WEATHER QUESTS) ---
+  function doWeatherQuestRiverFlood(loc) {
+    if (state.energy < 15) {
+      toast('Недостаточно сил для борьбы со стремительным паводком! Нужно 15% энергии.');
+      return;
+    }
+    sfx.init();
+    sfx.playSplash();
+    state.energy -= 15;
+    passTime(1);
+    state.questFlags.wq_river_flood_done = true;
+    addItem('raw_fish', 3);
+    addItem('firewood', 2);
+    addItem('scrap', 2);
+    changeNpcRep('chagron', 10);
+    changeNpcRep('bob', 10);
+    state.reputation += 12;
+    toast('🌊 ПАВОДОК ПРЕОДОЛЁН! Вы укрепили мостки и перехватили сеть с крупным уловом! Чагрон и Боб благодарят (+10 реп обоим, +12 общей)!');
+    sfx.playSuccess();
+    updateHUD();
+    saveState();
+    renderQuests();
+    refreshLocationModal(loc);
+  }
+
+  function doWeatherQuestSwampLights(loc) {
+    if (state.energy < 15) {
+      toast('Нужно 15% энергии для блуждания по топи в густом смоге!');
+      return;
+    }
+    sfx.init();
+    sfx.playClick();
+    state.energy -= 15;
+    const radDamage = (getItemCount('respirator') > 0 || state.questFlags.respirator_crafted) ? 5 : 15;
+    state.rad += radDamage;
+    passTime(1);
+    state.questFlags.wq_swamp_lights_done = true;
+    addItem('glowing_moss', 2);
+    addItem('herbs', 2);
+    addItem('stabilizer_nectar', 1);
+    changeNpcRep('margo', 12);
+    state.reputation += 12;
+    toast('✨ ОГНИ ГАТИ НАЙДЕНЫ! Сквозь ядовитую пелену вы вышли к мерцающему люминесцентному мху! Марго в восторге (+12 репутации Марго, +12 общей)!');
+    sfx.playSuccess();
+    updateHUD();
+    saveState();
+    renderQuests();
+    refreshLocationModal(loc);
+  }
+
+  function doWeatherQuestTowerAurora(loc) {
+    if (state.energy < 20) {
+      toast('Нужно 20% энергии для подъёма на вышку во время авроры!');
+      return;
+    }
+    sfx.init();
+    sfx.playSuccess();
+    state.energy -= 20;
+    passTime(1.5);
+    state.questFlags.wq_tower_aurora_done = true;
+    addItem('scrap', 3);
+    addItem('wire', 2);
+    addItem('batteryaaa', 1);
+    addItem('ammo', 6);
+    changeNpcRep('sky', 12);
+    changeNpcRep('strong', 12);
+    state.reputation += 14;
+    toast('🌌 ДАЛЬНИЙ СИГНАЛ ПЕРЕХВАЧЕН! В сиянии ионосферы антенна приняла радиограмму геологов и координаты тайника! (+12 реп Скаю и Стронгу, +14 общей)!');
+    updateHUD();
+    saveState();
+    renderQuests();
+    refreshLocationModal(loc);
+  }
+
+  function doWeatherQuestPerimeterFrost(loc) {
+    if (getItemCount('spear') < 1 && getItemCount('toz') < 1 && getItemCount('knife') < 1) {
+      toast('Выходить против волчьей стаи на морозе без оружия — самоубийство!');
+      return;
+    }
+    if (state.hp < 25) {
+      toast('Вы слишком слабы для боя в стужу!');
+      return;
+    }
+    sfx.init();
+    sfx.playDanger();
+    const damage = state.hasDog ? 8 : 15;
+    state.hp = Math.max(10, state.hp - damage);
+    state.energy = Math.max(0, state.energy - 20);
+    passTime(1.5);
+    state.questFlags.wq_perimeter_frost_done = true;
+    addItem('raw_meat', 3);
+    addItem('leather', 2);
+    addItem('ammo', 4);
+    changeNpcRep('ataron', 12);
+    state.reputation += 12;
+    toast(`❄️ ПЕРИМЕТР ОТСТОЯН! Замки сигналок отогреты, нападавшая на морозе стая рассеяна! Атарон доволен выучкой (+12 репутации Атарону, +12 общей)!`);
+    sfx.playSuccess();
+    updateHUD();
+    saveState();
+    renderQuests();
+    refreshLocationModal(loc);
+  }
+
+  function doWeatherQuestPeatFire(loc) {
+    if (state.energy < 15) {
+      toast('Недостаточно сил для окапывания тлеющего торфа! Нужно 15% энергии.');
+      return;
+    }
+    sfx.init();
+    sfx.playSuccess();
+    state.energy -= 15;
+    passTime(1);
+    state.questFlags.wq_peat_fire_done = true;
+    addItem('charcoal', 3);
+    addItem('firewood', 2);
+    changeNpcRep('sanych', 12);
+    state.reputation += 12;
+    toast('🔥 ТОРФЯНИК ЛИКВИДИРОВАН! Вы забросали пласт землёй и песком, спася частокол лагеря от пожара! Саныч выражает почтение (+12 реп Санычу, +12 общей)!');
+    updateHUD();
+    saveState();
+    renderQuests();
     refreshLocationModal(loc);
   }
 
@@ -419,7 +543,9 @@
       cost = Math.max(5, cost - 5);
     }
     if (isNightTime(state.timeOfDay) && !state.hasElectricTorch && !hasStatusEffect('lynx_vision')) {
-      cost += 10;
+      if (state.weather !== 'aurora') {
+        cost += 10;
+      }
     }
     return Math.max(5, cost);
   }
@@ -460,6 +586,13 @@
 
     // Действия на реке
     if (loc.id === 'river') {
+      if ((state.weather === 'rain' || state.weather === 'storm') && !state.questFlags.wq_river_flood_done) {
+        actions.unshift({
+          text: `🌊 Спасти рыбацкие мостки и перехватить оторванную сеть (Погода: ${WEATHER_TYPES[state.weather]?.name || ''})`,
+          action: () => doWeatherQuestRiverFlood(loc),
+          primary: true
+        });
+      }
       if (state.mainQuestStep === 5 && !state.questFlags.water_sample_given && getItemCount('water_sample') === 0) {
         actions.push({
           text: '🧪 Набрать пробу токсичной воды для Анны (Квест 6)',
@@ -503,6 +636,20 @@
 
     // Действия в лесу
     if (loc.id === 'forest') {
+      if (state.weather === 'heat' && !state.questFlags.wq_peat_fire_done) {
+        actions.unshift({
+          text: '🔥 Затушить тлеющий торфяник у опушки (Погода: Знойное марево)',
+          action: () => doWeatherQuestPeatFire(loc),
+          primary: true
+        });
+      }
+      if (state.weather === 'freeze' && !state.questFlags.wq_perimeter_frost_done) {
+        actions.unshift({
+          text: '❄️ Отогреть замки периметра и отбить стаю на морозе (Погода: Заморозки)',
+          action: () => doWeatherQuestPerimeterFrost(loc),
+          primary: true
+        });
+      }
       if (state.mainQuestStep === 4 && !state.questFlags.dogs_defeated) {
         actions.push({
           text: '⚔️ Отразить набег одичавших псов копьём (Квест 5)',
@@ -542,6 +689,13 @@
 
     // Болота: Гнилая гать
     if (loc.id === 'swamp') {
+      if ((state.weather === 'fog' || state.weather === 'toxic_rain') && !state.questFlags.wq_swamp_lights_done) {
+        actions.unshift({
+          text: `✨ Выследить блуждающие огни в ядовитом тумане (Погода: ${WEATHER_TYPES[state.weather]?.name || ''})`,
+          action: () => doWeatherQuestSwampLights(loc),
+          primary: true
+        });
+      }
       const metM = !!(state.questFlags.met_margo || state.questFlags.met_spiridon);
       actions.push({
         text: metM ? '🛖 Зайти на Заимку травницы Марго' : '🛖 Пробраться по гати к Заимке травницы Марго',
@@ -628,6 +782,13 @@
 
     // Заброшенный кордон
     if (loc.id === 'old_cordon') {
+      if (state.weather === 'freeze' && !state.questFlags.wq_perimeter_frost_done) {
+        actions.unshift({
+          text: '❄️ Отогреть замки периметра и отбить стаю на морозе (Погода: Заморозки)',
+          action: () => doWeatherQuestPerimeterFrost(loc),
+          primary: true
+        });
+      }
       if (!state.questFlags.stove_searched) {
         actions.push({
           text: '🏚️ Разобрать кирпичную кладку печи (Тайник лесничего)',
@@ -647,6 +808,13 @@
 
     // Радиовышка
     if (loc.id === 'radio_tower') {
+      if (state.weather === 'aurora' && !state.questFlags.wq_tower_aurora_done) {
+        actions.unshift({
+          text: '🌌 Калибровать антенну в сполохах авроры (Погода: Аномальное сияние)',
+          action: () => doWeatherQuestTowerAurora(loc),
+          primary: true
+        });
+      }
       if (state.mainQuestStep >= 11 && !state.questFlags.met_strong && !state.questFlags.met_sasha) {
         actions.push({
           text: '🆘 Осмотреть расщелину под утесом (Спасенный Стронг)',
@@ -739,7 +907,7 @@
       return;
     }
     if (getItemCount('rod') < 1) {
-      toast('У вас нет удочки! Скрафтите её на верстаке у Прохора.');
+      toast('У вас нет удочки! Скрафтите её на верстаке у Боба.');
       return;
     }
     if (getItemCount('worms') < 1) {
@@ -756,8 +924,14 @@
 
     const roll = Math.random();
     if (roll > 0.3) {
-      addItem('raw_fish', 1);
-      toast('🐟 Отличный клёв! Вы поймали крупную речную рыбу.');
+      let fishCaught = 1;
+      let weatherBonusText = '';
+      if (state.weather === 'rain' || state.weather === 'storm') {
+        fishCaught += 1;
+        weatherBonusText = ' (в ненастье клёв отличный: +1 бонусная рыба!)';
+      }
+      addItem('raw_fish', fishCaught);
+      toast(`🐟 Отличный клёв! Вы поймали ${fishCaught} шт. речной рыбы${weatherBonusText}.`);
       sfx.playSuccess();
     } else if (roll > 0.1) {
       addItem('scrap', 1);
@@ -790,7 +964,7 @@
     state.energy -= 5;
     state.rad += 5;
     addItem('water_sample', 1);
-    toast('🧪 Набрана проба токсичной желтоватой воды. Отнесите Анне в лагерь!');
+    toast('🧪 Набрана проба токсичной желтоватой воды. Отнесите Скаю в лазарет!');
     sfx.playSuccess();
     passTime(0.5);
     refreshLocationModal(loc);
@@ -817,8 +991,17 @@
     sfx.playClick();
     state.energy -= energyCost;
     state.rad += radCost;
-    addItem('firewood', 2);
-    toast('🪵 Заготовлено 2 охапки сушняка для костра.');
+    let woodAmount = 2;
+    let extraWoodMsg = '';
+    if (state.weather === 'storm') {
+      woodAmount += 1;
+      extraWoodMsg = ' (Буря повалила сухостой: +1 бонусное полено!)';
+    } else if (state.weather === 'heat') {
+      addItem('charcoal', 1);
+      extraWoodMsg = ' (В знойное марево найден сухой уголь: +1 уголь!)';
+    }
+    addItem('firewood', woodAmount);
+    toast(`🪵 Заготовлено ${woodAmount} охапки сушняка для костра.${extraWoodMsg}`);
     passTime(1);
     checkDailyProgress('wood', 2);
     refreshLocationModal(loc);
@@ -835,9 +1018,15 @@
     sfx.playClick();
     state.energy -= energyCost;
     state.rad += radCost;
-    addItem('herbs', 2);
+    let herbsAmount = 2;
+    let extraHerbsMsg = '';
+    if (state.weather === 'fog' || state.weather === 'toxic_rain') {
+      herbsAmount += 1;
+      extraHerbsMsg = ' (Во влажном тумане травы растут гуще: +1 бонусный пучок!)';
+    }
+    addItem('herbs', herbsAmount);
     addItem('berries', 1);
-    toast('🌿 Нарвано 2 пучка целебных трав и горсть брусники.');
+    toast(`🌿 Нарвано ${herbsAmount} пучка целебных трав и горсть брусники.${extraHerbsMsg}`);
     passTime(1);
     checkDailyProgress('herbs', 2);
     refreshLocationModal(loc);
@@ -869,7 +1058,7 @@
     state.questFlags.dogs_defeated = true;
     addItem('raw_meat', 2);
     addItem('leather', 1);
-    toast('💥 СТАЯ ПСОВ РАЗБИТА! Вы отбились копьём (+2 мяса, +1 шкура). Доложите Бате!');
+    toast('💥 СТАЯ ПСОВ РАЗБИТА! Вы отбились копьём (+2 мяса, +1 шкура). Доложите Атарону!');
     passTime(1.5);
     updateHUD();
     saveState();
@@ -888,8 +1077,12 @@
     state.rad += loc.rad;
     if (!state.questFlags) state.questFlags = {};
     state.questFlags.swamp_explored = true;
-    addItem('swamp_moss', 2);
-    toast('🌿 Собрано 2 пучка болотного сфагнума для фильтров и мазей.');
+    let mossAmount = 2;
+    if (state.weather === 'fog' || state.weather === 'toxic_rain') {
+      mossAmount += 1;
+    }
+    addItem('swamp_moss', mossAmount);
+    toast(`🌿 Собрано ${mossAmount} пучка болотного сфагнума для фильтров и мазей.`);
     passTime(1);
     updateHUD();
     saveState();

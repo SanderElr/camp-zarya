@@ -107,14 +107,14 @@
     let bonusText = '';
     if (!state.npcChatDay[chatKey]) {
       state.npcChatDay[chatKey] = true;
-      changeNpcRep(id, 3, false);
-      bonusText = `<div style="color:var(--accent-green); font-size:11px; margin-top:8px;">🤝 ${npc.name.split(' ')[0]} оценил(а) душевную беседу (+3 к личной репутации)!</div>`;
+      changeNpcRep(id, 2, false);
+      bonusText = `<div style="color:var(--accent-green); font-size:11px; margin-top:8px;">🤝 ${npc.name.split(' ')[0]} оценил(а) душевную беседу (+2 к личной репутации)!</div>`;
     }
 
     let chatText = '';
     if (id === 'sanych') {
       if (tier.level >= 3) {
-        chatText = `<i>«Вот смотрю я на тебя и душа радуется! "Видишь суслика? И я не вижу. А он есть!" Знаешь, когда мы тут на пустой продуваемой лесопилке начинали, вокруг не было ни души — только стужа, дырявый брезент и тоска. А я всем орал: "Не ронять слёз! Сжать ягодицы в кулак! Каждая слеза — это минус сто миллилитров чистой воды из организма!" И ведь выстояли! Я даже Короб №42 с семенами помидоров отстоял — весной взойдут красные, сахарные! Красный помидор посреди серой тайги — это ведь не просто еда, это доказательство, что жизнь продолжается, сечешь? Доказать этой проклятой мерзлоте, что мы люди, а не зверьё под корягой. Ты настоящий соратник, на таких наш «Всем ПОХ» и держится. Горжусь тобой!»</i>`;
+        chatText = `<i>«Вот смотрю я на тебя и душа радуется! "Видишь суслика? И я не вижу. А он есть!" Знаешь, когда мы тут на пустой продуваемой лесопилке начинали, вокруг не было ни души — только стужа, дырявый брезент и тоска. Паникерам и нытикам в тайге места нет! Каждая слеза — это минус сто миллилитров чистой воды из организма! И ведь выстояли! Я даже Короб №42 с семенами помидоров отстоял — весной взойдут красные, сахарные! Красный помидор посреди серой тайги — это ведь не просто еда, это доказательство, что жизнь продолжается, сечешь? Доказать этой проклятой мерзлоте, что мы люди, а не зверьё под корягой. Ты настоящий соратник, на таких наш «Всем ПОХ» и держится. Горжусь тобой!»</i>`;
       } else {
         chatText = `<i>«Здорово, боец! Присаживайся к печурке, хлебни смородинового взвара. Запомни главное: паника убивает быстрее радиации и волчьих клыков. Оптимизм у нас — это не пустые слова, это воинская дисциплина! Собрались, выдохнули и работаем. Если руки из плеч растут и совесть на месте — тайга нас не сломит. Работай на совесть, держись общины, а если тоска подступит — стисни зубы и делай своё дело. Прорвёмся, не впервой!»</i>`;
       }
@@ -166,11 +166,23 @@
       }
     }
 
+    const wInfo = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
+    const weatherRemark = getNpcWeatherQuote(id, state.weather);
+    const weatherHtml = `
+      <div style="margin-top:10px; padding:8px 10px; background:rgba(0,0,0,0.25); border-left:3px solid ${wInfo.color || 'var(--accent-gold)'}; border-radius:4px; font-size:12px; color:var(--text-main);">
+        <div style="font-size:11px; color:${wInfo.color || 'var(--accent-gold)'}; font-weight:700; margin-bottom:3px;">
+          ${wInfo.icon} Мысли о погоде (${wInfo.name}):
+        </div>
+        <i>${weatherRemark}</i>
+      </div>
+    `;
+
     const body = `
       ${renderNpcRepHeader(id)}
       <div style="font-size:12.5px; line-height:1.6; color:var(--text-main); margin-bottom:12px;">
         ${chatText}
       </div>
+      ${weatherHtml}
       ${bonusText}
     `;
 
@@ -353,7 +365,11 @@
 
     let body = renderNpcRepHeader('sanych');
     body += `<p>Александр Александрович (Саныч) стоит у деревянного штабного стола. В кружке дымится травяной чай, рядом лежит потёртая карта района и старый кассетник «Весна». В глазах блестит лукавый, неугасимый огонёк.</p>`;
-    body += `<p><i>«Ну что, боец! Лагерь "Всем ПОХ" — это не просто привал, это крепость духа. "Не ронять слёз! Сжать ягодицы в кулак!" Кто руки опускает — тот тайге добыча. А кто с улыбкой да с честью пашет — тот хозяин жизни!»</i></p>`;
+    body += `<p><i>«Ну что, боец! Лагерь "Всем ПОХ" — это не просто привал, это крепость духа. Уныние и сопли здесь вне закона. Кто руки опускает — тот тайге добыча. А кто с улыбкой да с честью пашет — тот хозяин жизни!»</i></p>`;
+
+    const wInfo = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
+    const wQuote = getNpcWeatherQuote('sanych', state.weather);
+    body += `<p style="font-size:11.5px; color:var(--text-dim); margin:4px 0 8px; border-left:2px solid ${wInfo.color || 'var(--accent-gold)'}; padding-left:8px;">${wInfo.icon} <b>Погода (${wInfo.name}):</b> <i>${wQuote}</i></p>`;
 
     const actions = [];
 
@@ -371,10 +387,10 @@
         text: '«Я готов служить лагерю. С чего начать, Саныч?»',
         action: () => {
           state.mainQuestStep = 1;
-          state.reputation += 10;
+          state.reputation += 6;
           addItem('clean_water', 1);
           addItem('ammo', 3);
-          toast('⭐ Задание 1 выполнено: «Прибытие в «Всем ПОХ»» (+10 репутации, фляга воды, 3 патрона)!');
+          toast('⭐ Задание 1 выполнено: «Прибытие в «Всем ПОХ»» (+6 репутации, фляга воды, 3 патрона)!');
           sfx.playSuccess();
           updateHUD();
           saveState();
@@ -403,9 +419,9 @@
           text: '⭐ «Доложить Санычу об осмотре лагеря (Завершить квест 2)»',
           action: () => {
             state.mainQuestStep = 2;
-            state.reputation += 15;
+            state.reputation += 10;
             addItem('ammo', 3);
-            toast('⭐ Квест 2 завершён: «Первые шаги» (+15 репутации, +3 патрона)!');
+            toast('⭐ Квест 2 завершён: «Первые шаги» (+10 репутации, +3 патрона)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -460,12 +476,12 @@
           text: '⭐ «Обсудить координаты кордона с Санычем (Завершить квест 13)»',
           action: () => {
             state.mainQuestStep = 13;
-            state.reputation += 30;
+            state.reputation += 18;
             addItem('ammo', 5);
             if (!state.unlockedLocations.includes('old_cordon')) {
               state.unlockedLocations.push('old_cordon');
             }
-            toast('⭐ Квест 13 выполнен: «Шифр Воронова» (+30 репутации, открыт Заброшенный кордон)!');
+            toast('⭐ Квест 13 выполнен: «Шифр Воронова» (+18 репутации, открыт Заброшенный кордон)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -500,12 +516,12 @@
           text: '⭐ «Сдать материалы кордона Санычу (Завершить квест 14)»',
           action: () => {
             state.mainQuestStep = 14;
-            state.reputation += 40;
+            state.reputation += 22;
             addItem('ammo', 8);
             if (!state.unlockedLocations.includes('hunting_grounds')) {
               state.unlockedLocations.push('hunting_grounds');
             }
-            toast('⭐ Квест 14 выполнен: «Тайна кордона» (+40 репутации, +8 патронов)!');
+            toast('⭐ Квест 14 выполнен: «Тайна кордона» (+22 репутации, +8 патронов)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -530,16 +546,16 @@
     else if (state.mainQuestStep === 18) {
       const shutdown = !!state.questFlags.reactor_shutdown;
       body += `<p style="color:var(--accent-gold);"><b>[КВЕСТ 19: ПРЕДОТВРАЩЕНИЕ «КАСКАДА-2»]:</b></p>`;
-      body += `<p><i>«Датчики бункера воют сиреной: реактор перегрет, грядет второй выброс на всю Сибирь! Пробейся в реакторный зал, заглуши стержни и забери научный архив и «Нектар-7»!»</i></p>`;
+      body += `<p><i>«Датчики бункера воют сиреной: реактор перегрет, грядет второй выброс на всю Сибирь! Пробейся в реакторный зал, заглуши стержни и забери научный архив и отвар «Оптимист-7»!»</i></p>`;
 
       if (shutdown) {
-        body += `<p style="color:var(--accent-green);">✓ Реактор заглушен! Архив «Каскад» и капсула «Нектар-7» спасены!</p>`;
+        body += `<p style="color:var(--accent-green);">✓ Реактор заглушен! Архив «Каскад» и капсула «Оптимист-7» спасены!</p>`;
         actions.push({
           text: '⭐ «Доложить Санычу о спасении всей тайги (Завершить квест 19)»',
           action: () => {
             state.mainQuestStep = 19;
-            state.reputation += 80;
-            toast('⭐ КВЕСТ 19 ВЫПОЛНЕН: «Каскад-2» предотвращён (+80 репутации)!');
+            state.reputation += 40;
+            toast('⭐ КВЕСТ 19 ВЫПОЛНЕН: «Каскад-2» предотвращён (+40 репутации)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -562,13 +578,13 @@
     // Квест 20: Новый рассвет «Всем ПОХ» (step 19 - Триумф Совета)
     else if (state.mainQuestStep === 19) {
       body += `<p style="color:var(--accent-gold); font-size:14px; font-weight:bold;">🏆 [ФИНАЛ: НОВЫЙ РАССВЕТ «ВСЕМ ПОХ»]:</p>`;
-      body += `<p><i>«ДРУЖИЩЕ! ТЫ СДЕЛАЛ ЭТО! "И вновь продолжается бой, и сердцу тревожно в груди!" Ты предотвратил второй взрыв, добыл стабилизатор «Нектар-7» и сохранил жизнь нашей общины. Совет Основателей в полном сборе салютует тебе!»</i></p>`;
+      body += `<p><i>«ДРУЖИЩЕ! ТЫ СДЕЛАЛ ЭТО! "И вновь продолжается бой, и сердцу тревожно в груди!" Ты предотвратил второй взрыв, добыл стабилизатор «Оптимист-7» и сохранил жизнь нашей общины. Совет Основателей в полном сборе салютует тебе!»</i></p>`;
       actions.push({
         text: '🏆 «Принять высшую награду Совета Основателей (Торжественный Финал)»',
         action: () => {
           state.mainQuestStep = 20;
           state.questFlags.bunker_completed = true;
-          state.reputation += 100;
+          state.reputation += 50;
           toast('🏆 СЮЖЕТНАЯ САГА «ВСЕМ ПОХ» ЗАВЕРШЕНА! ВЫ — ЛЕГЕНДА ТАЙГИ!');
           sfx.playSuccess();
           updateHUD();
@@ -610,10 +626,10 @@
           action: () => {
             removeItem('clean_water', 3);
             state.sideQuests.sq_water_batya.status = 'completed';
-            addItem('ammo', 4);
-            state.reputation += 15;
-            changeNpcRep('sanych', 15);
-            toast('⭐ Поручение выполнено: «Чистый глоток» (+15 репутации, +4 патрона)!');
+            addItem('ammo', 3);
+            state.reputation += 10;
+            changeNpcRep('sanych', 8);
+            toast('⭐ Поручение выполнено: «Чистый глоток» (+10 репутации, +3 патрона)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -638,9 +654,9 @@
           addItem('canned_food', 3);
           addItem('antirad', 2);
           addItem('army_ration_box', 1);
-          changeNpcRep('sanych', 25);
-          state.reputation += 50;
-          toast('🌱 КОРОБ №42 ОТКРЫТ! Саныч заложил парники лагеря «Всем ПОХ» (+20 патронов, 3 тушёнки, 2 цистамина, спецпаёк)!');
+          changeNpcRep('sanych', 15);
+          state.reputation += 25;
+          toast('🌱 КОРОБ №42 ОТКРЫТ! Саныч заложил парники лагеря «Всем ПОХ» (+20 патронов, 3 тушёнки, 2 цистамина, спецпаёк, +25 репутации)!');
           sfx.playSuccess();
           updateHUD();
           saveState();
@@ -668,6 +684,10 @@
     body += `<p>Андрей Атарон стоит на караульной вышке у главных ворот лагеря. За плечом висит верный АК-74, на поясе — связка коллекционных пивных крышечек и секундомер. Взгляд цепкий, сканирующий сектор до последнего куста.</p>`;
     body += `<p><i>«Так, боец. Порядок должен быть наглядным! Угол наклона частокола у меня выверен строго под сорок пять градусов — ни градусом больше. Оружие чистить каждый вечер, патроны беречь. В тайге только дисциплина отделяет нас от превращения в корм.»</i></p>`;
 
+    const wInfo = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
+    const wQuote = getNpcWeatherQuote('ataron', state.weather);
+    body += `<p style="font-size:11.5px; color:var(--text-dim); margin:4px 0 8px; border-left:2px solid ${wInfo.color || 'var(--accent-gold)'}; padding-left:8px;">${wInfo.icon} <b>Погода (${wInfo.name}):</b> <i>${wQuote}</i></p>`;
+
     const actions = [];
 
     // Душевная беседа
@@ -689,10 +709,10 @@
           action: () => {
             removeItem('torch', 1);
             state.mainQuestStep = 3;
-            state.reputation += 15;
-            changeNpcRep('ataron', 15);
+            state.reputation += 10;
+            changeNpcRep('ataron', 8);
             addItem('ammo', 3);
-            toast('⭐ Квест 3 выполнен: «Огонь во тьме» (+15 репутации, +3 патрона, жетон-крышечка Атарона)!');
+            toast('⭐ Квест 3 выполнен: «Огонь во тьме» (+10 репутации, +3 патрона, жетон-крышечка Атарона)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -723,13 +743,13 @@
           text: '⭐ «Доложить Атарону о зачистке сектора (Завершить квест 5)»',
           action: () => {
             state.mainQuestStep = 5;
-            state.reputation += 25;
-            changeNpcRep('ataron', 20);
+            state.reputation += 15;
+            changeNpcRep('ataron', 12);
             addItem('ammo', 4);
             if (!state.unlockedLocations.includes('swamp')) {
               state.unlockedLocations.push('swamp');
             }
-            toast('⭐ Квест 5 выполнен: «Крещение тайгой» (+25 репутации, ранг «Свой», открыты Болота)!');
+            toast('⭐ Квест 5 выполнен: «Крещение тайгой» (+15 репутации, ранг «Свой», открыты Болота)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -762,10 +782,10 @@
           text: '⭐ «Доложить Атарону о расчищенном коридоре (Завершить квест 9)»',
           action: () => {
             state.mainQuestStep = 9;
-            state.reputation += 35;
-            changeNpcRep('ataron', 25);
+            state.reputation += 20;
+            changeNpcRep('ataron', 14);
             addItem('ammo', 5);
-            toast('⭐ Квест 9 выполнен: «Прорыв к Насосной» (+35 репутации, +5 патронов)!');
+            toast('⭐ Квест 9 выполнен: «Прорыв к Насосной» (+20 репутации, +5 патронов)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -801,11 +821,11 @@
           text: '⭐ «Доложить Атарону о восстановлении связи (Завершить квест 12)»',
           action: () => {
             state.mainQuestStep = 12;
-            state.reputation += 35;
-            changeNpcRep('ataron', 20);
+            state.reputation += 20;
+            changeNpcRep('ataron', 12);
             addItem('ammo', 5);
             if (getItemCount('audio_tape') === 0) addItem('audio_tape', 1);
-            toast('⭐ Квест 12 выполнен: «Эхо на Скалистом утёсе» (+35 репутации, кассета Воронова)!');
+            toast('⭐ Квест 12 выполнен: «Эхо на Скалистом утёсе» (+20 репутации, кассета Воронова)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -841,11 +861,11 @@
           text: '⭐ «Сдать шкуру медведя Атарону и получить ружьё ТОЗ-34 (Завершить квест 15)»',
           action: () => {
             state.mainQuestStep = 15;
-            state.reputation += 60;
-            changeNpcRep('ataron', 35);
+            state.reputation += 30;
+            changeNpcRep('ataron', 18);
             if (getItemCount('toz') === 0) addItem('toz', 1);
             addItem('ammo', 10);
-            toast('⭐ КВЕСТ 15 ВЫПОЛНЕН: «Хозяин тайги» (+60 репутации, ружьё ТОЗ-34, 10 патронов)!');
+            toast('⭐ КВЕСТ 15 ВЫПОЛНЕН: «Хозяин тайги» (+30 репутации, ружьё ТОЗ-34, 10 патронов)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -877,10 +897,10 @@
           text: '⭐ «Доложить Атарону о прорыве обороны Бункера (Завершить квест 18)»',
           action: () => {
             state.mainQuestStep = 18;
-            state.reputation += 50;
-            changeNpcRep('ataron', 30);
+            state.reputation += 25;
+            changeNpcRep('ataron', 16);
             addItem('ammo', 10);
-            toast('⭐ Квест 18 выполнен: «Штурм Бункера» (+50 репутации, +10 патронов)!');
+            toast('⭐ Квест 18 выполнен: «Штурм Бункера» (+25 репутации, +10 патронов)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -929,11 +949,11 @@
           action: () => {
             state.sideQuests.sq_watch_batya.status = 'completed';
             passTime(1);
-            addItem('ammo', 5);
+            addItem('ammo', 4);
             addItem('canned_food', 1);
-            state.reputation += 20;
-            changeNpcRep('ataron', 15);
-            toast('⭐ Ночной караул сдан! Атарон одобрительно кивнул (+20 репутации, 5 патронов, тушенка)!');
+            state.reputation += 12;
+            changeNpcRep('ataron', 8);
+            toast('⭐ Ночной караул сдан! Атарон одобрительно кивнул (+12 репутации, 4 патрона, тушенка)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -951,10 +971,10 @@
         text: '🎖️ «Атарон... я нашёл в трясине БРДМ-2. Вот жетоны сержанта Гурова...»',
         action: () => {
           state.questFlags.brdm_reported = true;
-          addItem('ammo', 8);
-          state.reputation += 40;
-          changeNpcRep('ataron', 30);
-          toast('⭐ Жетоны группы «Север» переданы Атарону (+40 репутации, командирский бинокль, 8 патронов)!');
+          addItem('ammo', 6);
+          state.reputation += 20;
+          changeNpcRep('ataron', 15);
+          toast('⭐ Жетоны группы «Север» переданы Атарону (+20 репутации, командирский бинокль, 6 патронов)!');
           sfx.playSuccess();
           updateHUD();
           saveState();
@@ -971,10 +991,10 @@
         text: '🏴‍☠️ «Атарон, схрон банды «Хлыща» уничтожен! Вот оружие мародёров»',
         action: () => {
           state.questFlags.caravan_completed = true;
-          addItem('ammo', 15);
-          state.reputation += 50;
-          changeNpcRep('ataron', 35);
-          toast('🏆 Схрон каравана ликвидирован! Порядок восстановлен (+50 репутации, 15 патронов)!');
+          addItem('ammo', 12);
+          state.reputation += 25;
+          changeNpcRep('ataron', 16);
+          toast('🏆 Схрон каравана ликвидирован! Порядок восстановлен (+25 репутации, 12 патронов)!');
           sfx.playSuccess();
           updateHUD();
           saveState();
@@ -994,12 +1014,12 @@
           state.highRepQuests = state.highRepQuests || {};
           state.highRepQuests.ataron = { status: 'completed' };
           state.highRepQuests.batya = { status: 'completed' };
-          addItem('ammo', 20);
+          addItem('ammo', 15);
           addItem('canned_food', 2);
           addItem('antirad', 1);
           addItem('army_ration_box', 1);
-          changeNpcRep('ataron', 20);
-          toast('⭐ Атарон открыл армейский спецрезерв коменданта (+20 патронов, 2 тушёнки, цистамин, жетон с якорем)!');
+          changeNpcRep('ataron', 12);
+          toast('⭐ Атарон открыл армейский спецрезерв коменданта (+15 патронов, 2 тушёнки, цистамин, жетон с якорем)!');
           sfx.playSuccess();
           updateHUD();
           saveState();
@@ -1018,14 +1038,14 @@
         action: () => {
           state.crossQuests = state.crossQuests || {};
           state.crossQuests.cross_arsenal = { status: 'completed' };
-          addItem('ammo', 25);
+          addItem('ammo', 20);
           addItem('army_ration_box', 1);
-          changeNpcRep('ataron', 35);
-          changeNpcRep('strong', 35);
-          changeNpcRep('bob', 35);
-          changeNpcRep('sanych', 35);
-          state.reputation += 50;
-          toast('🏆 СЕКРЕТНЫЙ АРСЕНАЛ ВСКРЫТ! Офицерский спецхран передан общине (+25 патронов, спецпаёк, +35 репутации соратникам)!');
+          changeNpcRep('ataron', 16);
+          changeNpcRep('strong', 16);
+          changeNpcRep('bob', 16);
+          changeNpcRep('sanych', 16);
+          state.reputation += 25;
+          toast('🏆 СЕКРЕТНЫЙ АРСЕНАЛ ВСКРЫТ! Офицерский спецхран передан общине (+20 патронов, спецпаёк, +16 репутации соратникам)!');
           sfx.playSuccess();
           updateHUD();
           saveState();
@@ -1052,6 +1072,10 @@
     let body = renderNpcRepHeader('sky');
     body += `<p>В лазарете пахнет медицинским спиртом, йодом и сушеной полынью. Николай Скай хмуро протирает хирургический зажим марлей, потягивая остывший чай.</p>`;
     body += `<p><i>«Огласите весь список жалоб, пожалуйста! Если ничего не оторвало — дышите глубже. Главное в этой тайге — не пить сырую речную воду и не ловить галлюцинации от светящихся поганок. Наука проиграла реке, но пока я жив — от радиации я вас отскребу.»</i></p>`;
+
+    const wInfo = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
+    const wQuote = getNpcWeatherQuote('sky', state.weather);
+    body += `<p style="font-size:11.5px; color:var(--text-dim); margin:4px 0 8px; border-left:2px solid ${wInfo.color || 'var(--accent-gold)'}; padding-left:8px;">${wInfo.icon} <b>Погода (${wInfo.name}):</b> <i>${wQuote}</i></p>`;
 
     const actions = [];
 
@@ -1090,10 +1114,10 @@
             removeItem('water_sample', 1);
             state.questFlags.water_sample_given = true;
             state.mainQuestStep = 6;
-            state.reputation += 20;
-            changeNpcRep('sky', 15);
+            state.reputation += 12;
+            changeNpcRep('sky', 10);
             addItem('antirad', 1);
-            toast('⭐ Квест 6 выполнен: «Мёртвые заводи» (+20 репутации, цистамин)!');
+            toast('⭐ Квест 6 выполнен: «Мёртвые заводи» (+12 репутации, цистамин)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -1124,10 +1148,10 @@
           action: () => {
             removeItem('swamp_moss', 2);
             state.mainQuestStep = 8;
-            state.reputation += 30;
-            changeNpcRep('sky', 20);
+            state.reputation += 18;
+            changeNpcRep('sky', 12);
             addItem('herbal_salve', 2);
-            toast('⭐ Квест 8 выполнен: «Экспедиция в Гнилую гать» (+30 репутации, 2 целебные мази)!');
+            toast('⭐ Квест 8 выполнен: «Экспедиция в Гнилую гать» (+18 репутации, 2 целебные мази)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -1158,13 +1182,13 @@
           action: () => {
             state.questFlags.respirator_crafted = true;
             state.mainQuestStep = 17;
-            state.reputation += 30;
-            changeNpcRep('sky', 25);
+            state.reputation += 18;
+            changeNpcRep('sky', 14);
             addItem('antirad', 2);
             if (!state.unlockedLocations.includes('bunker')) {
               state.unlockedLocations.push('bunker');
             }
-            toast('⭐ Квест 17 выполнен: «Дыхание бездны» (+30 репутации, открыт Бункер)!');
+            toast('⭐ Квест 17 выполнен: «Дыхание бездны» (+18 репутации, открыт Бункер)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -1285,9 +1309,9 @@
             removeItem('firewood', 4);
             state.sideQuests.sq_wood_anna.status = 'completed';
             addItem('bandage', 2);
-            state.reputation += 10;
-            changeNpcRep('sky', 15);
-            toast('⭐ Поручение выполнено: «Дрова для лазарета» (+10 репутации, 2 бинта)!');
+            state.reputation += 8;
+            changeNpcRep('sky', 8);
+            toast('⭐ Поручение выполнено: «Дрова для лазарета» (+8 репутации, 2 бинта)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -1310,9 +1334,9 @@
           state.highRepQuests.anna = { status: 'completed' };
           addItem('antirad', 3);
           addItem('alcohol', 2);
-          changeNpcRep('sky', 25);
-          state.reputation += 40;
-          toast('⭐ АДСКОЕ ВАРЕВО СКАЯ СОЗДАНО! Получено 3 цистамина, 2 спирта и высшее признание хирурга!');
+          changeNpcRep('sky', 15);
+          state.reputation += 22;
+          toast('⭐ АДСКОЕ ВАРЕВО СКАЯ СОЗДАНО! Получено 3 цистамина, 2 спирта (+15 репутации Ская, +22 лагерю)!');
           sfx.playSuccess();
           updateHUD();
           saveState();
@@ -1338,6 +1362,10 @@
     let body = renderNpcRepHeader('bob');
     body += `<p>Вова Боб («Бобчонок») орудует напильником над куском швеллера. Под ногами гора стружки, шестеренок и медных трубок. Из-под верстака доносится тихое бульканье самодельного пивоваренного аппарата из машинки «Малютка».</p>`;
     body += `<p><i>«Здорово! Расклад такой: пункт первый — подходи к верстаку, делай капканы, факелы и инструменты. Пункт второй — найдешь металлолом, проволоку или нихром — тащи сюда, перекуем! Пункт третий — порядок превыше всего, закон Архимеда не обманешь!»</i></p>`;
+
+    const wInfo = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
+    const wQuote = getNpcWeatherQuote('bob', state.weather);
+    body += `<p style="font-size:11.5px; color:var(--text-dim); margin:4px 0 8px; border-left:2px solid ${wInfo.color || 'var(--accent-gold)'}; padding-left:8px;">${wInfo.icon} <b>Погода (${wInfo.name}):</b> <i>${wQuote}</i></p>`;
 
     const actions = [];
 
@@ -1382,12 +1410,12 @@
         action: () => {
           state.questFlags.met_prokhor_radio = true;
           state.mainQuestStep = 11;
-          state.reputation += 20;
-          changeNpcRep('bob', 15);
+          state.reputation += 14;
+          changeNpcRep('bob', 10);
           if (!state.unlockedLocations.includes('radio_tower')) {
             state.unlockedLocations.push('radio_tower');
           }
-          toast('⭐ Квест 11 выполнен: «Морзе в ночи» (+20 репутации, открыта Радиовышка)!');
+          toast('⭐ Квест 11 выполнен: «Морзе в ночи» (+14 репутации, открыта Радиовышка)!');
           sfx.playSuccess();
           updateHUD();
           saveState();
@@ -1514,9 +1542,9 @@
             state.sideQuests.sq_coal_prokhor.status = 'completed';
             addItem('wire', 3);
             addItem('ammo', 2);
-            state.reputation += 15;
-            changeNpcRep('bob', 15);
-            toast('⭐ Поручение выполнено: «Уголь для горна» (+15 репутации, 3 проволоки, 2 патрона)!');
+            state.reputation += 10;
+            changeNpcRep('bob', 8);
+            toast('⭐ Поручение выполнено: «Уголь для горна» (+10 репутации, 3 проволоки, 2 патрона)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -1539,9 +1567,9 @@
           state.highRepQuests.prokhor = { status: 'completed' };
           addItem('ammo', 15);
           addItem('wire', 4);
-          changeNpcRep('bob', 25);
-          state.reputation += 40;
-          toast('⭐ ОСОБАЯ ЗАТОЧКА БОБЧОНКА ВЫПОЛНЕНА! (+10 постоянного урона в боях, +15 патронов, 4 проволоки)!');
+          changeNpcRep('bob', 15);
+          state.reputation += 22;
+          toast('⭐ ОСОБАЯ ЗАТОЧКА БОБЧОНКА ВЫПОЛНЕНА! (+10 постоянного урона в боях, +15 патронов, 4 проволоки, +15 реп Бобу, +22 лагерю)!');
           sfx.playSuccess();
           updateHUD();
           saveState();
@@ -1567,6 +1595,10 @@
     let body = renderNpcRepHeader('chagron');
     body += `<p>Двухметровый богатырь Чагрон сидит на прибрежном бревне у Быстрянки. Его ладони-лопаты бережно чистят карабин Мосина с оптикой. Рядом плещутся рыболовные верши и висят плетёные силки.</p>`;
     body += `<p><i>«Тайга... тишину любит. Суета людей губит. У реки сядь, дыхание переведи. Червей накопай, удочку забрось — река накормит. А в чащу пойдешь — гляди в оба: волчьи следы свежие были.»</i></p>`;
+
+    const wInfo = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
+    const wQuote = getNpcWeatherQuote('chagron', state.weather);
+    body += `<p style="font-size:11.5px; color:var(--text-dim); margin:4px 0 8px; border-left:2px solid ${wInfo.color || 'var(--accent-gold)'}; padding-left:8px;">${wInfo.icon} <b>Погода (${wInfo.name}):</b> <i>${wQuote}</i></p>`;
 
     const actions = [];
 
@@ -1605,10 +1637,10 @@
             if (getItemCount('fish_soup') > 0) removeItem('fish_soup', 1);
             else removeItem('cooked_fish', 1);
             state.mainQuestStep = 4;
-            state.reputation += 20;
-            changeNpcRep('chagron', 15);
+            state.reputation += 12;
+            changeNpcRep('chagron', 10);
             addItem('ammo', 2);
-            toast('⭐ Квест 4 выполнен: «Голодный рассвет» (+20 репутации, +2 патрона)!');
+            toast('⭐ Квест 4 выполнен: «Голодный рассвет» (+12 репутации, +2 патрона)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -1638,10 +1670,10 @@
           text: '🐾 «Показать шкуру зверя Чагрону (Завершить квест 7)»',
           action: () => {
             state.mainQuestStep = 7;
-            state.reputation += 25;
-            changeNpcRep('chagron', 20);
+            state.reputation += 15;
+            changeNpcRep('chagron', 12);
             addItem('ammo', 3);
-            toast('⭐ Квест 7 выполнен: «Следы на иле» (+25 репутации, +3 патрона)!');
+            toast('⭐ Квест 7 выполнен: «Следы на иле» (+15 репутации, +3 патрона)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -1764,9 +1796,9 @@
           state.highRepQuests.egor = { status: 'completed' };
           addItem('ammo', 15);
           addItem('worms', 10);
-          changeNpcRep('chagron', 25);
-          state.reputation += 40;
-          toast('⭐ ТАЙНЫЙ ОМУТ ЧАГРОНА ОТКРЫТ! Шанс выловить Золотистого хариуса (+15 патронов, 10 червей)!');
+          changeNpcRep('chagron', 15);
+          state.reputation += 22;
+          toast('⭐ ТАЙНЫЙ ОМУТ ЧАГРОНА ОТКРЫТ! Шанс выловить Золотистого хариуса (+15 патронов, 10 червей, +15 реп Чагрону, +22 лагерю)!');
           sfx.playSuccess();
           updateHUD();
           saveState();
@@ -1793,6 +1825,10 @@
     body += `<p>Марго сидит на лавке у бревенчатой стены своей заимки в Гнилой гати. Фиолетовые волосы собраны в озорной хвост, на ногах — культовые кеды «Два мяча», на плечах — синяя олимпийка. Вокруг сохнут пучки чабреца, березового дегтя и шляпки мухоморов.</p>`;
     body += `<p><i>«Привет, путник! Слышу по шагам — сквозь топь продирался. В тайге суета — враг номер один! Сядь у огня, отдышись. Земля живая, всё залечит, если сердце не гнилое. А вообще помни: Добро должно быть с кулаками! Трави бобров, спасай деревья!»</i></p>`;
 
+    const wInfo = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
+    const wQuote = getNpcWeatherQuote('margo', state.weather);
+    body += `<p style="font-size:11.5px; color:var(--text-dim); margin:4px 0 8px; border-left:2px solid ${wInfo.color || 'var(--accent-gold)'}; padding-left:8px;">${wInfo.icon} <b>Погода (${wInfo.name}):</b> <i>${wQuote}</i></p>`;
+
     const actions = [];
 
     // Душевная беседа
@@ -1814,9 +1850,9 @@
             state.sideQuests.spiridon_mushrooms = { status: 'completed' };
             state.sideQuests.margo_mushrooms = { status: 'completed' };
             addItem('spiridon_vodka', 2);
-            state.reputation += 30;
-            changeNpcRep('margo', 25);
-            toast('⭐ Марго сварила партию таёжной настойки (+2 флакона, +30 репутации)! Рецепты открыты для костра.');
+            state.reputation += 16;
+            changeNpcRep('margo', 14);
+            toast('⭐ Марго сварила партию таёжной настойки (+2 флакона, +16 репутации, +14 Марго)! Рецепты открыты для костра.');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -1956,9 +1992,9 @@
           state.highRepQuests.spiridon = { status: 'completed' };
           state.rad = 0;
           state.hp = 100;
-          changeNpcRep('margo', 25);
-          state.reputation += 40;
-          toast('⭐ ОБРЯД ОЧИЩЕНИЯ ПРОВЕДЕН! Радиация снята полностью, HP на максимуме, благословение получено!');
+          changeNpcRep('margo', 15);
+          state.reputation += 22;
+          toast('⭐ ОБРЯД ОЧИЩЕНИЯ ПРОВЕДЕН! Радиация снята полностью, HP на максимуме (+15 реп Марго, +22 лагерю)!');
           sfx.playSuccess();
           updateHUD();
           saveState();
@@ -1984,6 +2020,10 @@
     let body = renderNpcRepHeader('strong');
     body += `<p>Стронг сидит за радиостанцией на Скалистом утёсе. Его правый глаз — полированный черный антрацит без зрачка, в руках — потертый блокнот с «Реестром Всходов». Из динамиков Р-326 сквозь шипение доносятся телеметрические сигналы.</p>`;
     body += `<p><i>«Фиксирую объект. Точный учёт и фиксация в реестре — единственное, что сдерживает энтропию. Раз в сутки я провожу пеленгацию аварийных сбросов в секторе.»</i></p>`;
+
+    const wInfo = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
+    const wQuote = getNpcWeatherQuote('strong', state.weather);
+    body += `<p style="font-size:11.5px; color:var(--text-dim); margin:4px 0 8px; border-left:2px solid ${wInfo.color || 'var(--accent-gold)'}; padding-left:8px;">${wInfo.icon} <b>Погода (${wInfo.name}):</b> <i>${wQuote}</i></p>`;
 
     const actions = [];
 
@@ -2091,9 +2131,9 @@
           state.highRepQuests.sasha = { status: 'completed' };
           addItem('ammo', 10);
           addItem('batteryaaa', 2);
-          changeNpcRep('strong', 20);
-          state.reputation += 35;
-          toast('⭐ Стронг модернизировал радиоконтур (+10 патронов, 2 батарейки, +20 репутации)!');
+          changeNpcRep('strong', 14);
+          state.reputation += 20;
+          toast('⭐ Стронг модернизировал радиоконтур (+10 патронов, 2 батарейки, +14 реп Стронгу, +20 лагерю)!');
           sfx.playSuccess();
           updateHUD();
           saveState();
@@ -2121,6 +2161,10 @@
     let body = renderNpcRepHeader('varya');
     body += `<p>Варя ловко помешивает большой ковш в бурлящем чугунном котле. От жаровни исходит потрясающий, наваристый аромат лесных трав, ухи и разварного мяса. На шее у девушки на тонком кожаном шнурке поблескивает стреляная латунная гильза с закраиной.</p>`;
     body += `<p><i>«О, привет! Вовремя пришёл — как раз похлёбка настоялась! В такую холодину без горячего супа в тайге и часу не выдюжишь. Садись к костру, тарелку подставляй! Слушай... а ты в рейд с каким калибром ходишь? Какой у тебя патрон в подсумке? 5.45? 7.62?.. А семь шестьдесят два на пятьдесят четыре не попадался случайно? Ну скажи, это ужасно важно!»</i></p>`;
+
+    const wInfo = WEATHER_TYPES[state.weather] || WEATHER_TYPES.clear;
+    const wQuote = getNpcWeatherQuote('varya', state.weather);
+    body += `<p style="font-size:11.5px; color:var(--text-dim); margin:4px 0 8px; border-left:2px solid ${wInfo.color || 'var(--accent-gold)'}; padding-left:8px;">${wInfo.icon} <b>Погода (${wInfo.name}):</b> <i>${wQuote}</i></p>`;
 
     const actions = [];
 
@@ -2194,9 +2238,9 @@
             removeItem('firewood', 3);
             state.sideQuests.varya_fire.status = 'completed';
             addItem('varya_stew', 2);
-            changeNpcRep('varya', 15);
-            state.reputation += 15;
-            toast('⭐ Квест «Огонь и котелок» сдан (+2 порции похлёбки, +15 репутации у Вари)!');
+            changeNpcRep('varya', 10);
+            state.reputation += 10;
+            toast('⭐ Квест «Огонь и котелок» сдан (+2 порции похлёбки, +10 репутации у Вари, +10 лагерю)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -2233,9 +2277,9 @@
             removeItem('scrap', 1);
             state.sideQuests.varya_filter.status = 'completed';
             addItem('gravel_filter', 1);
-            changeNpcRep('varya', 25);
-            state.reputation += 25;
-            toast('⭐ Гравийный фильтр Вари готов! Теперь можно бесплатно набирать чистую воду каждый день (+25 реп)!');
+            changeNpcRep('varya', 14);
+            state.reputation += 15;
+            toast('⭐ Гравийный фильтр Вари готов! Теперь можно бесплатно набирать чистую воду каждый день (+14 реп Варе, +15 лагерю)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -2273,9 +2317,9 @@
             removeItem('firewood', 2);
             state.sideQuests.varya_royal_soup.status = 'completed';
             addItem('royal_soup', 2);
-            changeNpcRep('varya', 30);
-            state.reputation += 35;
-            toast('🏆 Праздничный таёжный борщ готов! Открыт рецепт для костра (+2 порции, +30 реп у Вари, +35 лагерю)!');
+            changeNpcRep('varya', 16);
+            state.reputation += 20;
+            toast('🏆 Праздничный таёжный борщ готов! Открыт рецепт для костра (+2 порции, +16 реп у Вари, +20 лагерю)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -2315,10 +2359,10 @@
             removeItem('berries', 3);
             state.crossQuests.cross_feast.status = 'completed';
             addItem('smoked_feast', 2);
-            changeNpcRep('varya', 25);
-            changeNpcRep('chagron', 25);
-            state.reputation += 50;
-            toast('🏆 БОЛЬШОЙ ТАЁЖНЫЙ ПИР СОСТОЯЛСЯ! Весь лагерь празднует (+25 реп Варе, +25 реп Чагрону, +50 лагерю, открыт рецепт «Окорок по-лесному»)!');
+            changeNpcRep('varya', 14);
+            changeNpcRep('chagron', 14);
+            state.reputation += 24;
+            toast('🏆 БОЛЬШОЙ ТАЁЖНЫЙ ПИР СОСТОЯЛСЯ! Весь лагерь празднует (+14 реп Варе, +14 реп Чагрону, +24 лагерю, открыт рецепт «Окорок по-лесному»)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -2359,11 +2403,11 @@
             else removeItem('scrap', 2);
             state.crossQuests.cross_autoclave.status = 'completed';
             addItem('autoclave_unit', 1);
-            changeNpcRep('varya', 25);
-            changeNpcRep('bob', 25);
-            changeNpcRep('sky', 25);
-            state.reputation += 50;
-            toast('🏆 АВТОКЛАВ УСТАНОВЛЕН! Община получила постоянную стерилизацию и дистиллятор (+25 реп каждому соратнику, +50 лагерю)!');
+            changeNpcRep('varya', 14);
+            changeNpcRep('bob', 14);
+            changeNpcRep('sky', 14);
+            state.reputation += 24;
+            toast('🏆 АВТОКЛАВ УСТАНОВЛЕН! Община получила постоянную стерилизацию и дистиллятор (+14 реп каждому соратнику, +24 лагерю)!');
             sfx.playSuccess();
             updateHUD();
             saveState();
@@ -2403,10 +2447,10 @@
             removeItem('berries', 2);
             state.crossQuests.cross_balsam.status = 'completed';
             addItem('taiga_balsam', 2);
-            changeNpcRep('varya', 25);
-            changeNpcRep('margo', 25);
-            state.reputation += 40;
-            toast('🏆 БАЛЬЗАМ ДОЛГОЛЕТИЯ СВАРЕН! Рецепт открыт для костра (+2 бальзама, +25 реп обеим, +40 лагерю)!');
+            changeNpcRep('varya', 14);
+            changeNpcRep('margo', 14);
+            state.reputation += 22;
+            toast('🏆 БАЛЬЗАМ ДОЛГОЛЕТИЯ СВАРЕН! Рецепт открыт для костра (+2 бальзама, +14 реп обеим, +22 лагерю)!');
             sfx.playSuccess();
             updateHUD();
             saveState();

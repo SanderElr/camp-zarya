@@ -31,7 +31,7 @@
         giver: 'Чагрон («Глыба»)', giverId: 'chagron', 
         desc: chagronRep >= 50 ? 'Поймать 3 отборные рыбы на реке Быстрянке для старого следопыта.' : 'Поймать 2 рыбы на реке Быстрянке.', 
         goal: chagronRep >= 50 ? 3 : 2, current: 0, 
-        rewardRep: chagronRep >= 50 ? 18 : 10, 
+        rewardRep: chagronRep >= 50 ? 12 : 7, 
         rewardAmmo: chagronRep >= 50 ? 2 : 1, 
         completed: false, notifiedReady: false, 
         isUpgraded: chagronRep >= 50 
@@ -42,7 +42,7 @@
         giver: 'Вова «Боб»', giverId: 'bob', 
         desc: bobRep >= 50 ? 'Заготовить 3 плотных полена для кузнечного горна Бобчонка.' : 'Заготовить 2 охапки сухих дров.', 
         goal: bobRep >= 50 ? 3 : 2, current: 0, 
-        rewardRep: bobRep >= 50 ? 18 : 10, 
+        rewardRep: bobRep >= 50 ? 12 : 7, 
         rewardAmmo: bobRep >= 50 ? 2 : 1, 
         completed: false, notifiedReady: false, 
         isUpgraded: bobRep >= 50 
@@ -53,7 +53,7 @@
         giver: 'Николай «Скай»', giverId: 'sky', 
         desc: skyRep >= 50 ? 'Собрать 3 пучка душистой полыни и чабреца для лазарета Ская.' : 'Собрать 2 пучка полыни для доктора Ская.', 
         goal: skyRep >= 50 ? 3 : 2, current: 0, 
-        rewardRep: skyRep >= 50 ? 18 : 10, 
+        rewardRep: skyRep >= 50 ? 12 : 7, 
         rewardAmmo: skyRep >= 50 ? 2 : 1, 
         completed: false, notifiedReady: false, 
         isUpgraded: skyRep >= 50 
@@ -64,7 +64,7 @@
         giver: 'Варя (Полевой повар)', giverId: 'varya', 
         desc: varyaRep >= 50 ? 'Собрать 3 порции брусники для лагерного киселя и витаминного взвара.' : 'Собрать 2 порции лесной брусники для полевой кухни.', 
         goal: varyaRep >= 50 ? 3 : 2, current: 0, 
-        rewardRep: varyaRep >= 50 ? 18 : 10, 
+        rewardRep: varyaRep >= 50 ? 12 : 7, 
         rewardAmmo: varyaRep >= 50 ? 2 : 1, 
         completed: false, notifiedReady: false, 
         isUpgraded: varyaRep >= 50 
@@ -99,7 +99,7 @@
 
     // Рост индивидуальной репутации у конкретного жителя
     if (q.giverId) {
-      changeNpcRep(q.giverId, Math.max(5, Math.round(q.rewardRep * 0.8)));
+      changeNpcRep(q.giverId, Math.max(3, Math.round(q.rewardRep * 0.6)));
     }
 
     toast(`🎖️ Поручение «${q.title}» успешно сдано! Получено: +${q.rewardRep} репутации, +${q.rewardAmmo} патрона.`, 'success');
@@ -269,6 +269,7 @@
       area.appendChild(repBox);
 
       const categories = [
+        { id: 'weather', name: '🌦️ Погодные испытания и сезонные аномалии' },
         { id: 'cross', name: '⚔️ Союзы жителей (Пересекающиеся цепочки)' },
         { id: 'high_rep', name: '⭐ Квесты высокой репутации (70+)' },
         { id: 'camp', name: '⛺ Поручения жителей лагеря' },
@@ -300,6 +301,22 @@
             statusBadge = '✓ Выполнено (Сдано)';
             statusColor = 'var(--accent-green)';
             statusBorder = 'var(--accent-green)';
+          } else if (q.category === 'weather') {
+            const isMatch = q.weatherReq && q.weatherReq.includes(state.weather);
+            if (isMatch) {
+              statusBadge = '⚡ Доступно сейчас!';
+              statusColor = 'var(--accent-gold)';
+              statusBorder = 'var(--accent-gold)';
+              const currentW = WEATHER_TYPES[state.weather];
+              progressDetail = `<div style="font-size:11.5px; color:var(--accent-gold); margin:3px 0 5px;">⚡ Погода благоприятствует (${currentW?.icon || ''} ${currentW?.name || ''})! Отправляйтесь на локацию поручения.</div>`;
+            } else {
+              const reqNames = (q.weatherReq || []).map(w => WEATHER_TYPES[w]?.name).join(' или ');
+              const curW = WEATHER_TYPES[state.weather];
+              statusBadge = '⏳ Ожидание погоды';
+              statusColor = 'var(--text-dim)';
+              statusBorder = 'rgba(255,255,255,0.15)';
+              progressDetail = `<div style="font-size:11.5px; color:var(--text-dim); margin:3px 0 5px;">🔒 Требуется погода: <b>${reqNames}</b>. Сейчас: ${curW?.icon || ''} ${curW?.name || ''}. Дождитесь смены погоды.</div>`;
+            }
           } else if (q.id === 'chain_dog') {
             if (!state.questFlags?.wolves_defeated) {
               statusBadge = '🔒 После победы над вожаком';

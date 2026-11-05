@@ -1,51 +1,103 @@
   // --- ДОПОЛНИТЕЛЬНЫЕ И НЕОСНОВНЫЕ КВЕСТЫ (EXPANSION) ---
   const SIDE_QUESTS = [
     // Лагерные поручения (10)
-    { id: 'sq_wood_anna', category: 'camp', title: 'Дрова для лазарета', giver: 'Николай «Скай» (Лазарет)', desc: 'Собрать 4 охапки сухих дров для обогрева медицинского вагончика Ская.', reward: '2 стерильных бинта, +10 репутации', isDone: (s) => s.sideQuests?.sq_wood_anna?.status === 'completed' },
-    { id: 'sq_fish_egor', category: 'camp', title: 'Копчёная щука', giver: 'Чагрон («Глыба»)', desc: 'Поймать 3 свежих рыбы и заготовить 2 полена для лагерной коптильни Чагрона.', reward: '2 порции ухи, 2 патрона, +15 репутации', isDone: (s) => s.sideQuests?.sq_fish_egor?.status === 'completed' },
-    { id: 'sq_water_batya', category: 'camp', title: 'Чистый глоток', giver: 'Саныч (Штаб)', desc: 'Вскипятить 3 фляги воды для штабного резерва общины.', reward: '4 патрона, +15 репутации', isDone: (s) => s.sideQuests?.sq_water_batya?.status === 'completed' },
-    { id: 'sq_berries_anna', category: 'camp', title: 'Таёжные витамины', giver: 'Николай «Скай» (Лазарет)', desc: 'Собрать 3 порции брусники для противоцинготного взвара Ская.', reward: '1 цистамин (антирад), +10 репутации', isDone: (s) => s.sideQuests?.sq_berries_anna?.status === 'completed' },
-    { id: 'sq_coal_prokhor', category: 'camp', title: 'Уголь для горна', giver: 'Вова «Боб» (Мастерская)', desc: 'Принести 2 металлолома для кузнечного горна Бобчонка.', reward: '3 мотка сталистой проволоки, 2 патрона, +15 репутации', isDone: (s) => s.sideQuests?.sq_coal_prokhor?.status === 'completed' },
-    { id: 'sq_snare_egor', category: 'camp', title: 'Силки на глухаря', giver: 'Чагрон («Глыба»)', desc: 'Добыть мясо боровой дичи в проволочный силок.', reward: '2 вяленых мяса, +15 репутации', isDone: (s) => s.sideQuests?.sq_snare_egor?.status === 'completed' },
-    { id: 'sq_watch_batya', category: 'camp', title: 'Ночной дозор', giver: 'Андрей «Атарон» (Периметр)', desc: 'Отстоять караульную смену на вышке с факелом и проверить наклон забора под 45 градусов.', reward: '5 патронов, тушенка, +20 репутации', isDone: (s) => s.sideQuests?.sq_watch_batya?.status === 'completed' },
-    { id: 'sq_medkit_anna', category: 'camp', title: 'Полевая перевязка', giver: 'Николай «Скай» (Лазарет)', desc: 'Сдать 2 стерильных бинта и пучок целебных трав доктору Скаю.', reward: 'Полное исцеление HP, +15 репутации', isDone: (s) => s.sideQuests?.sq_medkit_anna?.status === 'completed' },
-    { id: 'sq_nails_prokhor', category: 'camp', title: 'Кованые скобы', giver: 'Вова «Боб» (Мастерская)', desc: 'Поработать у наковальни для укрепления ворот лагеря у Боба.', reward: 'Стальной капкан, +15 репутации', isDone: (s) => s.sideQuests?.sq_nails_prokhor?.status === 'completed' },
-    { id: 'sq_pier_egor', category: 'camp', title: 'Расчистка мостков', giver: 'Чагрон («Глыба»)', desc: 'Расчистить причал Быстрянки от радиоактивного топляка.', reward: 'Земляные черви ×6, +15 репутации', isDone: (s) => s.sideQuests?.sq_pier_egor?.status === 'completed' },
+    { id: 'sq_wood_anna', category: 'camp', title: 'Дрова для лазарета', giver: 'Николай «Скай» (Лазарет)', desc: 'Собрать 4 охапки сухих дров для обогрева медицинского вагончика Ская.', reward: '2 стерильных бинта, +8 репутации', isDone: (s) => s.sideQuests?.sq_wood_anna?.status === 'completed' },
+    { id: 'sq_fish_egor', category: 'camp', title: 'Копчёная щука', giver: 'Чагрон («Глыба»)', desc: 'Поймать 3 свежих рыбы и заготовить 2 полена для лагерной коптильни Чагрона.', reward: '2 порции ухи, 2 патрона, +10 репутации', isDone: (s) => s.sideQuests?.sq_fish_egor?.status === 'completed' },
+    { id: 'sq_water_batya', category: 'camp', title: 'Чистый глоток', giver: 'Саныч (Штаб)', desc: 'Вскипятить 3 фляги воды для штабного резерва общины.', reward: '3 патрона, +10 репутации', isDone: (s) => s.sideQuests?.sq_water_batya?.status === 'completed' },
+    { id: 'sq_berries_anna', category: 'camp', title: 'Таёжные витамины', giver: 'Николай «Скай» (Лазарет)', desc: 'Собрать 3 порции брусники для противоцинготного взвара Ская.', reward: '1 цистамин (антирад), +8 репутации', isDone: (s) => s.sideQuests?.sq_berries_anna?.status === 'completed' },
+    { id: 'sq_coal_prokhor', category: 'camp', title: 'Уголь для горна', giver: 'Вова «Боб» (Мастерская)', desc: 'Принести 2 металлолома для кузнечного горна Бобчонка.', reward: '2 мотка проволоки, 2 патрона, +10 репутации', isDone: (s) => s.sideQuests?.sq_coal_prokhor?.status === 'completed' },
+    { id: 'sq_snare_egor', category: 'camp', title: 'Силки на глухаря', giver: 'Чагрон («Глыба»)', desc: 'Добыть мясо боровой дичи в проволочный силок.', reward: '2 вяленых мяса, +10 репутации', isDone: (s) => s.sideQuests?.sq_snare_egor?.status === 'completed' },
+    { id: 'sq_watch_batya', category: 'camp', title: 'Ночной дозор', giver: 'Андрей «Атарон» (Периметр)', desc: 'Отстоять караульную смену на вышке с факелом и проверить наклон забора под 45 градусов.', reward: '4 патрона, тушенка, +14 репутации', isDone: (s) => s.sideQuests?.sq_watch_batya?.status === 'completed' },
+    { id: 'sq_medkit_anna', category: 'camp', title: 'Полевая перевязка', giver: 'Николай «Скай» (Лазарет)', desc: 'Сдать 2 стерильных бинта и пучок целебных трав доктору Скаю.', reward: 'Исцеление HP, +10 репутации', isDone: (s) => s.sideQuests?.sq_medkit_anna?.status === 'completed' },
+    { id: 'sq_nails_prokhor', category: 'camp', title: 'Кованые скобы', giver: 'Вова «Боб» (Мастерская)', desc: 'Поработать у наковальни для укрепления ворот лагеря у Боба.', reward: 'Стальной капкан, +10 репутации', isDone: (s) => s.sideQuests?.sq_nails_prokhor?.status === 'completed' },
+    { id: 'sq_pier_egor', category: 'camp', title: 'Расчистка мостков', giver: 'Чагрон («Глыба»)', desc: 'Расчистить причал Быстрянки от радиоактивного топляка.', reward: 'Земляные черви ×6, +10 репутации', isDone: (s) => s.sideQuests?.sq_pier_egor?.status === 'completed' },
 
     // Тайны локаций (10)
-    { id: 'lq_river_container', category: 'location', title: 'Утопленный контейнер', giver: 'Река Быстрянка', desc: 'Нырнуть на стремнине у затопленной баржи за армейским термобоксом.', reward: '3 тушенки, 10 патронов, +25 репутации', isDone: (s) => s.questFlags.river_container_looted },
-    { id: 'lq_forest_wolves', category: 'location', title: 'Волчье логово в буреломе', giver: 'Ближний лесок', desc: 'Выследить и одолеть вожака стаи хищников под корнями кедра.', reward: 'Волчий клык (+5 к урону), 2 шкуры, +30 репутации', isDone: (s) => s.questFlags.wolves_defeated },
-    { id: 'lq_swamp_brdm', category: 'location', title: 'Останки группы «Север»', giver: 'Гнилая гать (Атарон)', desc: 'Обследовать затонувший БРДМ-2 и вернуть жетоны сержанта Гурова Атарону.', reward: 'Командирский бинокль, 8 патронов, +40 репутации', isDone: (s) => s.questFlags.brdm_reported },
-    { id: 'lq_swamp_moss', category: 'location', title: 'Светящийся сфагнум', giver: 'Гнилая гать (Марго)', desc: 'Собрать образцы биолюминесцентного мха в ночную пору.', reward: 'Экстракт «Живая вода», +30 репутации', isDone: (s) => s.questFlags.glowing_moss_reported },
-    { id: 'lq_pump_drain', category: 'location', title: 'Дренаж машинного зала', giver: 'Насосная станция №4', desc: 'Открыть заклинивший донный клапан для промывки водовода.', reward: '+1 чистая вода каждое утро бесплатно!', isDone: (s) => s.pumpWaterActive },
-    { id: 'lq_pump_safe', category: 'location', title: 'Сейф инженера Кузьмина', giver: 'Насосная станция №4', desc: 'Вскрыть несгораемый стальной шкаф начальника станции.', reward: '+2.5 кг к вещмешку, 12 патронов, +35 репутации', isDone: (s) => s.questFlags.safe_reported },
-    { id: 'lq_cordon_stove', category: 'location', title: 'Тайник в печи', giver: 'Заброшенный кордон', desc: 'Разобрать кладку дымохода русской печи.', reward: '+2.5 кг к вещмешку, 6 патронов ТОЗ, +30 репутации', isDone: (s) => s.questFlags.stove_searched },
-    { id: 'lq_tower_logger', category: 'location', title: 'Самописец аварии', giver: 'Радиовышка', desc: 'Снять блок регистратора параметров радиационного выброса со шпиля.', reward: 'Архив аварии, радиодетали, +50 репутации', isDone: (s) => s.questFlags.logger_extracted },
-    { id: 'lq_hunt_boar', category: 'location', title: 'Железный вепрь-секач', giver: 'Охотничьи угодья', desc: 'Одолеть гигантского секача с закостеневшей шкурой.', reward: '4 мяса вепря, 2 толстые шкуры, +45 репутации', isDone: (s) => s.questFlags.boar_defeated },
-    { id: 'lq_bunker_bio4', category: 'location', title: 'Спецхран «Био-4»', giver: 'Бункер НИИ «Сфера»', desc: 'Вскрыть криогенный бокс и забрать армейский стимулятор.', reward: '«Стимулятор-М» (+25 постоянной энергии!), +60 репутации', isDone: (s) => s.questFlags.bio4_cleared },
+    { id: 'lq_river_container', category: 'location', title: 'Утопленный контейнер', giver: 'Река Быстрянка', desc: 'Нырнуть на стремнине у затопленной баржи за армейским термобоксом.', reward: '3 тушенки, 8 патронов, +15 репутации', isDone: (s) => !!s.questFlags?.river_container_looted },
+    { id: 'lq_forest_wolves', category: 'location', title: 'Волчье логово в буреломе', giver: 'Ближний лесок', desc: 'Выследить и одолеть вожака стаи хищников под корнями кедра.', reward: 'Волчий клык (+5 к урону), 2 шкуры, +18 репутации', isDone: (s) => !!s.questFlags?.wolves_defeated },
+    { id: 'lq_swamp_brdm', category: 'location', title: 'Останки группы «Север»', giver: 'Гнилая гать (Атарон)', desc: 'Обследовать затонувший БРДМ-2 и вернуть жетоны сержанта Гурова Атарону.', reward: 'Командирский бинокль, 6 патронов, +20 репутации', isDone: (s) => !!s.questFlags?.brdm_reported },
+    { id: 'lq_swamp_moss', category: 'location', title: 'Светящийся сфагнум', giver: 'Гнилая гать (Марго)', desc: 'Собрать образцы биолюминесцентного мха в ночную пору.', reward: 'Экстракт «Живая вода», +16 репутации', isDone: (s) => !!s.questFlags?.glowing_moss_reported },
+    { id: 'lq_pump_drain', category: 'location', title: 'Дренаж машинного зала', giver: 'Насосная станция №4', desc: 'Открыть заклинивший донный клапан для промывки водовода.', reward: '+1 чистая вода каждое утро бесплатно, +20 репутации', isDone: (s) => !!s.pumpWaterActive },
+    { id: 'lq_pump_safe', category: 'location', title: 'Сейф инженера Кузьмина', giver: 'Насосная станция №4', desc: 'Вскрыть несгораемый стальной шкаф начальника станции.', reward: '+2.5 кг к вещмешку, 10 патронов, +20 репутации', isDone: (s) => !!s.questFlags?.safe_reported },
+    { id: 'lq_cordon_stove', category: 'location', title: 'Тайник в печи', giver: 'Заброшенный кордон', desc: 'Разобрать кладку дымохода русской печи.', reward: '+2.5 кг к вещмешку, 6 патронов ТОЗ, +16 репутации', isDone: (s) => !!s.questFlags?.stove_searched },
+    { id: 'lq_tower_logger', category: 'location', title: 'Самописец аварии', giver: 'Радиовышка', desc: 'Снять блок регистратора параметров радиационного выброса со шпиля.', reward: 'Архив аварии, радиодетали, +25 репутации', isDone: (s) => !!s.questFlags?.logger_extracted },
+    { id: 'lq_hunt_boar', category: 'location', title: 'Железный вепрь-секач', giver: 'Охотничьи угодья', desc: 'Одолеть гигантского секача с закостеневшей шкурой.', reward: '4 мяса вепря, 2 толстые шкуры, +24 репутации', isDone: (s) => !!s.questFlags?.boar_defeated },
+    { id: 'lq_bunker_bio4', category: 'location', title: 'Спецхран «Био-4»', giver: 'Бункер НИИ «Сфера»', desc: 'Вскрыть криогенный бокс и забрать армейский стимулятор.', reward: '«Стимулятор-М» (+25 энергии), +30 репутации', isDone: (s) => !!s.questFlags?.bio4_cleared },
 
     // Сюжетные цепочки и персонажи
-    { id: 'chain_dog', category: 'story', title: 'Друг тайги — Лайка Буран', giver: 'Лес / Чагрон', desc: 'Спасти раненого щенка из капкана и вырастить боевого компаньона.', reward: 'Верный пёс Буран: +25% урона, утренние подарки', isDone: (s) => s.hasDog },
-    { id: 'chain_geo', category: 'story', title: 'Геологоразведка «Енисей-3»', giver: 'Марго (Болота)', desc: 'По наводке травницы Марго обследовать триангулятор на скале в лесу и вскрыть скважину №7 геологов.', reward: 'Компас «Енисей»: -5 энергии на все вылазки', isDone: (s) => s.hasGeoCompass },
-    { id: 'chain_caravan', category: 'story', title: 'Эхо чёрного каравана', giver: 'Река / Атарон', desc: 'Выследить схрон мародёров «Хлыща» и вернуть украденное оружие Атарону.', reward: 'Прицел ТОЗ (+30% крит), 25 патронов, +50 репутации', isDone: (s) => s.questFlags.caravan_completed },
+    { id: 'chain_dog', category: 'story', title: 'Друг тайги — Лайка Буран', giver: 'Лес / Чагрон', desc: 'Спасти раненого щенка из капкана и вырастить боевого компаньона.', reward: 'Верный пёс Буран: +25% урона, утренние подарки', isDone: (s) => !!s.hasDog },
+    { id: 'chain_geo', category: 'story', title: 'Геологоразведка «Енисей-3»', giver: 'Марго (Болота)', desc: 'По наводке травницы Марго обследовать триангулятор на скале в лесу и вскрыть скважину №7 геологов.', reward: 'Компас «Енисей»: -5 энергии на все вылазки', isDone: (s) => !!s.hasGeoCompass },
+    { id: 'chain_caravan', category: 'story', title: 'Эхо чёрного каравана', giver: 'Река / Атарон', desc: 'Выследить схрон мародёров «Хлыща» и вернуть украденное оружие Атарону.', reward: 'Прицел ТОЗ (+30% крит), 20 патронов, +25 репутации', isDone: (s) => !!s.questFlags?.caravan_completed },
     { id: 'spiridon_line', category: 'npc', title: 'Таёжное знахарство Марго', giver: 'Марго (Болота)', desc: 'Освоить древние рецепты настоек, березового дегтя и целебных трав у Марго.', reward: 'Крафт бальзамов Марго, Дегтярного снадобья и Ока рыси', isDone: (s) => s.sideQuests?.spiridon_mushrooms?.status === 'completed' || s.sideQuests?.margo_mushrooms?.status === 'completed' },
-    { id: 'sasha_line', category: 'npc', title: 'Радиопост Стронга', giver: 'Стронг (Вышка)', desc: 'Спасти аналитика Стронга и восстановить радиостанцию на Скалистом утёсе.', reward: 'Ежедневный радиопеленг контейнеров, крафт ДП-5 и фонаря', isDone: (s) => s.questFlags.met_strong || s.questFlags.met_sasha },
-    { id: 'varya_fire', category: 'npc', title: 'Огонь и котелок', giver: 'Варя (Полевая кухня)', desc: 'Заготовить сухие дрова и хворост для растопки полевой кухни общины.', reward: 'Таёжная похлёбка, +15 репутации у Вари', isDone: (s) => s.sideQuests?.varya_fire?.status === 'completed' },
+    { id: 'sasha_line', category: 'npc', title: 'Радиопост Стронга', giver: 'Стронг (Вышка)', desc: 'Спасти аналитика Стронга и восстановить радиостанцию на Скалистом утёсе.', reward: 'Ежедневный радиопеленг контейнеров, крафт ДП-5 и фонаря', isDone: (s) => !!s.questFlags?.met_strong || !!s.questFlags?.met_sasha },
+    { id: 'varya_fire', category: 'npc', title: 'Огонь и котелок', giver: 'Варя (Полевая кухня)', desc: 'Заготовить сухие дрова и хворост для растопки полевой кухни общины.', reward: 'Таёжная похлёбка, +10 репутации у Вари', isDone: (s) => s.sideQuests?.varya_fire?.status === 'completed' },
     { id: 'varya_filter', category: 'npc', title: 'Чистый исток', giver: 'Варя (Полевая кухня)', desc: 'Собрать уголь и сфагнум для сооружения кухонного гравийного фильтра.', reward: 'Гравийный фильтр Вари: бесплатная очистка воды раз в день', isDone: (s) => s.sideQuests?.varya_filter?.status === 'completed' },
     { id: 'varya_royal_soup', category: 'npc', title: 'Вкус прежнего мира', giver: 'Варя (Полевая кухня, 70+)', desc: 'Сварить настоящий праздничный таёжный борщ по брянскому рецепту для лагеря «Всем ПОХ».', reward: 'Рецепт «Праздничный таёжный борщ», титул Мастера Очага', isDone: (s) => s.sideQuests?.varya_royal_soup?.status === 'completed' },
 
     // Пересекающиеся цепочки квестов (Союзы жителей)
-    { id: 'cross_feast', category: 'cross', title: 'Большой таёжный пир', giver: 'Варя & Чагрон (Реп 50+)', desc: 'Добыть дичь и отборную рыбу, чтобы устроить общелагерный праздник у костра лагеря «Всем ПОХ».', reward: 'Статус «Дух единства» (+5% к энергии), Окорок по-лесному, +50 репутации', isDone: (s) => s.crossQuests?.cross_feast?.status === 'completed' },
-    { id: 'cross_autoclave', category: 'cross', title: 'Полевой автоклав и дистиллятор', giver: 'Варя, Боб & Скай (Реп 50+)', desc: 'Собрать из мембраны и металлолома паровой автоклав для кухни и лазарета.', reward: 'Автоклав в лагере: мгновенная дезинфекция и чистая вода, +25 реп каждому', isDone: (s) => s.crossQuests?.cross_autoclave?.status === 'completed' },
-    { id: 'cross_balsam', category: 'cross', title: 'Таёжный бальзам долголетия', giver: 'Варя & Марго (Реп 50+)', desc: 'Объединить знания болотной травницы и кулинарные секреты для создания целебного бальзама.', reward: 'Рецепт «Бальзам Вари и Марго» (+60 HP, +50 энергии), +30 реп каждому', isDone: (s) => s.crossQuests?.cross_balsam?.status === 'completed' },
-    { id: 'cross_arsenal', category: 'cross', title: 'Штабной перехват: Секретный арсенал', giver: 'Саныч, Стронг, Боб & Атарон (Реп 60+)', desc: 'Расшифровать военную частоту и вскрыть законсервированный спецхран на Кордоне.', reward: '25 патронов, Охотничий прицел ТОЗ, +35 репутации каждому', isDone: (s) => s.crossQuests?.cross_arsenal?.status === 'completed' },
+    { id: 'cross_feast', category: 'cross', title: 'Большой таёжный пир', giver: 'Варя & Чагрон (Реп 50+)', desc: 'Добыть дичь и отборную рыбу, чтобы устроить общелагерный праздник у костра лагеря «Всем ПОХ».', reward: 'Статус «Дух единства» (+5% к энергии), Окорок по-лесному, +25 репутации', isDone: (s) => s.crossQuests?.cross_feast?.status === 'completed' },
+    { id: 'cross_autoclave', category: 'cross', title: 'Полевой автоклав и дистиллятор', giver: 'Варя, Боб & Скай (Реп 50+)', desc: 'Собрать из мембраны и металлолома паровой автоклав для кухни и лазарета.', reward: 'Автоклав в лагере: мгновенная дезинфекция и чистая вода, +14 реп каждому', isDone: (s) => s.crossQuests?.cross_autoclave?.status === 'completed' },
+    { id: 'cross_balsam', category: 'cross', title: 'Таёжный бальзам долголетия', giver: 'Варя & Марго (Реп 50+)', desc: 'Объединить знания болотной травницы и кулинарные секреты для создания целебного бальзама.', reward: 'Рецепт «Бальзам Вари и Марго» (+60 HP, +50 энергии), +15 реп каждому', isDone: (s) => s.crossQuests?.cross_balsam?.status === 'completed' },
+    { id: 'cross_arsenal', category: 'cross', title: 'Штабной перехват: Секретный арсенал', giver: 'Саныч, Стронг, Боб & Атарон (Реп 60+)', desc: 'Расшифровать военную частоту и вскрыть законсервированный спецхран на Кордоне.', reward: '20 патронов, Охотничий прицел ТОЗ, +18 репутации каждому', isDone: (s) => s.crossQuests?.cross_arsenal?.status === 'completed' },
 
     // Уникальные квесты высокой репутации (70+)
-    { id: 'high_sanych_seed', category: 'high_rep', title: 'Короб №42: Семена надежды', giver: 'Саныч (Репутация 80+)', desc: 'Помочь Санычу заложить тепличные грядки лагеря «Всем ПОХ» семенами из легендарного Короба №42.', reward: 'Спецпаёк Основателя, свежие овощи каждое утро, +50 репутации', isDone: (s) => s.highRepQuests?.sanych?.status === 'completed' || s.questFlags?.sanych_seeds_given },
-    { id: 'high_batya_cache', category: 'high_rep', title: 'Спецрезерв коменданта: Крышечка с якорем', giver: 'Атарон (Репутация 80+)', desc: 'Получить высшее доверие Атарона, доступ к армейскому цинку патронов и уникальную памятную крышечку с якорем.', reward: 'Цинк патронов (+20 шт.), тушёнка, антирад и жетон-крышечка', isDone: (s) => s.highRepQuests?.ataron?.status === 'completed' || s.highRepQuests?.batya?.status === 'completed' },
+    { id: 'high_sanych_seed', category: 'high_rep', title: 'Короб №42: Семена надежды', giver: 'Саныч (Репутация 80+)', desc: 'Помочь Санычу заложить тепличные грядки лагеря «Всем ПОХ» семенами из легендарного Короба №42.', reward: 'Спецпаёк Основателя, свежие овощи каждое утро, +25 репутации', isDone: (s) => s.highRepQuests?.sanych?.status === 'completed' || !!s.questFlags?.sanych_seeds_given },
+    { id: 'high_batya_cache', category: 'high_rep', title: 'Спецрезерв коменданта: Крышечка с якорем', giver: 'Атарон (Репутация 80+)', desc: 'Получить высшее доверие Атарона, доступ к армейскому цинку патронов и памятную крышечку с якорем.', reward: 'Цинк патронов (+15 шт.), тушёнка, антирад и жетон-крышечка', isDone: (s) => s.highRepQuests?.ataron?.status === 'completed' || s.highRepQuests?.batya?.status === 'completed' },
     { id: 'high_anna_vaccine', category: 'high_rep', title: 'Адское варево Ская', giver: 'Николай «Скай» (Репутация 70+)', desc: 'Помочь доктору Скаю создать мощный детоксикационный эликсир против тяжелой лучевой болезни.', reward: '«Адское варево» (-80 Р, +40 HP) и постоянная скидка в лазарете', isDone: (s) => s.highRepQuests?.sky?.status === 'completed' || s.highRepQuests?.anna?.status === 'completed' },
     { id: 'high_prokhor_tuning', category: 'high_rep', title: 'Особая заточка Бобчонка', giver: 'Вова «Боб» (Репутация 70+)', desc: 'Мастерская доводка охотничьего ножа и оружия на горне Боба.', reward: '+10 постоянного урона в боях и скидка на верстаке', isDone: (s) => s.highRepQuests?.bob?.status === 'completed' || s.highRepQuests?.prokhor?.status === 'completed' },
     { id: 'high_egor_whirlpool', category: 'high_rep', title: 'Тайный омут Чагрона', giver: 'Чагрон (Репутация 70+)', desc: 'Освоить секретный омут на Быстрянке для ловли царской рыбы.', reward: 'Шанс поймать Золотистого хариуса (+60 сытости, +10 энергии)', isDone: (s) => s.highRepQuests?.chagron?.status === 'completed' || s.highRepQuests?.egor?.status === 'completed' },
     { id: 'high_spiridon_blessing', category: 'high_rep', title: 'Философия Добра: Трави бобров!', giver: 'Марго (Репутация 70+)', desc: 'Пройти обряд очищения в святилище травницы Марго на Гнилой гати.', reward: 'Бесплатное снятие радиации и отравлений у Марго', isDone: (s) => s.highRepQuests?.margo?.status === 'completed' || s.highRepQuests?.spiridon?.status === 'completed' },
-    { id: 'high_sasha_scanner', category: 'high_rep', title: 'Глубокий радиопеленг энтропии', giver: 'Стронг (Репутация 70+)', desc: 'Установить дополнительный каскад ламп в радиостанцию Стронга на вышке.', reward: 'Сканирование 2 тайников в день вместо одного', isDone: (s) => s.highRepQuests?.strong?.status === 'completed' || s.highRepQuests?.sasha?.status === 'completed' }
+    { id: 'high_sasha_scanner', category: 'high_rep', title: 'Глубокий радиопеленг энтропии', giver: 'Стронг (Репутация 70+)', desc: 'Установить дополнительный каскад ламп в радиостанцию Стронга на вышке.', reward: 'Сканирование 2 тайников в день вместо одного', isDone: (s) => s.highRepQuests?.strong?.status === 'completed' || s.highRepQuests?.sasha?.status === 'completed' },
+
+    // Погодные испытания и сезонные аномалии (Weather Quests)
+    {
+      id: 'wq_river_flood',
+      category: 'weather',
+      title: 'Бурный паводок на Быстрянке',
+      giver: 'Река Быстрянка (Ливень / Шквалистая буря)',
+      desc: 'Из-за бури и ливня река вздулась, топляк грозит разбить причал и уносит рыбацкие снасти. Закрепите мостки и спасите снасти.',
+      reward: 'Спасённые снасти, улов хариуса, +10 к репутации Чагрона и Боба, +12 общей репутации',
+      weatherReq: ['rain', 'storm'],
+      isDone: (s) => !!s.questFlags?.wq_river_flood_done
+    },
+    {
+      id: 'wq_swamp_lights',
+      category: 'weather',
+      title: 'Блуждающие огни Гнилой гати',
+      giver: 'Гнилая гать (Радиоактивный туман / Кислотная морось)',
+      desc: 'В едком желтом тумане над торфяниками мерцают фосфоресцирующие огни. Отыщите источник — реликтовый люминесцентный мох для Марго.',
+      reward: 'Люминесцентный мох, экстракт, +12 репутации Марго, +12 общей репутации',
+      weatherReq: ['fog', 'toxic_rain'],
+      isDone: (s) => !!s.questFlags?.wq_swamp_lights_done
+    },
+    {
+      id: 'wq_tower_aurora',
+      category: 'weather',
+      title: 'Зов ночной авроры',
+      giver: 'Радиовышка на утесе (Аномальное сияние)',
+      desc: 'Ионизация неба открыла дальний волновод связи. Поднимитесь к мачте вышки и помогите Скаю и Стронгу перехватить аварийный сигнал геологов.',
+      reward: 'Координаты схрона геологов, радиодетали, +12 репутации Ская и Стронга, +14 общей репутации',
+      weatherReq: ['aurora'],
+      isDone: (s) => !!s.questFlags?.wq_tower_aurora_done
+    },
+    {
+      id: 'wq_perimeter_frost',
+      category: 'weather',
+      title: 'Ледяной капкан на периметре',
+      giver: 'Периметр / Дальний кордон (Северные заморозки)',
+      desc: 'Мороз сковал механизмы сигнализации, а голодные таёжные волки чуют тепло кухни. Помогите Атарону отогреть датчики и укрепить ледяной вал.',
+      reward: 'Волчьи шкуры, мясо, патроны, +12 репутации Атарона, +12 общей репутации',
+      weatherReq: ['freeze'],
+      isDone: (s) => !!s.questFlags?.wq_perimeter_frost_done
+    },
+    {
+      id: 'wq_peat_fire',
+      category: 'weather',
+      title: 'Тлеющий торфяник в сушь',
+      giver: 'Ближний лесок (Знойное марево)',
+      desc: 'В удушливую сушь тлеет пласт торфа у кромки леса. Потушите очаг водой и песком, пока пламя не перекинулось на частокол лагеря.',
+      reward: 'Древесный уголь, спасение сектора, +12 репутации Саныча, +12 общей репутации',
+      weatherReq: ['heat'],
+      isDone: (s) => !!s.questFlags?.wq_peat_fire_done
+    }
   ];

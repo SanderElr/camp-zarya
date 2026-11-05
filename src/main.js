@@ -145,7 +145,15 @@
     LOCATIONS,
     ITEMS,
     NPCS,
-    RECIPES
+    RECIPES,
+    WEATHER_TYPES,
+    NPC_WEATHER_QUOTES,
+    getNpcWeatherQuote,
+    SIDE_QUESTS,
+    doFishing,
+    doGatherWood,
+    doGatherHerbs,
+    doGatherMoss
   };
 
 })();
