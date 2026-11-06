@@ -1,4 +1,72 @@
   // --- МЕНЮ СИСТЕМЫ И НАСТРОЕК ---
+  const UI_SCALES = [
+    { id: 'small', badge: '88% Мелкий', name: 'Мелкий', percent: '88%', desc: 'Компактный размер элементов для небольших экранов' },
+    { id: 'medium', badge: '100% Средний', name: 'Средний (Базовый)', percent: '100%', desc: 'Текущий базовый размер элементов и текста по умолчанию' },
+    { id: 'large', badge: '115% Крупный', name: 'Крупный', percent: '115%', desc: 'Увеличенный комфортный шрифт и кнопки для удобного чтения' },
+    { id: 'xlarge', badge: '130% Экстра', name: 'Максимальный', percent: '130%', desc: 'Крупнейший масштаб для планшетов и слабого зрения' }
+  ];
+
+  function getUiScale() {
+    if (typeof document === 'undefined') return 'medium';
+    return (document.body && document.body.getAttribute('data-ui-scale')) || 'medium';
+  }
+
+  function applyUiScale(scaleId) {
+    const valid = UI_SCALES.find(s => s.id === scaleId) ? scaleId : 'medium';
+    if (typeof document !== 'undefined') {
+      if (document.body) document.body.setAttribute('data-ui-scale', valid);
+      if (document.documentElement) document.documentElement.setAttribute('data-ui-scale', valid);
+    }
+    try {
+      localStorage.setItem('camp_ui_scale', valid);
+    } catch(e) {}
+    return valid;
+  }
+
+  function setUiScale(scaleId, notify = true) {
+    const applied = applyUiScale(scaleId);
+    const scaleObj = UI_SCALES.find(s => s.id === applied);
+    if (notify && typeof toast === 'function') {
+      toast(`🔍 Масштаб интерфейса: ${scaleObj ? scaleObj.name : applied}`);
+    }
+  }
+
+  function showUiScaleModal() {
+    const currentScale = getUiScale();
+    const title = '🔍 МАСШТАБ ИНТЕРФЕЙСА';
+    const sub = 'Размер шрифтов, кнопок и карточек';
+    let body = `
+      <p style="font-size:12px; color:var(--text-dim); margin-bottom:12px; line-height:1.45;">
+        Настройте размер текста и элементов управления под ваш экран или предпочтения:
+      </p>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        ${UI_SCALES.map(s => {
+          const isCur = s.id === currentScale;
+          return `
+            <div style="background:${isCur ? 'rgba(255, 190, 34, 0.15)' : 'rgba(0,0,0,0.35)'}; border:1px solid ${isCur ? 'var(--accent-gold)' : 'var(--border-dim)'}; border-radius:6px; padding:10px 12px; cursor:pointer;" onclick="Game.setUiScale('${s.id}'); Game.showUiScaleModal();">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                <span style="font-weight:bold; font-size:13px; color:${isCur ? 'var(--accent-gold)' : 'var(--text-main)'};">
+                  ${s.badge}
+                </span>
+                ${isCur ? '<span style="font-size:11px; color:var(--accent-gold); font-weight:bold;">✓ Выбран</span>' : `<button class="modal-btn" style="margin:0; padding:3px 10px; font-size:11px; min-height:26px;">Выбрать</button>`}
+              </div>
+              <p style="font-size:11px; color:var(--text-dim); margin:0; line-height:1.4;">${s.desc}</p>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+
+    const actions = [
+      {
+        text: '↩️ Назад в главное меню',
+        action: () => openSystemMenu()
+      }
+    ];
+
+    openModal(title, sub, 'assets/images/cabin.png', body, actions);
+  }
+
   function openSystemMenu() {
     sfx.init();
     sfx.playClick();
@@ -6,6 +74,8 @@
     const title = '⚙️ МЕНЮ ВЫЖИВАНИЯ';
     const sub = 'Управление игрой и настройками';
     const curTrack = MUSIC_TRACKS[currentTrackIndex] || MUSIC_TRACKS[0];
+    const curScale = getUiScale();
+    const curScaleObj = UI_SCALES.find(s => s.id === curScale) || UI_SCALES[1];
     let body = `
       <div style="display:flex; flex-direction:column; gap:10px; margin:4px 0;">
         <!-- Секция аудио -->
@@ -44,6 +114,24 @@
           </div>
         </div>
 
+        <!-- Секция масштаба интерфейса -->
+        <div style="background:rgba(0,0,0,0.35); border:1px solid var(--border-dim); border-radius:6px; padding:10px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+            <b style="color:var(--accent-gold); font-size:12.5px;">🔍 Размер интерфейса и текста</b>
+            <span style="font-size:11px; color:var(--text-dim); font-weight:bold;">${curScaleObj.percent}</span>
+          </div>
+          <div style="display:grid; grid-template-columns: repeat(4, 1fr); gap:4px;">
+            ${UI_SCALES.map(s => `
+              <button class="modal-btn" style="margin:0; padding:6px 2px; min-height:32px; font-size:10.5px; justify-content:center; text-align:center; ${s.id === curScale ? 'border-color:var(--accent-gold); background:rgba(255,190,34,0.22); font-weight:bold; color:var(--accent-gold);' : ''}" onclick="Game.setUiScale('${s.id}'); Game.openSystemMenu();" title="${s.desc}">
+                ${s.percent}
+              </button>
+            `).join('')}
+          </div>
+          <div style="font-size:10.5px; color:var(--text-dim); margin-top:6px; text-align:center;">
+            Текущий: <b>${curScaleObj.name}</b>
+          </div>
+        </div>
+
         <!-- Секция информации -->
         <div style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.06); border-radius:6px; padding:8px 10px; font-size:11.5px; color:var(--text-dim); line-height:1.6;">
           <div>🏕️ <b>Лагерь «Всем ПОХ»</b> v1.3</div>
@@ -60,6 +148,10 @@
           closeModal();
           showIntroScreen();
         }
+      },
+      {
+        text: '🔍 Подробная настройка размера интерфейса',
+        action: () => showUiScaleModal()
       },
       {
         text: '🖼️ Фоновая атмосфера: выбор фона',

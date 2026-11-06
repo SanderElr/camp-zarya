@@ -5,6 +5,8 @@
     try {
       const savedBg = localStorage.getItem('camp_bg_theme') || 'camp';
       applyBgTheme(savedBg);
+      const savedScale = localStorage.getItem('camp_ui_scale') || 'medium';
+      applyUiScale(savedScale);
     } catch(e) {}
     generateDailyQuestsIfNeeded();
     updateHUD();
@@ -123,6 +125,11 @@
     turnInDailyQuest,
     setBgTheme,
     applyBgTheme,
+    applyUiScale,
+    setUiScale,
+    getUiScale,
+    showUiScaleModal,
+    UI_SCALES,
     openJournal,
     openCampUpgrades,
     buildCampUpgrade,

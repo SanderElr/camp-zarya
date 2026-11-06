@@ -159,6 +159,8 @@ body[data-bg-theme="none"] .game-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
   font-size: 11px;
   margin-bottom: 5px;
 }
@@ -255,6 +257,9 @@ body[data-bg-theme="none"] .game-container {
   font-family: 'Russo One', sans-serif;
   font-size: 11px;
   color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .stat-bar-mini {
@@ -1857,3 +1862,135 @@ body[data-bg-theme="none"] .game-container {
     overflow-y: auto;
   }
 }
+
+/* ==========================================================================
+   НАСТРОЙКИ МАСШТАБА И РАЗМЕРА ШРИФТОВ / ИНТЕРФЕЙСА
+   Medium — базовое текущее значение (100% по умолчанию)
+   ========================================================================== */
+
+/* 1. МЕЛКИЙ МАСШТАБ (Small - 88%) */
+body[data-ui-scale="small"],
+html[data-ui-scale="small"] body {
+  font-size: 12.5px;
+}
+body[data-ui-scale="small"] .hud-camp-title { font-size: 10px; }
+body[data-ui-scale="small"] .hud-time-val { font-size: 9.5px; }
+body[data-ui-scale="small"] .hud-weather-badge { font-size: 9.5px; padding: 1px 5px; }
+body[data-ui-scale="small"] .hud-btn { font-size: 9.5px; padding: 2px 6px; }
+body[data-ui-scale="small"] .stat-num { font-size: 9.5px; }
+body[data-ui-scale="small"] .stat-pill { padding: 2px 4px; }
+body[data-ui-scale="small"] .stat-icon-img { width: 12px; height: 12px; }
+body[data-ui-scale="small"] .camp-action-btn { font-size: 11px; padding: 6px 8px; min-height: 40px; }
+body[data-ui-scale="small"] .camp-action-icon { font-size: 16px; }
+body[data-ui-scale="small"] .npc-card { padding: 6px 8px; }
+body[data-ui-scale="small"] .npc-avatar { width: 40px; height: 40px; }
+body[data-ui-scale="small"] .npc-name { font-size: 12.5px; }
+body[data-ui-scale="small"] .npc-role { font-size: 10px; }
+body[data-ui-scale="small"] .npc-desc { font-size: 10.5px; line-height: 1.35; }
+body[data-ui-scale="small"] .location-card { padding: 6px 8px; }
+body[data-ui-scale="small"] .location-title { font-size: 12.5px; }
+body[data-ui-scale="small"] .location-desc { font-size: 10.5px; }
+body[data-ui-scale="small"] .item-card { padding: 6px 8px; min-height: 48px; }
+body[data-ui-scale="small"] .item-icon { width: 32px; height: 32px; }
+body[data-ui-scale="small"] .item-name { font-size: 12px; }
+body[data-ui-scale="small"] .item-desc { font-size: 10px; }
+body[data-ui-scale="small"] .recipe-card { padding: 6px 8px; }
+body[data-ui-scale="small"] .recipe-name { font-size: 12px; }
+body[data-ui-scale="small"] .quest-card { padding: 6px 8px; }
+body[data-ui-scale="small"] .quest-title { font-size: 12.5px; }
+body[data-ui-scale="small"] .modal-window { font-size: 11.5px; }
+body[data-ui-scale="small"] .modal-title-box h3 { font-size: 12.5px; }
+body[data-ui-scale="small"] .modal-title-box span { font-size: 9.5px; }
+body[data-ui-scale="small"] .modal-body { font-size: 11.5px; line-height: 1.45; }
+body[data-ui-scale="small"] .modal-btn { font-size: 11px; min-height: 34px; padding: 6px 10px; }
+body[data-ui-scale="small"] .nav-bar { height: 48px; }
+body[data-ui-scale="small"] .nav-btn { font-size: 9.5px; padding: 4px 2px; }
+body[data-ui-scale="small"] .nav-icon { font-size: 16px; margin-bottom: 2px; }
+body[data-ui-scale="small"] .journal-content,
+body[data-ui-scale="small"] .log-item { font-size: 10.5px; }
+
+/* 2. СРЕДНИЙ МАСШТАБ (Medium - 100% Базовый текущий размер) */
+body[data-ui-scale="medium"],
+html[data-ui-scale="medium"] body {
+  font-size: 14px;
+}
+
+/* 3. КРУПНЫЙ МАСШТАБ (Large - 115%) */
+body[data-ui-scale="large"],
+html[data-ui-scale="large"] body {
+  font-size: 15.5px;
+}
+body[data-ui-scale="large"] .hud-time-badge { font-size: 12px; }
+body[data-ui-scale="large"] .hud-camp-title { font-size: 13px; }
+body[data-ui-scale="large"] .hud-weather-badge { font-size: 12px; padding: 3px 8px; }
+body[data-ui-scale="large"] .hud-btn { font-size: 12px; padding: 4px 10px; }
+body[data-ui-scale="large"] .stat-num { font-size: 12px; }
+body[data-ui-scale="large"] .stat-pill { padding: 4px 6px; }
+body[data-ui-scale="large"] .camp-action-btn { font-size: 13.5px; padding: 10px 10px; min-height: 52px; }
+body[data-ui-scale="large"] .camp-action-icon { font-size: 22px; }
+body[data-ui-scale="large"] .npc-card { padding: 10px 12px; }
+body[data-ui-scale="large"] .npc-avatar { width: 52px; height: 52px; }
+body[data-ui-scale="large"] .npc-name { font-size: 15.5px; }
+body[data-ui-scale="large"] .npc-role { font-size: 12px; }
+body[data-ui-scale="large"] .npc-desc { font-size: 13px; line-height: 1.5; }
+body[data-ui-scale="large"] .location-card { padding: 10px 12px; }
+body[data-ui-scale="large"] .location-title { font-size: 15.5px; }
+body[data-ui-scale="large"] .location-desc { font-size: 12.5px; }
+body[data-ui-scale="large"] .item-card { padding: 10px 12px; min-height: 60px; }
+body[data-ui-scale="large"] .item-icon { width: 44px; height: 44px; }
+body[data-ui-scale="large"] .item-name { font-size: 14.5px; }
+body[data-ui-scale="large"] .item-desc { font-size: 12px; }
+body[data-ui-scale="large"] .recipe-card { padding: 10px 12px; }
+body[data-ui-scale="large"] .recipe-name { font-size: 14.5px; }
+body[data-ui-scale="large"] .quest-card { padding: 10px 12px; }
+body[data-ui-scale="large"] .quest-title { font-size: 15px; }
+body[data-ui-scale="large"] .modal-window { font-size: 14px; }
+body[data-ui-scale="large"] .modal-title-box h3 { font-size: 16px; }
+body[data-ui-scale="large"] .modal-title-box span { font-size: 12px; }
+body[data-ui-scale="large"] .modal-body { font-size: 14px; line-height: 1.6; }
+body[data-ui-scale="large"] .modal-btn { font-size: 14px; min-height: 44px; padding: 10px 14px; }
+body[data-ui-scale="large"] .nav-bar { height: 62px; }
+body[data-ui-scale="large"] .nav-btn { font-size: 12px; padding: 6px 4px; }
+body[data-ui-scale="large"] .nav-icon { font-size: 22px; }
+body[data-ui-scale="large"] .journal-content,
+body[data-ui-scale="large"] .log-item { font-size: 13.5px; line-height: 1.6; }
+
+/* 4. МАКСИМАЛЬНЫЙ МАСШТАБ (X-Large - 130%) */
+body[data-ui-scale="xlarge"],
+html[data-ui-scale="xlarge"] body {
+  font-size: 17px;
+}
+body[data-ui-scale="xlarge"] .hud-time-badge { font-size: 13.5px; }
+body[data-ui-scale="xlarge"] .hud-camp-title { font-size: 14.5px; }
+body[data-ui-scale="xlarge"] .hud-weather-badge { font-size: 13px; padding: 4px 9px; }
+body[data-ui-scale="xlarge"] .hud-btn { font-size: 13px; padding: 5px 12px; }
+body[data-ui-scale="xlarge"] .stat-num { font-size: 13px; }
+body[data-ui-scale="xlarge"] .stat-pill { padding: 5px 8px; }
+body[data-ui-scale="xlarge"] .camp-action-btn { font-size: 15px; padding: 12px 12px; min-height: 58px; }
+body[data-ui-scale="xlarge"] .camp-action-icon { font-size: 24px; }
+body[data-ui-scale="xlarge"] .npc-card { padding: 12px 14px; }
+body[data-ui-scale="xlarge"] .npc-avatar { width: 56px; height: 56px; }
+body[data-ui-scale="xlarge"] .npc-name { font-size: 17px; }
+body[data-ui-scale="xlarge"] .npc-role { font-size: 13.5px; }
+body[data-ui-scale="xlarge"] .npc-desc { font-size: 14.5px; line-height: 1.55; }
+body[data-ui-scale="xlarge"] .location-card { padding: 12px 14px; }
+body[data-ui-scale="xlarge"] .location-title { font-size: 17px; }
+body[data-ui-scale="xlarge"] .location-desc { font-size: 14px; }
+body[data-ui-scale="xlarge"] .item-card { padding: 12px 14px; min-height: 66px; }
+body[data-ui-scale="xlarge"] .item-icon { width: 48px; height: 48px; }
+body[data-ui-scale="xlarge"] .item-name { font-size: 16px; }
+body[data-ui-scale="xlarge"] .item-desc { font-size: 13.5px; }
+body[data-ui-scale="xlarge"] .recipe-card { padding: 12px 14px; }
+body[data-ui-scale="xlarge"] .recipe-name { font-size: 16px; }
+body[data-ui-scale="xlarge"] .quest-card { padding: 12px 14px; }
+body[data-ui-scale="xlarge"] .quest-title { font-size: 16.5px; }
+body[data-ui-scale="xlarge"] .modal-window { font-size: 15.5px; }
+body[data-ui-scale="xlarge"] .modal-title-box h3 { font-size: 17.5px; }
+body[data-ui-scale="xlarge"] .modal-title-box span { font-size: 13px; }
+body[data-ui-scale="xlarge"] .modal-body { font-size: 15px; line-height: 1.65; }
+body[data-ui-scale="xlarge"] .modal-btn { font-size: 15px; min-height: 48px; padding: 12px 16px; }
+body[data-ui-scale="xlarge"] .nav-bar { height: 68px; }
+body[data-ui-scale="xlarge"] .nav-btn { font-size: 13.5px; padding: 6px 4px; }
+body[data-ui-scale="xlarge"] .nav-icon { font-size: 24px; }
+body[data-ui-scale="xlarge"] .journal-content,
+body[data-ui-scale="xlarge"] .log-item { font-size: 14.5px; line-height: 1.65; }
